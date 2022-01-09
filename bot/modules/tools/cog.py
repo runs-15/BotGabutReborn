@@ -1,6 +1,5 @@
 from discord.ext.commands import Cog, slash_command
 import discord, os, db
-from pymongo import MongoClient
 from discord.commands import Option
 
 class Tools(Cog):
