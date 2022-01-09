@@ -1,5 +1,5 @@
-from discord.ext.commands import Cog, slash_command
-import discord, db
+from discord.ext.commands import Cog, slash_command, command
+import discord, db, os, sys
 from discord.commands import Option
 
 class Tools(Cog):
@@ -30,11 +30,11 @@ class Tools(Cog):
         self,
         ctx,
         prefix: Option(str, "Bot prefix's for your channel (max. 5 char.)", required=False, default='>>'),
-        presensi: Option(discord.TextChannel, "Channel presensi", required=False, default=None),
-        shalat: Option(discord.TextChannel, "Channel shalat", required=False, default=None),
-        quran: Option(discord.TextChannel, "Channel Qur'an", required=False, default=None),
-        birthday: Option(discord.TextChannel, "Channel birthday", required=False, default=None),
-        logging: Option(discord.TextChannel, "Channel logging message", required=False, default=None),
+        presensi: Option([discord.TextChannel, discord.StoreChannel], "Channel presensi", required=False, default=None),
+        shalat: Option([discord.TextChannel, discord.StoreChannel], "Channel shalat", required=False, default=None),
+        quran: Option([discord.TextChannel, discord.StoreChannel], "Channel Qur'an", required=False, default=None),
+        birthday: Option([discord.TextChannel, discord.StoreChannel], "Channel birthday", required=False, default=None),
+        logging: Option([discord.TextChannel, discord.StoreChannel], "Channel logging message", required=False, default=None),
         ):
         try:
             if ctx.guild.id in [i['server_id'] for i in db.servers_con['servers']['server'].find({'server_id' : ctx.guild.id})]:
@@ -85,6 +85,15 @@ class Tools(Cog):
                  'logging_channel' : logging.id if logging != None else None}
             )
             await ctx.respond('Command successfully executed!')
+            
+    def restart_bot(self): 
+        os.execv(sys.executable, ['python'] + sys.argv)
+        
+    @command(name='restart')
+    async def restart(self, ctx):
+        if ctx.author.id == 616950344747974656:
+            await ctx.send("Restarting bot...")
+            self.restart_bot()
     
 def setup(bot):
     bot.add_cog(Tools(bot))
