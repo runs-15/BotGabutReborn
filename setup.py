@@ -29,7 +29,8 @@ setuptools.setup(
         "dnspython",
         "aiodns",
         "Brotli",
-        "cchardet"
+        "cchardet",
+        'pymongo'
     ],
     python_requires='>=3.6',
 )
