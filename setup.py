@@ -22,11 +22,14 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        "discord.py",
+        "py-cord",
         "flask",
         "python-dotenv",
         "PyNaCl",
         "dnspython",
+        "aiodns",
+        "Brotli",
+        "cchardet"
     ],
     python_requires='>=3.6',
 )

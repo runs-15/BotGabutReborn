@@ -1,5 +1,9 @@
-discord.py
+git+https://github.com/Pycord-Development/pycord@c602bc4#egg=pycord
 flask
 python-dotenv
 PyNaCl
 dnspython
+orjson
+aiodns
+Brotli
+cchardet
