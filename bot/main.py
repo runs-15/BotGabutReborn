@@ -17,8 +17,8 @@ def get_prefix(bot, message):
 bot = commands.Bot(command_prefix=get_prefix, description=description, intents=intents)
 TOKEN = os.getenv('BOT_TOKEN')
     
-for folder in os.listdir("bot\modules"):
-    if os.path.exists(os.path.join("bot\modules", folder, "cog.py")):
+for folder in os.listdir("bot/modules"):
+    if os.path.exists(os.path.join("bot/modules", folder, "cog.py")):
         bot.load_extension(f"modules.{folder}.cog")
         print(f"    {folder} cogs loaded!")
 
