@@ -1,5 +1,5 @@
 from discord.ext.commands import Cog, slash_command
-import discord, os, db
+import discord, db
 from discord.commands import Option
 
 class Tools(Cog):

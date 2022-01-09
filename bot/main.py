@@ -1,4 +1,4 @@
-import os, server, discord, db, random
+import os, server, discord, db
 #import pynacl
 #import dnspython
 from discord.ext import commands

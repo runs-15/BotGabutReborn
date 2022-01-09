@@ -8,3 +8,7 @@ aiodns
 Brotli
 cchardet
 pymongo
+requests
+apscheduler
+asyncio
+pytz

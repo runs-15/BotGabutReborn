@@ -1,11 +1,10 @@
 from discord.ext.commands import Cog, command, slash_command
-import requests, random, datetime, pytz, os, db
+import requests, random, datetime, pytz, db
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from discord import Embed
 from asyncio import sleep
 from dateutil import tz
-from pymongo import MongoClient
 from discord.commands import Option
 
 class Presensi(Cog):

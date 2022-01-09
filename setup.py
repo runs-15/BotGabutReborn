@@ -30,7 +30,11 @@ setuptools.setup(
         "aiodns",
         "Brotli",
         "cchardet",
-        'pymongo'
+        'pymongo',
+        'requests',
+        'apscheduler',
+        'asyncio',
+        'pytz'
     ],
     python_requires='>=3.6',
 )
