@@ -15,7 +15,7 @@ def get_prefix(bot, message):
     return when_mentioned_or(prefix)(bot, message)
 
 bot = commands.Bot(command_prefix=get_prefix, description=description, intents=intents)
-#TOKEN = os.getenv('BOT_TOKEN')
+TOKEN = os.getenv('BOT_TOKEN')
     
 for folder in os.listdir("bot\modules"):
     if os.path.exists(os.path.join("bot\modules", folder, "cog.py")):
