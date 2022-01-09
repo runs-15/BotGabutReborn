@@ -14,7 +14,7 @@ class Agama(Cog):
     def __init__(self, bot):
         self.bot = bot
         self.scheduler = AsyncIOScheduler()
-        self.scheduler.add_job(self.quran_acak, CronTrigger(hour=18, minute=42, timezone="Asia/Jakarta"))
+        self.scheduler.add_job(self.quran_acak, CronTrigger(hour=0, minute=0, timezone="Asia/Jakarta"))
         self.scheduler.start()
         self.scheduler_shalat = AsyncIOScheduler()
 

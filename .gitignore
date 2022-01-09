@@ -116,3 +116,4 @@ venv.bak/
 #ipynb notebooks
 .ipynb
 .csv
+test_objects.ipynb

@@ -27,5 +27,5 @@ async def on_ready():
     print(f"We have logged in as {bot.user}")
 
 #server.server()
-bot.run("ODUxMzU0OTU0MzkyMTQxODU5.YL3EFg.T8VXTFpMvE8ZCq1wOm75dOIo66Q")
+bot.run("ODUxMzU0OTU0MzkyMTQxODU5.YL3EFg.wqRvzApW4pgHGtS2txGvT1AzBHg")
 #bot.run(TOKEN)
