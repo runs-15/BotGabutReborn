@@ -34,7 +34,8 @@ setuptools.setup(
         'requests',
         'apscheduler',
         'asyncio',
-        'pytz'
+        'pytz',
+        'python-dateutil'
     ],
     python_requires='>=3.6',
 )
