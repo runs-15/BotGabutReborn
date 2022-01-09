@@ -109,7 +109,7 @@ class Agama(Cog):
                         embed.set_footer(text=f"Timezone: {self.timezone}\nDate: {self.tanggal}")
                         await self.channel.send(content="@everyone", embed=embed, delete_after=3600)
 
-                    self.scheduler_shalat.add_job(rangkuman_jadwal, CronTrigger(hour=0, minute=0, second=5, timezone="Asia/Jakarta"), id="jadwal_utama")
+                    self.scheduler_shalat.add_job(rangkuman_jadwal, CronTrigger(hour=0, minute=0, second=5, timezone="Asia/Jakarta"))
                     self.scheduler_shalat.add_job(subuh_reminder, CronTrigger(hour=int(self.subuh[0:2]), minute=int(self.subuh[3:]), end_date=datetime.datetime.now() + datetime.timedelta(days=1), timezone=self.timezone))
                     self.scheduler_shalat.add_job(terbit_reminder, CronTrigger(hour=int(self.terbit[0:2]), minute=int(self.terbit[3:]), end_date=datetime.datetime.now() + datetime.timedelta(days=1), timezone=self.timezone))
                     self.scheduler_shalat.add_job(dzuhur_reminder, CronTrigger(hour=int(self.dzuhur[0:2]), minute=int(self.dzuhur[3:]), end_date=datetime.datetime.now() + datetime.timedelta(days=1), timezone=self.timezone))
