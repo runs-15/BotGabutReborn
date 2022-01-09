@@ -13,7 +13,7 @@ class Presensi(Cog):
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
-        self.scheduler.add_job(self.get_day, CronTrigger(hour=5, minute=48, day_of_week="mon-fri", timezone="Asia/Jakarta"))
+        self.scheduler.add_job(self.get_day, CronTrigger(hour=5, minute=57, day_of_week="mon-fri", timezone="Asia/Jakarta"))
         self.scheduler.start()
         
     def get_day(self):
@@ -23,12 +23,20 @@ class Presensi(Cog):
         day = d_aware.strftime("%A")
         
         #day dictionary
+        # day_dict = {
+        #     'Monday'   : 'senin',
+        #     'Tuesday'  : 'selasa',
+        #     'Wednesday': 'rabu',
+        #     'Thursday' : 'kamis',
+        #     'Friday'   : 'jumat'
+        # }
+        
         day_dict = {
-            'Monday'   : 'senin',
-            'Tuesday'  : 'selasa',
-            'Wednesday': 'rabu',
-            'Thursday' : 'kamis',
-            'Friday'   : 'jumat'
+            'Sunday'   : 'senin',
+            'Monday'   : 'selasa',
+            'Tuesday'  : 'rabu',
+            'Wednesday': 'kamis',
+            'Thursday' : 'jumat',
         }
         
         #scheduler
