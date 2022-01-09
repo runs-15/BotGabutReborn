@@ -26,6 +26,5 @@ for folder in os.listdir("bot\modules"):
 async def on_ready():
     print(f"We have logged in as {bot.user}")
 
-#server.server()
-bot.run("ODUxMzU0OTU0MzkyMTQxODU5.YL3EFg.wqRvzApW4pgHGtS2txGvT1AzBHg")
-#bot.run(TOKEN)
+server.server()
+bot.run(TOKEN)
