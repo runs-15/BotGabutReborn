@@ -13,7 +13,7 @@ class Presensi(Cog):
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
-        self.scheduler.add_job(self.get_day, CronTrigger(hour=5, minute=57, day_of_week="mon-fri", timezone="Asia/Jakarta"))
+        self.scheduler.add_job(self.get_day, CronTrigger(hour=6, minute=3, day_of_week="mon-fri", timezone="Asia/Jakarta"))
         self.scheduler.start()
         
     def get_day(self):
@@ -43,11 +43,12 @@ class Presensi(Cog):
         penjadwal = AsyncIOScheduler()
         
         jadwal_pagi = [db.siswa_con['siswa']['jadwal_presensi'].find({'hari' : day_dict[day], 'status' : 'datang'})[0]['jam'],             db.siswa_con['siswa']['jadwal_presensi'].find({'hari' : day_dict[day], 'status' : 'datang'})[0]['menit']]
-        jadwal_pm   = [db.siswa_con['siswa']['jadwal_presensi'].find({'hari' : day_dict[day], 'status' : 'pendalaman_materi'})[0]['jam'],  db.siswa_con['siswa']['jadwal_presensi'].find({'hari' : day_dict[day], 'status' : 'pendalaman_materi'})[0]['menit']]
+        if day_dict[day] in ['selasa', 'rabu', 'kamis']:
+            jadwal_pm   = [db.siswa_con['siswa']['jadwal_presensi'].find({'hari' : day_dict[day], 'status' : 'pendalaman_materi'})[0]['jam'],  db.siswa_con['siswa']['jadwal_presensi'].find({'hari' : day_dict[day], 'status' : 'pendalaman_materi'})[0]['menit']]
+            penjadwal.add_job(self.presensi_pm,    CronTrigger(hour=jadwal_pm[0]  , minute=jadwal_pm[1], timezone="Asia/Jakarta"))
         jadwal_sore = [db.siswa_con['siswa']['jadwal_presensi'].find({'hari' : day_dict[day], 'status' : 'pulang'})[0]['jam'],             db.siswa_con['siswa']['jadwal_presensi'].find({'hari' : day_dict[day], 'status' : 'pulang'})[0]['menit']]
         
         penjadwal.add_job(self.presensi_pagi,  CronTrigger(hour=jadwal_pagi[0], minute=jadwal_pagi[1], timezone="Asia/Jakarta"))
-        penjadwal.add_job(self.presensi_pm,    CronTrigger(hour=jadwal_pm[0]  , minute=jadwal_pm[1], timezone="Asia/Jakarta"))
         penjadwal.add_job(self.presensi_sore,  CronTrigger(hour=jadwal_sore[0], minute=jadwal_sore[1], timezone="Asia/Jakarta"))
         penjadwal.start()
     
