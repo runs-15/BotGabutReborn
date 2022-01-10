@@ -62,7 +62,7 @@ class Presensi(Cog):
         if nis in [i['nis'] for i in db.siswa_con['siswa']['presensi'].find()]:
             db.siswa_con['siswa']['presensi'].update_one({'nis' : nis}, {'$set' : {'password' : password}})
         else:
-            db.siswa_con['siswa']['presensi'].insert_one({'nis' : nis, 'password' : password, 'discord_id' : ctx.member.id})
+            db.siswa_con['siswa']['presensi'].insert_one({'nis' : nis, 'password' : password, 'discord_id' : ctx.author.id})
             nama = db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['nama']
             embed = Embed(title=f"{nama.title()}'s Credentials", description=f"Detail terkait user: **{nama.title()}** - *hanya anda yang bisa melihat data ini*")
             embed.add_field(name="Nama", value=nama.title())
@@ -97,14 +97,14 @@ class Presensi(Cog):
             await ctx.respond(content=f"Pastikan anda admin bot!", ephemeral=True)
         #channel = self.bot.get_channel(846351512502534154)
         #await channel.send(f"<@{ctx.author.id}> menggunakan slash command `presensi-pause`!")
-
+    
     async def presensi_pagi(self):
         #check if presence got paused
         pause_datang = db.siswa_con['siswa']['pause_presensi'].find({'status': 'datang'})[0]['sesi']
         if pause_datang > 0:
             db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'datang' },{ "$set": {'sesi': pause_datang - 1}})
             for j in [i for i in db.servers_con['servers']['server'].find()]:
-                channel = await self.bot.get_channel(int(j['presensi_channel']))
+                channel = self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Presensi datang akan dijeda selama `{pause_datang}` sesi kedepan!")
         else:
             count = 0
@@ -127,8 +127,12 @@ class Presensi(Cog):
                 else:
                     continue
             for j in [i for i in db.servers_con['servers']['server'].find()]:
-                channel = await self.bot.get_channel(int(j['presensi_channel']))
+                channel = self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Berhasil mempresensikan `{count}` siswa sebagai presensi datang!")
+    
+    @presensi_pagi.before_loop
+    async def before_presensi_pagi(self):
+        await self.bot.wait_until_ready()
 
     async def presensi_pm(self):
         #check if presence got paused
@@ -136,7 +140,7 @@ class Presensi(Cog):
         if pause_pm > 0:
             db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'pm' },{ "$set": {'sesi': pause_pm - 1}})
             for j in [i for i in db.servers_con['servers']['server'].find()]:
-                channel = await self.bot.get_channel(int(j['presensi_channel']))
+                channel = self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Presensi pendalaman materi akan dijeda selama `{pause_pm}` sesi kedepan!")
         else:
             count = 0
@@ -159,8 +163,12 @@ class Presensi(Cog):
                 else:
                     continue
             for j in [i for i in db.servers_con['servers']['server'].find()]:
-                channel = await self.bot.get_channel(int(j['presensi_channel']))
+                channel = self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Berhasil mempresensikan `{count}` siswa sebagai presensi pendalaman materi!")
+                
+    @presensi_pm.before_loop
+    async def before_presensi_pm(self):
+        await self.bot.wait_until_ready()
 
     async def presensi_sore(self):
         #check if presence got paused
@@ -168,7 +176,7 @@ class Presensi(Cog):
         if pause_pulang > 0:
             db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'pulang' },{ "$set": {'sesi': pause_pulang - 1}})
             for j in [i for i in db.servers_con['servers']['server'].find()]:
-                channel = await self.bot.get_channel(int(j['presensi_channel']))
+                channel = self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Presensi pulang akan dijeda selama `{pause_pulang}` sesi kedepan!")
         else:
             count = 0
@@ -193,6 +201,10 @@ class Presensi(Cog):
             for j in [i for i in db.servers_con['servers']['server'].find()]:
                 channel = self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Berhasil mempresensikan `{count}` siswa sebagai presensi pulang!")
+    
+    @presensi_sore.before_loop
+    async def before_presensi_sore(self):
+        await self.bot.wait_until_ready()
 
     #presence functions
     def presensi_datang_auto(self, nis, password):
