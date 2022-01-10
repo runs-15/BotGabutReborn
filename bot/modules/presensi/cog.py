@@ -13,7 +13,7 @@ class Presensi(Cog):
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
-        self.scheduler.add_job(self.get_day, CronTrigger(hour=6, minute=24, day_of_week="mon-fri", timezone="Asia/Jakarta"))
+        self.scheduler.add_job(self.get_day, CronTrigger(hour=14, minute=38, day_of_week="mon-fri", timezone="Asia/Jakarta"))
         self.scheduler.start()
         
     async def get_day(self):
@@ -106,7 +106,7 @@ class Presensi(Cog):
             for j in [i for i in db.siswa_con['servers']['server'].find()]:
                 channel = self.bot.get_channel(j['channel_presensi'])
                 await channel.send(f"Presensi datang akan dijeda selama `{pause_datang}` sesi kedepan!")
-        elif pause_datang == 0:
+        else:
             count = 0
             data = [i for i in db.siswa_con['siswa']['presensi'].find()]
             sequence = random.sample(data, len(data))
@@ -117,9 +117,12 @@ class Presensi(Cog):
                     x = datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))
                     print(f"{i['nis']} berhasil presensi datang!")
 
-                    user = self.bot.get_user(int(i['discord_id']))
-                    embed = Embed(title="Laporan Presensi", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi datang.\nTetap cek [laman ini](https://presensi.sma1yogya.sch.id/index.php/) untuk memastikan!")
-                    await user.send(embed=embed)
+                    try:
+                        user = self.bot.get_user(int(i['discord_id']))
+                        embed = Embed(title="Laporan Presensi", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi datang.\nTetap cek [laman ini](https://presensi.sma1yogya.sch.id/index.php/) untuk memastikan!")
+                        await user.send(embed=embed)
+                    except:
+                        pass
                     count += 1
                 else:
                     continue
@@ -135,7 +138,7 @@ class Presensi(Cog):
             for j in [i for i in db.siswa_con['servers']['server'].find()]:
                 channel = self.bot.get_channel(j['channel_presensi'])
                 await channel.send(f"Presensi pendalaman materi akan dijeda selama `{pause_pm}` sesi kedepan!")
-        elif pause_pm == 0:
+        else:
             count = 0
             data = [i for i in db.siswa_con['siswa']['presensi'].find()]
             sequence = random.sample(data, len(data))
@@ -146,9 +149,12 @@ class Presensi(Cog):
                     x = datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))
                     print(f"{i['nis']} berhasil presensi pendalaman materi!")
 
-                    user = self.bot.get_user(int(i['discord_id']))
-                    embed = Embed(title="Laporan Presensi", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi pendalaman materi.\nTetap cek [laman ini](https://presensi.sma1yogya.sch.id/index.php/) untuk memastikan!")
-                    await user.send(embed=embed)
+                    try:
+                        user = self.bot.get_user(int(i['discord_id']))
+                        embed = Embed(title="Laporan Presensi", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi pendalaman materi.\nTetap cek [laman ini](https://presensi.sma1yogya.sch.id/index.php/) untuk memastikan!")
+                        await user.send(embed=embed)
+                    except:
+                        pass
                     count += 1
                 else:
                     continue
@@ -164,7 +170,7 @@ class Presensi(Cog):
             for j in [i for i in db.siswa_con['servers']['server'].find()]:
                 channel = self.bot.get_channel(j['channel_presensi'])
                 await channel.send(f"Presensi pulang akan dijeda selama `{pause_pulang}` sesi kedepan!")
-        elif pause_pulang == 0:
+        else:
             count = 0
             data = [i for i in db.siswa_con['siswa']['presensi'].find()]
             sequence = random.sample(data, len(data))
@@ -175,9 +181,12 @@ class Presensi(Cog):
                     x = datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))
                     print(f"{i['nis']} berhasil presensi pulang!")
 
-                    user = self.bot.get_user(int(i['discord_id']))
-                    embed = Embed(title="Laporan Presensi", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi pulang.\nTetap cek [laman ini](https://presensi.sma1yogya.sch.id/index.php/) untuk memastikan!")
-                    await user.send(embed=embed)
+                    try:
+                        user = self.bot.get_user(int(i['discord_id']))
+                        embed = Embed(title="Laporan Presensi", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi pulang.\nTetap cek [laman ini](https://presensi.sma1yogya.sch.id/index.php/) untuk memastikan!")
+                        await user.send(embed=embed)
+                    except:
+                        pass
                     count += 1
                 else:
                     continue
