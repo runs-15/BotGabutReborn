@@ -7,8 +7,7 @@ from discord.ext.commands import when_mentioned_or
 description = """An example bot to showcase the discord.ext.commands extension module.
 There are a number of utility commands being showcased here."""
 
-intents = discord.Intents.default()
-intents.members = True
+intents = discord.Intents.all()
 
 def get_prefix(bot, message):
     prefix = db.servers_con.servers.server.find({'server_id' : message.guild.id})[0]['prefix']

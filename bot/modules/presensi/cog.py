@@ -13,7 +13,7 @@ class Presensi(Cog):
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
-        self.scheduler.add_job(self.get_day, CronTrigger(hour=14, minute=38, day_of_week="mon-fri", timezone="Asia/Jakarta"))
+        self.scheduler.add_job(self.get_day, CronTrigger(hour=15, minute=45, day_of_week="mon-fri", timezone="Asia/Jakarta"))
         self.scheduler.start()
         
     async def get_day(self):
@@ -112,21 +112,21 @@ class Presensi(Cog):
             sequence = random.sample(data, len(data))
             for i in sequence:
                 if int(i['nis']) not in [int(x['nis']) for x in db.siswa_con['siswa']['eksepsi_presensi'].find({'status' : 'datang'})]:
-                    await sleep(random.randint(50, 61))
+                    #await sleep(random.randint(50, 61))
                     self.presensi_datang_auto(i['nis'], i['password'])
                     x = datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))
-                    print(f"{i['nis']} berhasil presensi datang!")
+                    print(f"{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']} berhasil presensi datang!")
 
                     try:
                         user = self.bot.get_user(int(i['discord_id']))
                         embed = Embed(title="Laporan Presensi", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi datang.\nTetap cek [laman ini](https://presensi.sma1yogya.sch.id/index.php/) untuk memastikan!")
                         await user.send(embed=embed)
-                    except:
-                        pass
+                    except Exception as e:
+                        print(e, user)
                     count += 1
                 else:
                     continue
-            for j in [i for i in db.siswa_con['servers']['server'].find()]:
+            for j in [i for i in db.servers_con['servers']['server'].find()]:
                 channel = self.bot.get_channel(j['channel_presensi'])
                 await channel.send(f"Berhasil mempresensikan `{count}` siswa sebagai presensi datang!")
 
@@ -144,10 +144,10 @@ class Presensi(Cog):
             sequence = random.sample(data, len(data))
             for i in sequence:
                 if int(i['nis']) not in [int(x['nis']) for x in db.siswa_con['siswa']['eksepsi_presensi'].find({'status' : 'pm'})]:
-                    await sleep(random.randint(50, 61))
+                    #await sleep(random.randint(50, 61))
                     self.presensi_pm_auto(i['nis'], i['password'])
                     x = datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))
-                    print(f"{i['nis']} berhasil presensi pendalaman materi!")
+                    print(f"{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']} berhasil presensi pendalaman materi!")
 
                     try:
                         user = self.bot.get_user(int(i['discord_id']))
@@ -158,7 +158,7 @@ class Presensi(Cog):
                     count += 1
                 else:
                     continue
-            for j in [i for i in db.siswa_con['servers']['server'].find()]:
+            for j in [i for i in db.servers_con['servers']['server'].find()]:
                 channel = self.bot.get_channel(j['channel_presensi'])
                 await channel.send(f"Berhasil mempresensikan `{count}` siswa sebagai presensi pendalaman materi!")
 
@@ -176,10 +176,10 @@ class Presensi(Cog):
             sequence = random.sample(data, len(data))
             for i in sequence:
                 if int(i['nis']) not in [int(x['nis']) for x in db.siswa_con['siswa']['eksepsi_presensi'].find({'status' : 'pulang'})]:
-                    await sleep(random.randint(50, 61))
+                    #await sleep(random.randint(50, 61))
                     self.presensi_pulang_auto(i['nis'], i['password'])
                     x = datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))
-                    print(f"{i['nis']} berhasil presensi pulang!")
+                    print(f"{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']} berhasil presensi pulang!")
 
                     try:
                         user = self.bot.get_user(int(i['discord_id']))
@@ -190,7 +190,7 @@ class Presensi(Cog):
                     count += 1
                 else:
                     continue
-            for j in [i for i in db.siswa_con['servers']['server'].find()]:
+            for j in [i for i in db.servers_con['servers']['server'].find()]:
                 channel = self.bot.get_channel(j['channel_presensi'])
                 await channel.send(f"Berhasil mempresensikan `{count}` siswa sebagai presensi pulang!")
 
