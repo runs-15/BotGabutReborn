@@ -13,7 +13,7 @@ class Presensi(Cog):
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
-        self.scheduler.add_job(self.get_day, CronTrigger(hour=22, minute=16, day_of_week="mon-fri", timezone="Asia/Jakarta"))
+        self.scheduler.add_job(self.get_day, CronTrigger(hour=22, minute=26, day_of_week="mon-fri", timezone="Asia/Jakarta"))
         self.scheduler.start()
         
     async def get_day(self):
@@ -119,7 +119,7 @@ class Presensi(Cog):
                     print(f"{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']} berhasil presensi datang!")
 
                     try:
-                        user = discord.utils.get(self.bot.get_all_members(), id=i['discord_id'])
+                        user = self.bot.get_user(i['discord_id'])
                         embed = Embed(title="Laporan Presensi", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi datang.\nTetap cek [laman ini](https://presensi.sma1yogya.sch.id/index.php/) untuk memastikan!")
                         await user.send(embed=embed)
                     except Exception as e:
@@ -152,7 +152,7 @@ class Presensi(Cog):
                     print(f"{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']} berhasil presensi pendalaman materi!")
 
                     try:
-                        user = discord.utils.get(self.bot.get_all_members(), id=i['discord_id'])
+                        user = self.bot.get_user(i['discord_id'])
                         embed = Embed(title="Laporan Presensi", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi pendalaman materi.\nTetap cek [laman ini](https://presensi.sma1yogya.sch.id/index.php/) untuk memastikan!")
                         await user.send(embed=embed)
                     except Exception as e:
@@ -185,7 +185,7 @@ class Presensi(Cog):
                     print(f"{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']} berhasil presensi pulang!")
 
                     try:
-                        user = discord.utils.get(self.bot.get_all_members(), id=i['discord_id'])
+                        user = self.bot.get_user(i['discord_id'])
                         embed = Embed(title="Laporan Presensi (testing)", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi pulang.\nTetap cek [laman ini](https://presensi.sma1yogya.sch.id/index.php/) untuk memastikan!")
                         await user.send(embed=embed)
                     except Exception as e:
