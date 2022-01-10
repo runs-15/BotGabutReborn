@@ -13,7 +13,7 @@ class Presensi(Cog):
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
-        self.scheduler.add_job(self.get_day, CronTrigger(hour=22, minute=12, day_of_week="mon-fri", timezone="Asia/Jakarta"))
+        self.scheduler.add_job(self.get_day, CronTrigger(hour=22, minute=16, day_of_week="mon-fri", timezone="Asia/Jakarta"))
         self.scheduler.start()
         
     async def get_day(self):
@@ -100,6 +100,7 @@ class Presensi(Cog):
     
     async def presensi_pagi(self):
         #check if presence got paused
+        await self.bot.wait_until_ready()
         pause_datang = db.siswa_con['siswa']['pause_presensi'].find({'status': 'datang'})[0]['sesi']
         if pause_datang > 0:
             db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'datang' },{ "$set": {'sesi': pause_datang - 1}})
@@ -129,13 +130,10 @@ class Presensi(Cog):
             for j in [i for i in db.servers_con['servers']['server'].find()]:
                 channel = self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Berhasil mempresensikan `{count}` siswa sebagai presensi datang!")
-    
-    @presensi_pagi.before_loop
-    async def before_presensi_pagi(self):
-        await self.bot.wait_until_ready()
 
     async def presensi_pm(self):
         #check if presence got paused
+        await self.bot.wait_until_ready()
         pause_pm = db.siswa_con['siswa']['pause_presensi'].find({'status': 'pendalaman_materi'})[0]['sesi']
         if pause_pm > 0:
             db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'pm' },{ "$set": {'sesi': pause_pm - 1}})
@@ -165,13 +163,10 @@ class Presensi(Cog):
             for j in [i for i in db.servers_con['servers']['server'].find()]:
                 channel = self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Berhasil mempresensikan `{count}` siswa sebagai presensi pendalaman materi!")
-                
-    @presensi_pm.before_loop
-    async def before_presensi_pm(self):
-        await self.bot.wait_until_ready()
 
     async def presensi_sore(self):
         #check if presence got paused
+        await self.bot.wait_until_ready()
         pause_pulang = db.siswa_con['siswa']['pause_presensi'].find({'status': 'pulang'})[0]['sesi']
         if pause_pulang > 0:
             db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'pulang' },{ "$set": {'sesi': pause_pulang - 1}})
@@ -201,10 +196,6 @@ class Presensi(Cog):
             for j in [i for i in db.servers_con['servers']['server'].find()]:
                 channel = self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Berhasil mempresensikan `{count}` siswa sebagai presensi pulang!")
-    
-    @presensi_sore.before_loop
-    async def before_presensi_sore(self):
-        await self.bot.wait_until_ready()
 
     #presence functions
     def presensi_datang_auto(self, nis, password):
