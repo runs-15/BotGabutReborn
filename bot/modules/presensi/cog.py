@@ -13,7 +13,7 @@ class Presensi(Cog):
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
-        self.scheduler.add_job(self.get_day, CronTrigger(hour=21, minute=47, day_of_week="mon-fri", timezone="Asia/Jakarta"))
+        self.scheduler.add_job(self.get_day, CronTrigger(hour=22, minute=12, day_of_week="mon-fri", timezone="Asia/Jakarta"))
         self.scheduler.start()
         
     async def get_day(self):
