@@ -13,7 +13,7 @@ class Presensi(Cog):
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
-        self.scheduler.add_job(self.get_day, CronTrigger(hour=21, minute=20, day_of_week="mon-fri", timezone="Asia/Jakarta"))
+        self.scheduler.add_job(self.get_day, CronTrigger(hour=21, minute=47, day_of_week="mon-fri", timezone="Asia/Jakarta"))
         self.scheduler.start()
         
     async def get_day(self):
@@ -191,7 +191,7 @@ class Presensi(Cog):
                 else:
                     continue
             for j in [i for i in db.servers_con['servers']['server'].find()]:
-                channel = await self.bot.get_channel(int(j['presensi_channel']))
+                channel = self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Berhasil mempresensikan `{count}` siswa sebagai presensi pulang!")
 
     #presence functions

@@ -23,6 +23,7 @@ for folder in os.listdir("bot/modules"):
 
 @bot.event
 async def on_ready():
+    await bot.wait_until_ready()
     print(f"We have logged in as {bot.user}")
 
 server.server()
