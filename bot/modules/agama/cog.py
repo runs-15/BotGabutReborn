@@ -138,7 +138,6 @@ class Agama(Cog):
                 data = {"city" : kota, "country" : negara, "method" : metode}
                 url = requests.get("http://api.aladhan.com/v1/timingsByCity", params=data)
                 waktu_shalat = json.loads(url.text)
-                offset = waktu_shalat['data']['meta']['offset']
                 zona_waktu = waktu_shalat['data']['meta']['timezone']
                 metode = waktu_shalat['data']['meta']['method']['name']
                 embed.add_field(name="Daerah", value=f"{kota}, {negara}", inline=False)
