@@ -86,6 +86,12 @@ class Tools(Cog):
             )
             await ctx.respond('Command successfully executed!')
             
+    @slash_command(name="interact",description="Interaksi dengan bot")
+    async def interact_first(self, ctx):
+        user = self.bot.get_user(ctx.author.id)
+        await user.send('This is an interaction from this bot')
+        await ctx.respond(content='Thank u!', ephemeral=True)
+        
     def restart_bot(self): 
         os.execv(sys.executable, ['python'] + sys.argv)
         
