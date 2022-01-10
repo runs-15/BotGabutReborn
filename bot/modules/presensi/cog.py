@@ -1,5 +1,5 @@
 from discord.ext.commands import Cog, command, slash_command
-import requests, random, datetime, pytz, db
+import requests, random, datetime, pytz, db, discord
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from discord import Embed
@@ -19,25 +19,25 @@ class Presensi(Cog):
     async def get_day(self):
         #set up timezone
         timezone = pytz.timezone("Asia/Jakarta")
-        d_aware = timezone.localize(datetime.datetime.now())
+        d_aware = timezone.localize(datetime.datetime.now(tz=tz.gettz("Asia/Jakarta")))
         day = d_aware.strftime("%A")
         
         #day dictionary
-        # day_dict = {
-        #     'Monday'   : 'senin',
-        #     'Tuesday'  : 'selasa',
-        #     'Wednesday': 'rabu',
-        #     'Thursday' : 'kamis',
-        #     'Friday'   : 'jumat'
-        # }
-        
         day_dict = {
-            'Sunday'   : 'senin',
-            'Monday'   : 'selasa',
-            'Tuesday'  : 'rabu',
-            'Wednesday': 'kamis',
-            'Thursday' : 'jumat',
+            'Monday'   : 'senin',
+            'Tuesday'  : 'selasa',
+            'Wednesday': 'rabu',
+            'Thursday' : 'kamis',
+            'Friday'   : 'jumat'
         }
+        
+        # day_dict = {
+        #     'Sunday'   : 'senin',
+        #     'Monday'   : 'selasa',
+        #     'Tuesday'  : 'rabu',
+        #     'Wednesday': 'kamis',
+        #     'Thursday' : 'jumat',
+        # }
         
         #scheduler
         penjadwal = AsyncIOScheduler()
@@ -94,7 +94,7 @@ class Presensi(Cog):
                 db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'pulang' },{ "$set": {'sesi': sesi}})
                 await ctx.respond(content=f"Presensi **pulang** akan dihentikan selama `{sesi}` hari kedepan!")
         else:
-            await ctx.respond(content=f"Pastikan anda admin bot!", hidden=True)
+            await ctx.respond(content=f"Pastikan anda admin bot!", ephemeral=True)
         #channel = self.bot.get_channel(846351512502534154)
         #await channel.send(f"<@{ctx.author.id}> menggunakan slash command `presensi-pause`!")
 
@@ -104,7 +104,7 @@ class Presensi(Cog):
         if pause_datang > 0:
             db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'datang' },{ "$set": {'sesi': pause_datang - 1}})
             for j in [i for i in db.servers_con['servers']['server'].find()]:
-                channel = await self.bot.fetch_channel(int(j['presensi_channel']))
+                channel = await self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Presensi datang akan dijeda selama `{pause_datang}` sesi kedepan!")
         else:
             count = 0
@@ -118,16 +118,16 @@ class Presensi(Cog):
                     print(f"{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']} berhasil presensi datang!")
 
                     try:
-                        user = await self.bot.fetch_user(int(i['discord_id']))
+                        user = discord.utils.get(self.bot.get_all_members(), id=i['discord_id'])
                         embed = Embed(title="Laporan Presensi", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi datang.\nTetap cek [laman ini](https://presensi.sma1yogya.sch.id/index.php/) untuk memastikan!")
                         await user.send(embed=embed)
                     except Exception as e:
-                        print(e, user)
+                        print(e)
                     count += 1
                 else:
                     continue
             for j in [i for i in db.servers_con['servers']['server'].find()]:
-                channel = await self.bot.fetch_channel(int(j['presensi_channel']))
+                channel = await self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Berhasil mempresensikan `{count}` siswa sebagai presensi datang!")
 
     async def presensi_pm(self):
@@ -136,7 +136,7 @@ class Presensi(Cog):
         if pause_pm > 0:
             db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'pm' },{ "$set": {'sesi': pause_pm - 1}})
             for j in [i for i in db.servers_con['servers']['server'].find()]:
-                channel = await self.bot.fecth_channel(int(j['presensi_channel']))
+                channel = await self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Presensi pendalaman materi akan dijeda selama `{pause_pm}` sesi kedepan!")
         else:
             count = 0
@@ -150,16 +150,16 @@ class Presensi(Cog):
                     print(f"{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']} berhasil presensi pendalaman materi!")
 
                     try:
-                        user = await self.bot.fetch_user(int(i['discord_id']))
+                        user = discord.utils.get(self.bot.get_all_members(), id=i['discord_id'])
                         embed = Embed(title="Laporan Presensi", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi pendalaman materi.\nTetap cek [laman ini](https://presensi.sma1yogya.sch.id/index.php/) untuk memastikan!")
                         await user.send(embed=embed)
                     except Exception as e:
-                        print(e, user)
+                        print(e)
                     count += 1
                 else:
                     continue
             for j in [i for i in db.servers_con['servers']['server'].find()]:
-                channel = await self.bot.fetch_channel(int(j['presensi_channel']))
+                channel = await self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Berhasil mempresensikan `{count}` siswa sebagai presensi pendalaman materi!")
 
     async def presensi_sore(self):
@@ -168,7 +168,7 @@ class Presensi(Cog):
         if pause_pulang > 0:
             db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'pulang' },{ "$set": {'sesi': pause_pulang - 1}})
             for j in [i for i in db.servers_con['servers']['server'].find()]:
-                channel = await self.bot.fetch_channel(int(j['presensi_channel']))
+                channel = await self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Presensi pulang akan dijeda selama `{pause_pulang}` sesi kedepan!")
         else:
             count = 0
@@ -182,16 +182,16 @@ class Presensi(Cog):
                     print(f"{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']} berhasil presensi pulang!")
 
                     try:
-                        user = await self.bot.fetch_user(int(i['discord_id']))
+                        user = discord.utils.get(self.bot.get_all_members(), id=i['discord_id'])
                         embed = Embed(title="Laporan Presensi (testing)", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi pulang.\nTetap cek [laman ini](https://presensi.sma1yogya.sch.id/index.php/) untuk memastikan!")
                         await user.send(embed=embed)
                     except Exception as e:
-                        print(e, user)
+                        print(e)
                     count += 1
                 else:
                     continue
             for j in [i for i in db.servers_con['servers']['server'].find()]:
-                channel = await self.bot.fetch_channel(int(j['presensi_channel']))
+                channel = await self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Berhasil mempresensikan `{count}` siswa sebagai presensi pulang!")
 
     #presence functions
