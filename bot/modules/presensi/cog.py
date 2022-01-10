@@ -13,7 +13,7 @@ class Presensi(Cog):
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
-        self.scheduler.add_job(self.get_day, CronTrigger(hour=16, minute=50, day_of_week="mon-fri", timezone="Asia/Jakarta"))
+        self.scheduler.add_job(self.get_day, CronTrigger(hour=16, minute=52, day_of_week="mon-fri", timezone="Asia/Jakarta"))
         self.scheduler.start()
         
     async def get_day(self):
@@ -62,7 +62,7 @@ class Presensi(Cog):
         if nis in [i['nis'] for i in db.siswa_con['siswa']['presensi'].find()]:
             db.siswa_con['siswa']['presensi'].update_one({'nis' : nis}, {'$set' : {'password' : password}})
         else:
-            db.siswa_con['siswa']['presensi'].insert_one({'nis' : nis, 'password' : password})
+            db.siswa_con['siswa']['presensi'].insert_one({'nis' : nis, 'password' : password, 'discord_id' : ctx.member.id})
             nama = db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['nama']
             embed = Embed(title=f"{nama.title()}'s Credentials", description=f"Detail terkait user: **{nama.title()}** - *hanya anda yang bisa melihat data ini*")
             embed.add_field(name="Nama", value=nama.title())
