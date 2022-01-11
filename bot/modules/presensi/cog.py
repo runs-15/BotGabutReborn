@@ -180,13 +180,13 @@ class Presensi(Cog):
             for i in sequence:
                 if int(i['nis']) not in [int(x['nis']) for x in db.siswa_con['siswa']['eksepsi_presensi'].find({'status' : 'pulang'})]:
                     #await sleep(random.randint(50, 61))
-                    #self.presensi_pulang_auto(i['nis'], i['password'])
+                    self.presensi_pulang_auto(i['nis'], i['password'])
                     x = datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))
                     print(f"{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']} berhasil presensi pulang!")
 
                     try:
                         user = self.bot.get_user(i['discord_id'])
-                        embed = Embed(title="Laporan Presensi (testing)", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi pulang.\nTetap cek [laman ini](https://presensi.sma1yogya.sch.id/index.php/) untuk memastikan!")
+                        embed = Embed(title="Laporan Presensi", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi pulang.\nTetap cek [laman ini](https://presensi.sma1yogya.sch.id/index.php/) untuk memastikan!")
                         await user.send(embed=embed)
                     except Exception as e:
                         print(e)
