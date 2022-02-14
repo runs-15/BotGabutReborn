@@ -201,20 +201,20 @@ class Presensi(Cog):
     def presensi_datang_auto(self, nis, password):
         payload = {'login_username' : nis, 'login_password' : password}
         with requests.Session() as session:
-            session.post(f"https://presensi.sma1yogya.sch.id/index.php/login_con/auth", data=payload)
-            session.get(f"https://presensi.sma1yogya.sch.id/index.php/presensi_con/datang?nis={nis}")
+            session.post(f"https://presensi.sman1yogya.sch.id/index.php/login_con/auth", data=payload)
+            session.get(f"https://presensi.sman1yogya.sch.id/index.php/presensi_con/datang?nis={nis}")
 
     def presensi_pm_auto(self, nis, password):
         payload = {'login_username' : nis, 'login_password' : password}
         with requests.Session() as session:
-            session.post(f"https://presensi.sma1yogya.sch.id/index.php/login_con/auth", data=payload)
-            session.get(f"https://presensi.sma1yogya.sch.id/index.php/pm_con/datang?nis={nis}")
+            session.post(f"https://presensi.sman1yogya.sch.id/index.php/login_con/auth", data=payload)
+            session.get(f"https://presensi.sman1yogya.sch.id/index.php/pm_con/datang?nis={nis}")
 
     def presensi_pulang_auto(self, nis, password):
         payload = {'login_username' : nis, 'login_password' : password}
         with requests.Session() as session:
-            session.post(f"https://presensi.sma1yogya.sch.id/index.php/login_con/auth", data=payload)
-            session.get(f"https://presensi.sma1yogya.sch.id/index.php/presensi_con/pulang?nis={nis}")
+            session.post(f"https://presensi.sman1yogya.sch.id/index.php/login_con/auth", data=payload)
+            session.get(f"https://presensi.sman1yogya.sch.id/index.php/presensi_con/pulang?nis={nis}")
     
 def setup(bot):
     bot.add_cog(Presensi(bot))
