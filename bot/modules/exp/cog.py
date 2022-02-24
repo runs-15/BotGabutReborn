@@ -281,18 +281,19 @@ class Exp(Cog):
 
     @Cog.listener()
     async def on_voice_state_update(self, member, before, after):
-        if member.guild.id == 836835374696628244:
-            if before.channel == None and after.channel != None and after.afk != True:
-                self.user.append([member.id, time.time(), after.channel.id])
-                await self.log_channel.send(f"{member.display_name} joined a voice channel (<#{after.channel.id}>)")
-            if after.channel == None and before.channel != None:
-                self.voice_submit()
-        if after.afk == True:
-            count = 0
-            for i in self.user:
-                count += 1
-                if member.id == i[0] and before.channel.id == i[2]:
-                    self.user.pop(count-1)
+        try:
+            if member.guild.id == 836835374696628244 and not member.bot:
+                if before.channel == None and after.channel != None and after.afk != True:
+                    self.user[member.id] = {}
+                    self.user[member.id]["time"] = int(time.time())
+                    self.user[member.id]["channel"] = after.channel.id
+                    await self.log_channel.send(f"{member.display_name} joined a voice channel (<#{after.channel.id}>)")
+                if after.channel == None and before.channel != None:
+                    self.voice_submit()
+            if after.afk == True and member.id in self.user:
+                del self.user[member.id]
+        except Exception as e:
+            print(e)
 
     # @Cog.listener("on_message")
     # async def message_xp(self, message):
