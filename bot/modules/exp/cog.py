@@ -17,6 +17,7 @@ class Exp(Cog):
         self.text_data = []
         self.levelling_channel = self.bot.get_channel(855810493397729300)
         self.text_levelling_channel = self.bot.get_channel(856069554387943427)
+        self.temp_join = 0
         self.voice_update.start()
         self.voice_submit.start()
         # self.online_counter.start()
@@ -38,7 +39,8 @@ class Exp(Cog):
                     self.user[member.id]["channel"] = channel.id
         if len(checker) == 0:
             self.user = {}
-        print(None if len(self.user) == 0 else f"\tVoice updated with {len(self.user)} people!")
+        print(None if len(self.user) == 0 else f"\tVoice updated with {self.temp_join} people!" if len(self.user) != self.temp_join else None)
+        self.temp_join = len(self.user)
 
     @tasks.loop(seconds=60)
     async def voice_submit(self):
@@ -69,7 +71,9 @@ class Exp(Cog):
                         continue
                     elif level <= voice_time < pembanding_atas:
                         if current_level != j:
-                            await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{j}`** dalam *voice chat*!")
+                            sum_of_exp = sum([60*(x+0) + (((x+0) ** 3.8) * (1 - (0.99 ** (x+0)))) for x in range(1, j + 1)])
+                            await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{j}`** dalam *voice chat*!" if j >= 10 else None)
+                            db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': sum_of_exp}})
                             db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': j}})
                             break
                         else:
