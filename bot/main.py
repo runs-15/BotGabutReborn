@@ -3,6 +3,7 @@ import os, server, discord, db
 #import dnspython
 from discord.ext import commands
 from discord.ext.commands import when_mentioned_or
+from time import sleep
 
 description = """An example bot to showcase the discord.ext.commands extension module.
 There are a number of utility commands being showcased here."""
@@ -17,6 +18,7 @@ bot = commands.Bot(command_prefix=get_prefix, description=description, intents=i
 TOKEN = os.getenv('BOT_TOKEN')
     
 for folder in os.listdir("bot/modules"):
+    sleep(0.5)
     if os.path.exists(os.path.join("bot/modules", folder, "cog.py")):
         bot.load_extension(f"modules.{folder}.cog")
         print(f"    {folder} cogs loaded!")
