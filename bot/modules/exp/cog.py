@@ -1,4 +1,4 @@
-import discord, time, math, db
+import discord, time, math, db, traceback
 from asyncio import sleep
 from discord.ext import tasks
 from discord.ext.commands import Cog, command, slash_command
@@ -77,8 +77,8 @@ class Exp(Cog):
                     else:
                         continue
                 self.user[i]["time"] = int(time.time())
-            except Exception as e:
-                print(e)
+            except Exception:
+                print(traceback.format_exc())
 
     @command(name="user.initialize", hidden = True)
     async def reset_user(self, ctx):
