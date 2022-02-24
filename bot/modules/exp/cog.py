@@ -70,7 +70,7 @@ class Exp(Cog):
                     elif level <= voice_time < pembanding_atas:
                         if current_level != j:
                             await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{j}`** dalam *voice chat*!")
-                            db.servers_con['servers']['social_credit'].update_one({'discord_id' : i[0]}, {"$set": {'v_level': pembanding_atas}})
+                            db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': pembanding_atas}})
                             break
                         else:
                             break
