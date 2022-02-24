@@ -17,8 +17,8 @@ class Exp(Cog):
         self.text_data = []
         self.levelling_channel = self.bot.get_channel(855810493397729300)
         self.text_levelling_channel = self.bot.get_channel(856069554387943427)
-        self.voice_submit.start()
         self.voice_update.start()
+        self.voice_submit.start()
         # self.online_counter.start()
         # self.voice_check_update.start()
         # self.reset_vc_user.start()
@@ -38,8 +38,7 @@ class Exp(Cog):
                     self.user[member.id]["channel"] = channel.id
         if len(checker) == 0:
             self.user = {}
-        print(self.user)
-        print(None if len(self.user) == 0 else f"voice updated with {len(self.user)} people!")
+        print(None if len(self.user) == 0 else f"\tVoice updated with {len(self.user)} people!")
 
     @tasks.loop(seconds=60)
     async def voice_submit(self):
@@ -287,9 +286,8 @@ class Exp(Cog):
                     self.user[member.id] = {}
                     self.user[member.id]["time"] = int(time.time())
                     self.user[member.id]["channel"] = after.channel.id
-                    await self.log_channel.send(f"{member.display_name} joined a voice channel (<#{after.channel.id}>)")
                 if after.channel == None and before.channel != None:
-                    self.voice_submit()
+                    await self.voice_submit()
             if after.afk == True and member.id in self.user:
                 del self.user[member.id]
         except Exception as e:
