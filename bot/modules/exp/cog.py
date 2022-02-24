@@ -1,4 +1,3 @@
-import pandas as pd
 import discord, time, math, db
 from asyncio import sleep
 from discord.ext import tasks
