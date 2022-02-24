@@ -45,12 +45,12 @@ class Exp(Cog):
         for i in self.user:
             try:
                 total_time = int(time.time()) - self.user[i]["time"]
-                if db.servers_con['servers']['social_credit'].find({'discord_id' : i[0]}) != None:
-                    voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : i[0]})[0]['v_time'] + total_time
-                    current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : i[0]})[0]['v_level']
-                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : i[0]}, {"$set": {'v_time': voice_time}})
+                if db.servers_con['servers']['social_credit'].find({'discord_id' : i}) != None:
+                    voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['v_time'] + total_time
+                    current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['v_level']
+                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_time': voice_time}})
                 else:
-                    db.servers_con['servers']['social_credit'].insert_one({'discord_id' : i[0],
+                    db.servers_con['servers']['social_credit'].insert_one({'discord_id' : i,
                                                                            'v_exp'      : 0, 
                                                                            'v_time'     : 0,
                                                                            'v_level'    : 0,
