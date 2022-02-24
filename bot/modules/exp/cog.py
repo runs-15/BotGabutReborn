@@ -16,7 +16,7 @@ class Exp(Cog):
         self.levelling_channel = self.bot.get_channel(855810493397729300)
         self.text_levelling_channel = self.bot.get_channel(856069554387943427)
         # self.online_counter.start()
-        self.voice_check_update.start()
+        # self.voice_check_update.start()
         # self.reset_vc_user.start()
             
     async def voice_update(self):
