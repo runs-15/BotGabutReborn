@@ -15,10 +15,13 @@ class Exp(Cog):
         self.text_data = []
         self.levelling_channel = self.bot.get_channel(855810493397729300)
         self.text_levelling_channel = self.bot.get_channel(856069554387943427)
+        self.voice_submit.start()
+        self.voice_update.start()
         # self.online_counter.start()
         # self.voice_check_update.start()
         # self.reset_vc_user.start()
             
+    @tasks.loop(seconds=15)   
     async def voice_update(self):
         checker = []
         guild = self.bot.get_guild(836835374696628244)
