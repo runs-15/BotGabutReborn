@@ -8,6 +8,8 @@ from datetime import datetime
 class Exp(Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.user = {}
+        self.exp = {}
 
     @Cog.listener()
     async def on_ready(self):
