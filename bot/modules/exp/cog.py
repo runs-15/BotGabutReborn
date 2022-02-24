@@ -79,7 +79,6 @@ class Exp(Cog):
     @command(name="user.initialize", hidden = True)
     async def reset_user(self, ctx):
         if ctx.author.id == 616950344747974656:
-            db.execute("DELETE FROM userDetails")
             for member in [m for m in ctx.guild.members if not m.bot]:
                 db.servers_con['servers']['social_credit'].insert_one({ 'discord_id' : member.id,
                                                                         'v_exp'      : 0, 
