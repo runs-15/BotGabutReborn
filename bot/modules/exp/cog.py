@@ -397,7 +397,7 @@ class Exp(Cog):
         embed = Embed(title=f"Voice Level Leaderboard", colour=ctx.author.colour)
         for index, row in df.iterrows():
             if cnt < 10:
-                embed.add_field(name=f"Rank : {row['rank']}", value=self.bot.get_user(row['discord_id']).mention, inline=True)
+                embed.add_field(name=f"Rank : {row['rank']}", value=f"<@{row['discord_id']}>", inline=True)
                 cnt += 1
         embed.set_thumbnail(url=ctx.guild.avatar.url)
         await ctx.send(embed=embed)
