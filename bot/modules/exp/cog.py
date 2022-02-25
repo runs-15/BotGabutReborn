@@ -453,10 +453,10 @@ class Exp(Cog):
             else:
                 await ctx.send("User ini belum bergabung dalam voice chat!")
         else:
-            if db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_time'] != None:
+            if db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time'] != None:
                 #color = choice([":blue_square:", ":brown_square:", ":green_square:", ":orange_square:", ":purple_square:", ":red_square:", ":yellow_square:"])
-                voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_time']
-                current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_level']
+                voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
+                current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
 
                 atas = int(voice_time)-int(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0)))))
                 bawah = int(60*(current_level+1) + (((current_level+1) ** 3.8) * (1 - (0.99 ** (current_level+1))))-(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0))))))
