@@ -486,8 +486,8 @@ class Exp(Cog):
                 daftar = db.servers_con['servers']['social_credit'].find()
                 data = list(daftar)
                 df = pd.DataFrame(data, index=[x['discord_id'] for x in data], columns=['v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
-                df['rank'] = df['voice_total'].rank(ascending=False)
-                ranking = df.loc[ctx.author.id]['rank']
+                df['rank'] = df['v_time'].rank(ascending=False)
+                ranking = df.loc[user.id]['rank']
 
                 print(f"{str(hari) + ' hari ' if hari != 0 else ''}{str(jam) + ' jam ' if jam != 0 else ''}{str(menit) + ' menit ' if menit != 0 else ''}{str(detik) + ' detik ' if detik != 0 else ''}")
 
