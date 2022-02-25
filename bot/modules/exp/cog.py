@@ -365,6 +365,26 @@ class Exp(Cog):
     #                     else:
     #                         continue
     
+    def round_half_up(self, n, decimals=0):
+        multiplier = 10 ** decimals
+        return math.floor(n*multiplier + 0.5) / multiplier
+
+    def drawProgressBar(self, d, x, y, w, h, progress, bg="white", fg="red"):
+        # draw background
+        #d.ellipse((x+w, y, x+h+w, y+h), fill=bg)
+        #d.ellipse((x, y, x+h, y+h), fill=bg)
+        #d.rectangle((x+(h/2), y, x+w+(h/2), y+h), fill=bg)
+        d.rectangle((x, y+h, x+w+h, y), fill=bg)
+
+        # draw progress bar
+        w *= progress
+        #d.ellipse((x+w, y, x+h+w, y+h),fill=fg)
+        #d.ellipse((x, y, x+h, y+h),fill=fg)
+        #d.rectangle((x+(h/2), y, x+w+(h/2), y+h),fill=fg)
+        d.rectangle((x, y+h, x+w, y),fill=fg)
+
+        return d
+    
     @command(name="vc.stats", aliases=["voice.stats"])
     @cooldown(1, 15, BucketType.user)
     async def vc_level(self, ctx, user : discord.Member = None):
