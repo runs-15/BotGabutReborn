@@ -385,6 +385,23 @@ class Exp(Cog):
 
         return d
     
+    @command(name="vc.leaderboard", aliases=["vc.rank"])
+    async def vc_rank(self, ctx):
+        daftar = db.servers_con['servers']['social_credit'].find()
+        data = list(daftar)
+        df = pd.DataFrame(data, index=[x['discord_id'] for x in data], columns=['discord_id', 'v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
+        df['rank'] = df['v_time'].rank(ascending=False)
+        df = pd.DataFrame(data, index=[x['rank'] for x in data], columns=['discord_id', 'v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
+        
+        cnt = 0
+        embed = Embed(title=f"Voice Level Leaderboard", colour=ctx.author.colour)
+        for index, row in df.iterrows():
+            if cnt < 10:
+                embed.add_field(name=f"Rank : {row['rank']}", value=row['discord_id'].mention, inline=True)
+                cnt += 1
+        embed.set_thumbnail(url=ctx.guild.avatar.url)
+        await ctx.send(embed=embed)
+        
     @command(name="vc.stats", aliases=["voice.stats"])
     @cooldown(1, 15, BucketType.user)
     async def vc_level(self, ctx, user : discord.Member = None):
