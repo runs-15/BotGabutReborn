@@ -13,3 +13,5 @@ apscheduler
 asyncio
 pytz
 python-dateutil
+pandas
+pillow

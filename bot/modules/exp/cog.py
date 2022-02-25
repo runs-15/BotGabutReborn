@@ -1,9 +1,11 @@
 import discord, time, math, db, traceback
+import pandas as pd
 from asyncio import sleep
 from discord.ext import tasks
-from discord.ext.commands import Cog, command, slash_command
-from discord import Embed, Status
+from discord.ext.commands import Cog, command, slash_command, cooldown, BucketType
+from discord import Embed, Status, File
 from datetime import datetime
+from PIL import Image, ImageDraw
 
 class Exp(Cog):
     def __init__(self, bot):
@@ -39,7 +41,8 @@ class Exp(Cog):
                     self.user[member.id]["channel"] = channel.id
         if len(checker) == 0:
             self.user = {}
-        print(None if len(self.user) == 0 else f"\tVoice updated with {self.temp_join} people!" if len(self.user) != self.temp_join else None)
+        if len(self.user) != 0 and len(self.user) != self.temp_join:
+            print(f"\tVoice updated with {self.temp_join} people!")
         self.temp_join = len(self.user)
 
     @tasks.loop(seconds=60)
@@ -71,8 +74,9 @@ class Exp(Cog):
                         continue
                     elif level <= voice_time < pembanding_atas:
                         if current_level != j:
-                            sum_of_exp = sum([60*(x+0) + (((x+0) ** 3.8) * (1 - (0.99 ** (x+0)))) for x in range(1, j + 1)])
-                            await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{j}`** dalam *voice chat*!" if j >= 10 else None)
+                            sum_of_exp = int(sum([60*(x+0) + (((x+0) ** 3.8) * (1 - (0.99 ** (x+0)))) for x in range(1, j + 1)]))
+                            if j >= 10:
+                                await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{j}`** dalam *voice chat*!")
                             db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': sum_of_exp}})
                             db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': j}})
                             break
@@ -292,6 +296,7 @@ class Exp(Cog):
                     self.user[member.id]["channel"] = after.channel.id
                 if after.channel == None and before.channel != None:
                     await self.voice_submit()
+                    del self.user[member.id]
             if after.afk == True and member.id in self.user:
                 del self.user[member.id]
         except Exception as e:
@@ -359,6 +364,128 @@ class Exp(Cog):
     #                             break
     #                     else:
     #                         continue
+    
+    @command(name="vc.stats", aliases=["voice.stats"])
+    @cooldown(1, 15, BucketType.user)
+    async def vc_level(self, ctx, user : discord.Member = None):
+        """
+        > Display your voice activity stats. Exp based on joined vc seconds.
+
+        **Params:**
+        >    **`user`** (Optional[`discord.Member`]) → target member. Defaults to `{None}`
+
+        **Returns:**
+        >    **`Embed`** → with statistics and progress bar image
+
+        **Example:**
+        > ```<prefix>vc.stats @someone```
+        """
+        if user != None:
+            if db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_time'] != None:
+                #color = choice([":blue_square:", ":brown_square:", ":green_square:", ":orange_square:", ":purple_square:", ":red_square:", ":yellow_square:"])
+                voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_time']
+                current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_level']
+
+                atas = int(voice_time)-int(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0)))))
+                bawah = int(60*(current_level+1) + (((current_level+1) ** 3.8) * (1 - (0.99 ** (current_level+1))))-(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0))))))
+
+                #boxes = int((atas/bawah) * 20)
+                #boxes = int((voice_time/(((current_level+9) ** 3.7) * (1 - (0.995 ** (current_level+9)))))*20)
+
+                hari = math.floor(voice_time / (60 * 60 * 24))
+                jam = math.floor((voice_time % (60 * 60 * 24)) / (60 * 60))
+                menit = math.floor((voice_time % (60 * 60)) / 60)
+                detik = math.floor(voice_time % (60))
+
+                print(hari, jam, menit, detik)
+                exp_value = f"{atas}/{bawah}"
+
+                # create image or load your existing image with out=Image.open(path)
+                out = Image.new("RGB", (720, 25), (255, 255, 255))
+                d = ImageDraw.Draw(out)
+
+                # draw the progress bar to given location, width, progress and color
+                #choice(["lime", "orange", "purple", "pink", "yellow"])
+                d = self.drawProgressBar(d, 0, 0, 720, 25, (atas/bawah), bg="white", fg=tuple(int(str(user.colour).replace("#", "")[i:i+2], 16) for i in (0, 2, 4)))
+                out.save(f"{user.id}.jpg")
+
+                daftar = db.servers_con['servers']['social_credit'].find()
+                df = pd.DataFrame(daftar, index=[x[0] for x in daftar], columns=['discord_id', 'v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
+                df['rank'] = df['v_time'].rank(ascending=False)
+                ranking = df.loc[user.id]['rank']
+
+                file = File(f"{user.id}.jpg", filename=f"{user.id}.jpg")
+
+                embed = Embed(title=f"{user.name}'s Voice Level Stats", colour=user.colour)
+                embed.add_field(name="Name", value=user.mention, inline=True)
+                embed.add_field(name="Level", value=current_level, inline=True)
+                embed.add_field(name="EXP", value=exp_value, inline=True)
+                try:
+                    embed.add_field(name="Time Spent in Voice Chat", value=f"{str(hari) + ' hari ' if hari != 0 else ''}{str(jam) + ' jam ' if jam != 0 else ''}{str(menit) + ' menit ' if menit != 0 else ''}{str(detik) + ' detik ' if detik != 0 else ''} ✨", inline=True)
+                except:
+                    embed.add_field(name="Time Spent in Voice Chat", value=f"0 ✨", inline=True)
+                embed.add_field(name="Rank", value=f"**{int(ranking)}**{'st' if str(int(ranking))[-1] == '1' else ('nd' if str(int(ranking))[-1] == '2' else ('rd' if str(int(ranking))[-1] == '3' else 'th'))} of {len([m for m in user.guild.members if not m.bot])}", inline=True)
+                #embed.add_field(name="Progress Bar", value=boxes * color + (20-boxes) * ":white_large_square:", inline=False)
+                embed.set_image(url=f"attachment://{user.id}.jpg")
+                embed.set_thumbnail(url=user.avatar_url)
+                await ctx.send(file=file, embed=embed)
+            else:
+                await ctx.send("User ini belum bergabung dalam voice chat!")
+        else:
+            if db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_time'] != None:
+                #color = choice([":blue_square:", ":brown_square:", ":green_square:", ":orange_square:", ":purple_square:", ":red_square:", ":yellow_square:"])
+                voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_time']
+                current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_level']
+
+                atas = int(voice_time)-int(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0)))))
+                bawah = int(60*(current_level+1) + (((current_level+1) ** 3.8) * (1 - (0.99 ** (current_level+1))))-(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0))))))
+
+                #boxes = int((atas/bawah) * 20)
+                #boxes = int((voice_time/(((current_level+9) ** 3.7) * (1 - (0.995 ** (current_level+9)))))*20)
+
+                hari = math.floor(voice_time / (60 * 60 * 24))
+                jam = math.floor((voice_time % (60 * 60 * 24)) / (60 * 60))
+                menit = math.floor((voice_time % (60 * 60)) / 60)
+                detik = math.floor(voice_time % (60))
+
+                print(hari, jam, menit, detik)
+                exp_value = f"{atas}/{bawah}"
+
+                # create image or load your existing image with out=Image.open(path)
+                out = Image.new("RGB", (720, 25), (255, 255, 255))
+                d = ImageDraw.Draw(out)
+
+                print(int(str(ctx.author.colour).replace("#", ""), 16))
+
+                # draw the progress bar to given location, width, progress and color
+                #choice(["lime", "orange", "purple", "pink", "yellow"])
+                d = self.drawProgressBar(d, 0, 0, 720, 25, (atas/bawah), bg="white", fg=tuple(int(str(ctx.author.colour).replace("#", "")[i:i+2], 16) for i in (0, 2, 4)))
+                out.save(f"{ctx.author.id}.jpg")
+
+                daftar = db.servers_con['servers']['social_credit'].find()
+                df = pd.DataFrame(daftar, index=[x[0] for x in daftar], columns=['discord_id', 'v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
+                df['rank'] = df['voice_total'].rank(ascending=False)
+                ranking = df.loc[ctx.author.id]['rank']
+
+                print(f"{str(hari) + ' hari ' if hari != 0 else ''}{str(jam) + ' jam ' if jam != 0 else ''}{str(menit) + ' menit ' if menit != 0 else ''}{str(detik) + ' detik ' if detik != 0 else ''}")
+
+                file = File(f"{ctx.author.id}.jpg", filename=f"{ctx.author.id}.jpg")
+
+                embed = Embed(title=f"{ctx.author.name}'s Voice Level Stats", colour=ctx.author.colour)
+                embed.add_field(name="Name", value=ctx.author.mention, inline=True)
+                embed.add_field(name="Level", value=current_level, inline=True)
+                embed.add_field(name="EXP", value=exp_value, inline=True)
+                try:
+                    embed.add_field(name="Time Spent in Voice Chat", value=f"{str(hari) + ' hari ' if hari != 0 else ''}{str(jam) + ' jam ' if jam != 0 else ''}{str(menit) + ' menit ' if menit != 0 else ''}{str(detik) + ' detik ' if detik != 0 else ''} ✨", inline=True)
+                except:
+                    embed.add_field(name="Time Spent in Voice Chat", value=f"0 ✨", inline=True)
+                embed.add_field(name="Rank", value=f"**{int(ranking)}**{'st' if str(int(ranking))[-1] == '1' else ('nd' if str(int(ranking))[-1] == '2' else ('rd' if str(int(ranking))[-1] == '3' else 'th'))} of {len([m for m in ctx.guild.members if not m.bot])}", inline=True)
+                #embed.add_field(name="Progress Bar", value=boxes * color + (20-boxes) * ":white_large_square:", inline=False)
+                embed.set_image(url=f"attachment://{ctx.author.id}.jpg")
+                embed.set_thumbnail(url=ctx.author.avatar_url)
+                await ctx.send(file=file, embed=embed)
+            else:
+                await ctx.send("Bergabunglah dalam channel voice chat terlebih dahulu!")
 
 def setup(bot):
     bot.add_cog(Exp(bot))
