@@ -430,7 +430,8 @@ class Exp(Cog):
                 out.save(f"{user.id}.jpg")
 
                 daftar = db.servers_con['servers']['social_credit'].find()
-                df = pd.DataFrame(daftar, index=[x['discord_id'] for x in daftar], columns=['discord_id', 'v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
+                data = list(daftar)
+                df = pd.DataFrame(data, index=[x['discord_id'] for x in data], columns=['v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
                 df['rank'] = df['v_time'].rank(ascending=False)
                 ranking = df.loc[user.id]['rank']
 
@@ -483,7 +484,8 @@ class Exp(Cog):
                 out.save(f"{ctx.author.id}.jpg")
 
                 daftar = db.servers_con['servers']['social_credit'].find()
-                df = pd.DataFrame(daftar, index=[x['discord_id'] for x in daftar], columns=['discord_id', 'v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
+                data = list(daftar)
+                df = pd.DataFrame(data, index=[x['discord_id'] for x in data], columns=['v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
                 df['rank'] = df['voice_total'].rank(ascending=False)
                 ranking = df.loc[ctx.author.id]['rank']
 
