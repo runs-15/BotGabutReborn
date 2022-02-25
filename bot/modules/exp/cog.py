@@ -391,7 +391,7 @@ class Exp(Cog):
         data = list(daftar)
         df = pd.DataFrame(data, index=[x['discord_id'] for x in data], columns=['discord_id', 'v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
         df['rank'] = df['v_time'].rank(ascending=False)
-        df = pd.DataFrame(data, index=[x['rank'] for x in data], columns=['discord_id', 'v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
+        df.set_index('rank')
         
         cnt = 0
         embed = Embed(title=f"Voice Level Leaderboard", colour=ctx.author.colour)
