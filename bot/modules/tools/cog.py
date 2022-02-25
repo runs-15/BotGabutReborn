@@ -100,6 +100,12 @@ class Tools(Cog):
         if ctx.author.id == 616950344747974656:
             await ctx.send("Restarting bot...")
             self.restart_bot()
+            
+    @command(name='fetch_members')
+    async def fetch_mmbrs(self, ctx):
+        if ctx.author.id == 616950344747974656:
+            async for member in ctx.guild.fetch_members():
+                print(member.name, member.id)
     
 def setup(bot):
     bot.add_cog(Tools(bot))
