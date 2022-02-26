@@ -462,7 +462,7 @@ class Exp(Cog):
                     embed.add_field(name="Time Spent in Voice Chat", value=f"{str(hari) + ' hari ' if hari != 0 else ''}{str(jam) + ' jam ' if jam != 0 else ''}{str(menit) + ' menit ' if menit != 0 else ''}{str(detik) + ' detik ' if detik != 0 else ''} ✨", inline=True)
                 except:
                     embed.add_field(name="Time Spent in Voice Chat", value=f"0 ✨", inline=True)
-                embed.add_field(name="Rank", value=f"**{int(ranking)}**{'st' if str(int(ranking))[-1] == '1' else ('nd' if str(int(ranking))[-1] == '2' else ('rd' if str(int(ranking))[-1] == '3' else 'th'))} of {len([m for m in user.guild.members if not m.bot])}", inline=True)
+                embed.add_field(name="Rank", value=f"**{int(ranking)}**{'st' if str(int(ranking))[-1] == '1' and str(int(ranking)) != '11' else ('nd' if str(int(ranking))[-1] == '2' and str(int(ranking)) != '12' else ('rd' if str(int(ranking))[-1] == '3' and str(int(ranking)) != '13' else 'th'))} of {len([m for m in user.guild.members if not m.bot])}", inline=True)
                 #embed.add_field(name="Progress Bar", value=boxes * color + (20-boxes) * ":white_large_square:", inline=False)
                 embed.set_image(url=f"attachment://{user.id}.jpg")
                 embed.set_thumbnail(url=user.avatar.url)
