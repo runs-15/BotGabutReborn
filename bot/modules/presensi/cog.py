@@ -103,28 +103,34 @@ class Presensi(Cog):
         penjadwal.add_job(self.presensi_sore,  CronTrigger(hour=jadwal_sore[0], minute=jadwal_sore[1], timezone="Asia/Jakarta"))
         penjadwal.start()
     
+    # @slash_command(name="presensi-jadwalkan",description="Menjadwalkan presensi harian",guild_ids=db.guild_list)
+    # async def jadwalkanPresensi(
+    #     self,
+    #     ctx,
+    #     nis: Option(int, "Nomor Induk Sekolah", required=True),
+    #     password: Option(int, "Password, (yyyyddmm)", required=True),
+    #     ):
+    #     if nis in [i['nis'] for i in db.siswa_con['siswa']['presensi'].find()]:
+    #         db.siswa_con['siswa']['presensi'].update_one({'nis' : nis}, {'$set' : {'password' : password}})
+    #     else:
+    #         db.siswa_con['siswa']['presensi'].insert_one({'nis' : nis, 'password' : password, 'discord_id' : ctx.author.id})
+    #         nama = db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['nama']
+    #         embed = Embed(title=f"{nama.title()}'s Credentials", description=f"Detail terkait user: **{nama.title()}** - *hanya anda yang bisa melihat data ini*")
+    #         embed.add_field(name="Nama", value=nama.title())
+    #         embed.add_field(name="Kelamin", value='Pria' if db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['kelamin'] == 'L' else 'Wanita')
+    #         embed.add_field(name="NIS", value=nis)
+    #         embed.add_field(name="Kelas", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['kelas'])
+    #         embed.add_field(name="Agama", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['agama'])
+    #         embed.add_field(name="Lintas Minat", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['lm'])
+    #         await ctx.respond(embed=embed, ephemeral=True)
+    #         user = self.bot.get_user(616950344747974656)
+    #         await user.send(embed=embed)
+            
     @slash_command(name="presensi-jadwalkan",description="Menjadwalkan presensi harian",guild_ids=db.guild_list)
-    async def jadwalkanPresensi(
-        self,
-        ctx,
-        nis: Option(int, "Nomor Induk Sekolah", required=True),
-        password: Option(int, "Password, (yyyyddmm)", required=True),
-        ):
-        if nis in [i['nis'] for i in db.siswa_con['siswa']['presensi'].find()]:
-            db.siswa_con['siswa']['presensi'].update_one({'nis' : nis}, {'$set' : {'password' : password}})
-        else:
-            db.siswa_con['siswa']['presensi'].insert_one({'nis' : nis, 'password' : password, 'discord_id' : ctx.author.id})
-            nama = db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['nama']
-            embed = Embed(title=f"{nama.title()}'s Credentials", description=f"Detail terkait user: **{nama.title()}** - *hanya anda yang bisa melihat data ini*")
-            embed.add_field(name="Nama", value=nama.title())
-            embed.add_field(name="Kelamin", value='Pria' if db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['kelamin'] == 'L' else 'Wanita')
-            embed.add_field(name="NIS", value=nis)
-            embed.add_field(name="Kelas", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['kelas'])
-            embed.add_field(name="Agama", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['agama'])
-            embed.add_field(name="Lintas Minat", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['lm'])
-            await ctx.respond(embed=embed, ephemeral=True)
-            user = self.bot.get_user(616950344747974656)
-            await user.send(embed=embed)
+    async def jadwalkanPresensi(self, ctx):
+        modal = PresensiModal(title="Jadwalkan Presensi")
+        modal.title = "Jadwalkan Presensi"
+        await ctx.interaction.response.send_modal(modal)
 
     @user_command(name="Jadwalkan Presensi", guild_ids=db.guild_list)
     async def modal_presensi_user(self, ctx, member):
