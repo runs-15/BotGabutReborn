@@ -26,6 +26,7 @@ class MyModal(Modal):
 class createVC(Modal):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        self.custom_vc = {}
         self.add_item(InputText(label="Channel Name", placeholder="Wumpus Land"))
         self.add_item(InputText(label="User Limit", placeholder="64"))
         self.add_item(InputText(label="Bitrate", placeholder="64"))
