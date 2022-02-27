@@ -29,25 +29,26 @@ class createVC(Modal):
         self.add_item(InputText(label="Channel Name", placeholder="Wumpus Land"))
         self.add_item(InputText(label="User Limit", placeholder="64"))
         self.add_item(InputText(label="Bitrate", placeholder="64"))
-        self.add_item(Button(label="Region Override", disabled=True))
-        self.add_item(Select(label="Region Override",placeholder="Automatic", 
-                             options=
-                             [Select.add_option(label = "Automatic", value = "automatic", default = True),
-                              Select.add_option(label = "Brazil", value = "brazil"),
-                              Select.add_option(label = "Hong Kong", value = "hongkong"),
-                              Select.add_option(label = "India", value = "india"),
-                              Select.add_option(label = "Japan", value = "japan"),
-                              Select.add_option(label = "Rotterdam", value = "amsterdam"),
-                              Select.add_option(label = "Russia", value = "russia"),
-                              Select.add_option(label = "Singapore", value = "singapore"),
-                              Select.add_option(label = "South Africa", value = "southafrica"),
-                              Select.add_option(label = "Sydney", value = "sydney"),
-                              Select.add_option(label = "US Central", value = "us_central"),
-                              Select.add_option(label = "US South", value = "us_south"),
-                              Select.add_option(label = "US West", value = "us_west"),
-                              Select.add_option(label = "US East", value = "us_east")
-                              ]
-                             ), default = "automatic")
+        self.add_item(InputText(label="Region Override", placeholder="Automatic", value="automatic", required = False))
+        # self.add_item(Button(label="Region Override", style = discord.ButtonStyle.secondary, disabled=True))
+        # self.add_item(Select(label="Region Override",placeholder="Automatic", 
+        #                      options=
+        #                      [Select.add_option(label = "Automatic", value = "automatic", default = True),
+        #                       Select.add_option(label = "Brazil", value = "brazil"),
+        #                       Select.add_option(label = "Hong Kong", value = "hongkong"),
+        #                       Select.add_option(label = "India", value = "india"),
+        #                       Select.add_option(label = "Japan", value = "japan"),
+        #                       Select.add_option(label = "Rotterdam", value = "amsterdam"),
+        #                       Select.add_option(label = "Russia", value = "russia"),
+        #                       Select.add_option(label = "Singapore", value = "singapore"),
+        #                       Select.add_option(label = "South Africa", value = "southafrica"),
+        #                       Select.add_option(label = "Sydney", value = "sydney"),
+        #                       Select.add_option(label = "US Central", value = "us_central"),
+        #                       Select.add_option(label = "US South", value = "us_south"),
+        #                       Select.add_option(label = "US West", value = "us_west"),
+        #                       Select.add_option(label = "US East", value = "us_east")
+        #                       ]
+        #                      ), default = "automatic")
 
     async def callback(self, interaction: discord.Interaction):
         self.custom_vc[interaction.message.id] = {}
