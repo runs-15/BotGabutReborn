@@ -52,22 +52,22 @@ class createVC(Modal):
         #                      ), default = "automatic")
 
     async def callback(self, interaction: discord.Interaction):
-        self.custom_vc[interaction.message.id] = {}
-        self.custom_vc[interaction.message.id]["flag"] = 0
-        self.custom_vc[interaction.message.id]["channel"] = await interaction.guild.create_voice_channel(name = self.children[0].value, user_limit = int(self.children[1].value), bitrate = int(self.children[2].value)*1000, category = interaction.channel.category, rtc_region = self.children[3].value)
+        self.custom_vc[interaction.id] = {}
+        self.custom_vc[interaction.id]["flag"] = 0
+        self.custom_vc[interaction.id]["channel"] = await interaction.guild.create_voice_channel(name = self.children[0].value, user_limit = int(self.children[1].value), bitrate = int(self.children[2].value)*1000, category = interaction.channel.category, rtc_region = self.children[3].value)
         embed = discord.Embed( title="Channel Created!", colour=int(hex(int("2f3136", 16)), 0))
-        embed.add_field(name="Channel Name", value=self.custom_vc[interaction.message.id]["channel"].mention, inline = False)
-        embed.add_field(name="User Limit", value=f'`{self.custom_vc[interaction.message.id]["channel"].user_limit}` user')
-        embed.add_field(name="Bitrate", value=f'`{int(self.custom_vc[interaction.message.id]["channel"].bitrate/1000)}` kbps')
-        embed.add_field(name="Channel ID", value=f'`{self.custom_vc[interaction.message.id]["channel"].id}`', inline = False)
-        embed.add_field(name="Position", value=f'`{self.custom_vc[interaction.message.id]["channel"].position}` of `{len(interaction.guild.channels)}`')
-        embed.add_field(name="Region", value="`automatic`" if self.custom_vc[interaction.message.id]["channel"].rtc_region == None else self.custom_vc[interaction.message.id]["channel"].rtc_region)
+        embed.add_field(name="Channel Name", value=self.custom_vc[interaction.id]["channel"].mention, inline = False)
+        embed.add_field(name="User Limit", value=f'`{self.custom_vc[interaction.id]["channel"].user_limit}` user')
+        embed.add_field(name="Bitrate", value=f'`{int(self.custom_vc[interaction.id]["channel"].bitrate/1000)}` kbps')
+        embed.add_field(name="Channel ID", value=f'`{self.custom_vc[interaction.id]["channel"].id}`', inline = False)
+        embed.add_field(name="Position", value=f'`{self.custom_vc[interaction.id]["channel"].position}` of `{len(interaction.guild.channels)}`')
+        embed.add_field(name="Region", value="`automatic`" if self.custom_vc[interaction.id]["channel"].rtc_region == None else self.custom_vc[interaction.id]["channel"].rtc_region)
         await interaction.response.send_message(embed=embed)
         await sleep(300)
-        if len(self.custom_vc[interaction.message.id]["channel"].members) == 0:
-            await self.custom_vc[interaction.message.id]["channel"].delete()
+        if len(self.custom_vc[interaction.id]["channel"].members) == 0:
+            await self.custom_vc[interaction.id]["channel"].delete()
         else:
-            self.custom_vc[interaction.message.id]["flag"] = 1
+            self.custom_vc[interaction.id]["flag"] = 1
             
 class Tools(Cog):
     def __init__(self, bot):
@@ -211,7 +211,7 @@ class Tools(Cog):
     @cooldown(1, 300, BucketType.user)
     async def modal_vcc(self, ctx):
         """Shows an example of a modal dialog being invoked from a slash command."""
-        modal = createVC(title="Slash Command Modal")
+        modal = createVC(title="CreateCustom Voice Channel")
         await ctx.interaction.response.send_modal(modal)
     
 def setup(bot):
