@@ -30,7 +30,7 @@ class createVC(Modal):
         self.add_item(InputText(label="Channel Name", placeholder="Wumpus Land"))
         self.add_item(InputText(label="User Limit", placeholder="64"))
         self.add_item(InputText(label="Bitrate", placeholder="64"))
-        self.add_item(InputText(label="Region Override", placeholder="Automatic", value="automatic", required = False))
+        self.add_item(InputText(label="Region Override", placeholder="automatic", required = False))
         # self.add_item(Button(label="Region Override", style = discord.ButtonStyle.secondary, disabled=True))
         # self.add_item(Select(label="Region Override",placeholder="Automatic", 
         #                      options=
@@ -54,7 +54,7 @@ class createVC(Modal):
     async def callback(self, interaction: discord.Interaction):
         self.custom_vc[interaction.id] = {}
         self.custom_vc[interaction.id]["flag"] = 0
-        self.custom_vc[interaction.id]["channel"] = await interaction.guild.create_voice_channel(name = self.children[0].value, user_limit = int(self.children[1].value), bitrate = int(self.children[2].value)*1000, category = interaction.channel.category, rtc_region = self.children[3].value)
+        self.custom_vc[interaction.id]["channel"] = await interaction.guild.create_voice_channel(name = self.children[0].value, user_limit = int(self.children[1].value), bitrate = int(self.children[2].value)*1000, category = interaction.channel.category, rtc_region = self.children[3].value if self.children[3].value != None else None)
         embed = discord.Embed( title="Channel Created!", colour=int(hex(int("2f3136", 16)), 0))
         embed.add_field(name="Channel Name", value=self.custom_vc[interaction.id]["channel"].mention, inline = False)
         embed.add_field(name="User Limit", value=f'`{self.custom_vc[interaction.id]["channel"].user_limit}` user')
