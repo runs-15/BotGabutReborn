@@ -205,26 +205,13 @@ class Tools(Cog):
 
         view = MyView()
         await ctx.send("Click Button, Receive Modal", view=view)
-        
-    @command(name="vc.create", aliases=["vcc"])
+     
+    @slash_command(name="custom-voice-channel", guild_ids=db.guild_list)
     @cooldown(1, 300, BucketType.user)
-    async def voice_create(self, interaction):
-        """
-        > Create a new voice channel. Timeout after 300 seconds of inactivity. Cooldowns for 300 seconds per command per user
-
-        **Params:**
-        >    **`channelName`** (Required[`str`]) → Channel name
-        >    **`maxUser`** (Optional[`int`]) → Max person. Defaults to `{5}`
-        >    **`bitrate`** (Optional[`int`]) → Channel bitrate. Defaults to `{64}`
-
-        **Returns:**
-        >    **`discord.VoiceChannel`** : a new channel for everyone!
-
-        **Example:**
-        > ```<prefix>vc.create "Valorant Team A" 5```
-        """ 
-        modal = createVC(title="Create Custom Voice Channel")
-        await interaction.response.send_modal(modal)
+    async def modal_vcc(self, ctx):
+        """Shows an example of a modal dialog being invoked from a slash command."""
+        modal = createVC(title="Slash Command Modal")
+        await ctx.interaction.response.send_modal(modal)
     
 def setup(bot):
     bot.add_cog(Tools(bot))
