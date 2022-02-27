@@ -29,7 +29,7 @@ class createVC(Modal):
         self.add_item(InputText(label="Channel Name", placeholder="Wumpus Land"))
         self.add_item(InputText(label="User Limit", placeholder="64"))
         self.add_item(InputText(label="Bitrate", placeholder="64"))
-        self.add_item(Button(label="Region Override", ButtonStyle = discord.ButtonStyle.secondary, disabled=True))
+        self.add_item(Button(label="Region Override", disabled=True))
         self.add_item(Select(label="Region Override",placeholder="Automatic", 
                              options=
                              [Select.add_option(label = "Automatic", value = "automatic", default = True),
