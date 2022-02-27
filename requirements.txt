@@ -1,4 +1,4 @@
-git+https://github.com/Pycord-Development/pycord@c602bc4#egg=py-cord
+git+https://github.com/Pycord-Development/pycord@e6355fd#egg=py-cord
 flask
 python-dotenv
 PyNaCl
