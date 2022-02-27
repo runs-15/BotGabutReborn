@@ -23,19 +23,34 @@ class PresensiModal(Modal):
             )
 
     async def callback(self, interaction: discord.Interaction):
-        if self.children[0].value in [i['nis'] for i in db.siswa_con['siswa']['presensi'].find()]:
-            db.siswa_con['siswa']['presensi'].update_one({'nis' : self.children[0].value}, {'$set' : {'password' : self.children[1].value}})
-            await interaction.response.send_message("Data updated!", ephemeral=True)
+        nis = int(self.children[0].value)
+        password = int(self.children[1].value)
+        if nis in [i['nis'] for i in db.siswa_con['siswa']['presensi'].find()]: 
+            if password == db.siswa_con['siswa']['presensi'].find({'nis' : nis})[0]['password']:
+                nama = db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['nama']
+                embed = Embed(title=f"{nama.title()}'s Credentials", description=f"Detail terkait user: **{nama.title()}** - *hanya anda yang bisa melihat data ini*")
+                embed.add_field(name="Nama", value=nama.title())
+                embed.add_field(name="Kelamin", value='Pria' if db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['kelamin'] == 'L' else 'Wanita')
+                embed.add_field(name="NIS", value=nis)
+                embed.add_field(name="Kelas", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['kelas'])
+                embed.add_field(name="Agama", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['agama'])
+                embed.add_field(name="Lintas Minat", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['lm'])
+                await interaction.response.send_message(embed=embed, ephemeral=True)
+                user = self.bot.get_user(616950344747974656)
+                await user.send(embed=embed)
+            else:
+                db.siswa_con['siswa']['presensi'].update_one({'nis' : nis}, {'$set' : {'password' : password}})
+                await interaction.response.send_message("Data updated!", ephemeral=True)
         else:
-            db.siswa_con['siswa']['presensi'].insert_one({'nis' : self.children[0].value, 'password' : self.children[1].value, 'discord_id' : interaction.user.id})
-            nama = db.siswa_con['siswa']['data'].find({'nis' : self.children[0].value})[0]['nama']
+            db.siswa_con['siswa']['presensi'].insert_one({'nis' : nis, 'password' : password, 'discord_id' : interaction.user.id})
+            nama = db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['nama']
             embed = Embed(title=f"{nama.title()}'s Credentials", description=f"Detail terkait user: **{nama.title()}** - *hanya anda yang bisa melihat data ini*")
             embed.add_field(name="Nama", value=nama.title())
-            embed.add_field(name="Kelamin", value='Pria' if db.siswa_con['siswa']['data'].find({'nis' : self.children[0].value})[0]['kelamin'] == 'L' else 'Wanita')
-            embed.add_field(name="NIS", value=self.children[0].value)
-            embed.add_field(name="Kelas", value=db.siswa_con['siswa']['data'].find({'nis' : self.children[0].value})[0]['kelas'])
-            embed.add_field(name="Agama", value=db.siswa_con['siswa']['data'].find({'nis' : self.children[0].value})[0]['agama'])
-            embed.add_field(name="Lintas Minat", value=db.siswa_con['siswa']['data'].find({'nis' : self.children[0].value})[0]['lm'])
+            embed.add_field(name="Kelamin", value='Pria' if db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['kelamin'] == 'L' else 'Wanita')
+            embed.add_field(name="NIS", value=nis)
+            embed.add_field(name="Kelas", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['kelas'])
+            embed.add_field(name="Agama", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['agama'])
+            embed.add_field(name="Lintas Minat", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['lm'])
             await interaction.response.send_message(embed=embed, ephemeral=True)
             user = self.bot.get_user(616950344747974656)
             await user.send(embed=embed)
