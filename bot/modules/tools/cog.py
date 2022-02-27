@@ -1,6 +1,6 @@
 from discord.ext.commands import Cog, slash_command, command, message_command, user_command, cooldown, BucketType
 from discord.ui import InputText, Modal, Select, Button
-import discord, db, os, sys
+import discord, db, os, sys, random
 from discord.commands import Option
 from asyncio import sleep
 
@@ -213,6 +213,15 @@ class Tools(Cog):
         """Shows an example of a modal dialog being invoked from a slash command."""
         modal = createVC(title="CreateCustom Voice Channel")
         await ctx.interaction.response.send_modal(modal)
+    
+    @command(name='bangunin_orang')    
+    async def bangun(self, ctx, member : discord.Member, kali):
+        if ctx.author.id == 616950344747974656:
+            init = member.voice.channel
+            await ctx.send("on progress")
+            for i in range(0, kali):
+                await member.edit(voice_channel=random.choice(ctx.guild.voice_channels))
+            await member.edit(voice_channel=init)
     
 def setup(bot):
     bot.add_cog(Tools(bot))
