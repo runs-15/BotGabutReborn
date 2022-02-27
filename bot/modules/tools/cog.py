@@ -1,7 +1,8 @@
-from discord.ext.commands import Cog, slash_command, command, message_command, user_command
-from discord.ui import InputText, Modal
+from discord.ext.commands import Cog, slash_command, command, message_command, user_command, cooldown, BucketType
+from discord.ui import InputText, Modal, Select, Button
 import discord, db, os, sys
 from discord.commands import Option
+from asyncio import sleep
 
 class MyModal(Modal):
     def __init__(self, *args, **kwargs) -> None:
@@ -21,6 +22,50 @@ class MyModal(Modal):
         embed.add_field(name="First Input", value=self.children[0].value, inline=False)
         embed.add_field(name="Second Input", value=self.children[1].value, inline=False)
         await interaction.response.send_message(embeds=[embed])
+        
+class createVC(Modal):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.add_item(InputText(label="Channel Name", placeholder="Wumpus Land"))
+        self.add_item(InputText(label="User Limit", placeholder="64"))
+        self.add_item(InputText(label="Bitrate", placeholder="64"))
+        self.add_item(Button(label="Region Override", ButtonStyle = discord.ButtonStyle.secondary, disabled=True))
+        self.add_item(Select(label="Region Override",placeholder="Automatic", 
+                             options=
+                             [Select.add_option(label = "Automatic", value = "automatic", default = True),
+                              Select.add_option(label = "Brazil", value = "brazil"),
+                              Select.add_option(label = "Hong Kong", value = "hongkong"),
+                              Select.add_option(label = "India", value = "india"),
+                              Select.add_option(label = "Japan", value = "japan"),
+                              Select.add_option(label = "Rotterdam", value = "amsterdam"),
+                              Select.add_option(label = "Russia", value = "russia"),
+                              Select.add_option(label = "Singapore", value = "singapore"),
+                              Select.add_option(label = "South Africa", value = "southafrica"),
+                              Select.add_option(label = "Sydney", value = "sydney"),
+                              Select.add_option(label = "US Central", value = "us_central"),
+                              Select.add_option(label = "US South", value = "us_south"),
+                              Select.add_option(label = "US West", value = "us_west"),
+                              Select.add_option(label = "US East", value = "us_east")
+                              ]
+                             ), default = "automatic")
+
+    async def callback(self, interaction: discord.Interaction):
+        self.custom_vc[interaction.message.id] = {}
+        self.custom_vc[interaction.message.id]["flag"] = 0
+        self.custom_vc[interaction.message.id]["channel"] = await interaction.guild.create_voice_channel(name = self.children[0].value, user_limit = int(self.children[1].value), bitrate = int(self.children[2].value)*1000, category = interaction.channel.category, rtc_region = self.children[3].value)
+        embed = discord.Embed( title="Channel Created!", colour=int(hex(int("2f3136", 16)), 0))
+        embed.add_field(name="Channel Name", value=self.custom_vc[interaction.message.id]["channel"].mention, inline = False)
+        embed.add_field(name="User Limit", value=f'`{self.custom_vc[interaction.message.id]["channel"].user_limit}` user')
+        embed.add_field(name="Bitrate", value=f'`{int(self.custom_vc[interaction.message.id]["channel"].bitrate/1000)}` kbps')
+        embed.add_field(name="Channel ID", value=f'`{self.custom_vc[interaction.message.id]["channel"].id}`', inline = False)
+        embed.add_field(name="Position", value=f'`{self.custom_vc[interaction.message.id]["channel"].position}` of `{len(interaction.guild.channels)}`')
+        embed.add_field(name="Region", value="`automatic`" if self.custom_vc[interaction.message.id]["channel"].rtc_region == None else self.custom_vc[interaction.message.id]["channel"].rtc_region)
+        await interaction.response.send_message(embed=embed)
+        await sleep(300)
+        if len(self.custom_vc[interaction.message.id]["channel"].members) == 0:
+            await self.custom_vc[interaction.message.id]["channel"].delete()
+        else:
+            self.custom_vc[interaction.message.id]["flag"] = 1
             
 class Tools(Cog):
     def __init__(self, bot):
@@ -159,6 +204,26 @@ class Tools(Cog):
 
         view = MyView()
         await ctx.send("Click Button, Receive Modal", view=view)
+        
+    @command(name="vc.create", aliases=["vcc"])
+    @cooldown(1, 300, BucketType.user)
+    async def voice_create(self, ctx):
+        """
+        > Create a new voice channel. Timeout after 300 seconds of inactivity. Cooldowns for 300 seconds per command per user
+
+        **Params:**
+        >    **`channelName`** (Required[`str`]) → Channel name
+        >    **`maxUser`** (Optional[`int`]) → Max person. Defaults to `{5}`
+        >    **`bitrate`** (Optional[`int`]) → Channel bitrate. Defaults to `{64}`
+
+        **Returns:**
+        >    **`discord.VoiceChannel`** : a new channel for everyone!
+
+        **Example:**
+        > ```<prefix>vc.create "Valorant Team A" 5```
+        """ 
+        modal = createVC(title="Create Custom Voice Channel")
+        await ctx.interaction.response.send_modal(modal)
     
 def setup(bot):
     bot.add_cog(Tools(bot))
