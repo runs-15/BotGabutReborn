@@ -208,7 +208,7 @@ class Tools(Cog):
         
     @command(name="vc.create", aliases=["vcc"])
     @cooldown(1, 300, BucketType.user)
-    async def voice_create(self, ctx):
+    async def voice_create(self, interaction):
         """
         > Create a new voice channel. Timeout after 300 seconds of inactivity. Cooldowns for 300 seconds per command per user
 
@@ -224,7 +224,7 @@ class Tools(Cog):
         > ```<prefix>vc.create "Valorant Team A" 5```
         """ 
         modal = createVC(title="Create Custom Voice Channel")
-        await ctx.interaction.response.send_modal(modal)
+        await interaction.response.send_modal(modal)
     
 def setup(bot):
     bot.add_cog(Tools(bot))
