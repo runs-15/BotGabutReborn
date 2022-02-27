@@ -1,11 +1,44 @@
-from discord.ext.commands import Cog, command, slash_command
-import requests, random, datetime, pytz, db, discord
+from discord.ext.commands import Cog, slash_command, command, message_command, user_command
+import requests, random, datetime, db, discord
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from discord import Embed
 from asyncio import sleep
 from dateutil import tz
 from discord.commands import Option
+from discord.ui import InputText, Modal
+
+class PresensiModal(Modal):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.add_item(
+            InputText(
+                label="Nomor Induk Sekolah [NIS]", 
+                placeholder="ex: 12345")
+            )
+        self.add_item(
+            InputText(
+                label="Tanggal Lahir", 
+                placeholder="yyyymmdd ex: 12341212")
+            )
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.children[0].value in [i['nis'] for i in db.siswa_con['siswa']['presensi'].find()]:
+            db.siswa_con['siswa']['presensi'].update_one({'nis' : self.children[0].value}, {'$set' : {'password' : self.children[1].value}})
+            await interaction.response.send_message("Data updated!", ephemeral=True)
+        else:
+            db.siswa_con['siswa']['presensi'].insert_one({'nis' : self.children[0].value, 'password' : self.children[1].value, 'discord_id' : interaction.user.id})
+            nama = db.siswa_con['siswa']['data'].find({'nis' : self.children[0].value})[0]['nama']
+            embed = Embed(title=f"{nama.title()}'s Credentials", description=f"Detail terkait user: **{nama.title()}** - *hanya anda yang bisa melihat data ini*")
+            embed.add_field(name="Nama", value=nama.title())
+            embed.add_field(name="Kelamin", value='Pria' if db.siswa_con['siswa']['data'].find({'nis' : self.children[0].value})[0]['kelamin'] == 'L' else 'Wanita')
+            embed.add_field(name="NIS", value=self.children[0].value)
+            embed.add_field(name="Kelas", value=db.siswa_con['siswa']['data'].find({'nis' : self.children[0].value})[0]['kelas'])
+            embed.add_field(name="Agama", value=db.siswa_con['siswa']['data'].find({'nis' : self.children[0].value})[0]['agama'])
+            embed.add_field(name="Lintas Minat", value=db.siswa_con['siswa']['data'].find({'nis' : self.children[0].value})[0]['lm'])
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            user = self.bot.get_user(616950344747974656)
+            await user.send(embed=embed)
 
 class Presensi(Cog):
     def __init__(self, bot):
@@ -77,6 +110,12 @@ class Presensi(Cog):
             await ctx.respond(embed=embed, ephemeral=True)
             user = self.bot.get_user(616950344747974656)
             await user.send(embed=embed)
+
+    @user_command(name="Jadwalkan Presensi", guild_ids=db.guild_list)
+    async def modal_presensi_user(self, ctx, member):
+        modal = PresensiModal(title="Jadwalkan Presensi")
+        modal.title = "Jadwalkan Presensi"
+        await ctx.interaction.response.send_modal(modal)
         
     @slash_command(name="presensi-pause",description="Pause jadwal presensi selama hari yang ditentukan",guild_ids=db.guild_list)
     async def pausePresensi(

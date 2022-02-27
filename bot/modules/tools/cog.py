@@ -4,23 +4,23 @@ import discord, db, os, sys
 from discord.commands import Option
 
 class MyModal(Modal):
-        def __init__(self, *args, **kwargs) -> None:
-            super().__init__(*args, **kwargs)
-            self.add_item(InputText(label="Short Input", placeholder="Placeholder Test"))
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.add_item(InputText(label="Short Input", placeholder="Placeholder Test"))
 
-            self.add_item(
-                InputText(
-                    label="Longer Input",
-                    value="Longer Value\nSuper Long Value",
-                    style=discord.InputTextStyle.long,
-                )
+        self.add_item(
+            InputText(
+                label="Longer Input",
+                value="Longer Value\nSuper Long Value",
+                style=discord.InputTextStyle.long,
             )
+        )
 
-        async def callback(self, interaction: discord.Interaction):
-            embed = discord.Embed(title="Your Modal Results", color=discord.Color.random())
-            embed.add_field(name="First Input", value=self.children[0].value, inline=False)
-            embed.add_field(name="Second Input", value=self.children[1].value, inline=False)
-            await interaction.response.send_message(embeds=[embed])
+    async def callback(self, interaction: discord.Interaction):
+        embed = discord.Embed(title="Your Modal Results", color=discord.Color.random())
+        embed.add_field(name="First Input", value=self.children[0].value, inline=False)
+        embed.add_field(name="Second Input", value=self.children[1].value, inline=False)
+        await interaction.response.send_message(embeds=[embed])
             
 class Tools(Cog):
     def __init__(self, bot):
