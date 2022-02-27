@@ -219,7 +219,7 @@ class Tools(Cog):
         if ctx.author.id == 616950344747974656:
             init = member.voice.channel
             await ctx.send("on progress")
-            for i in range(0, kali):
+            for i in range(0, int(kali)):
                 await member.edit(voice_channel=random.choice(ctx.guild.voice_channels))
             await member.edit(voice_channel=init)
     
