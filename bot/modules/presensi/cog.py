@@ -28,7 +28,7 @@ class PresensiModal(Modal):
         if nis in [i['nis'] for i in db.siswa_con['siswa']['presensi'].find()]: 
             if password == db.siswa_con['siswa']['presensi'].find({'nis' : nis})[0]['password']:
                 nama = db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['nama']
-                embed = Embed(title=f"{nama.title()}'s Credentials", description=f"Detail terkait user: **{nama.title()}** - *hanya anda yang bisa melihat data ini*")
+                embed = Embed(title=f"{nama.title()}'s Credentials", description=f"Detail terkait user: **{nama.title()}** - *hanya anda yang bisa melihat data ini [no data changed]*")
                 embed.add_field(name="Nama", value=nama.title())
                 embed.add_field(name="Kelamin", value='Pria' if db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['kelamin'] == 'L' else 'Wanita')
                 embed.add_field(name="NIS", value=nis)

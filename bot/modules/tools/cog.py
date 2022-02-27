@@ -133,20 +133,6 @@ class Tools(Cog):
         modal = MyModal(title="Slash Command Modal")
         await ctx.interaction.response.send_modal(modal)
 
-    @message_command(name="messagemodal", guild_ids=db.guild_list)
-    async def modal_message(self, ctx, message):
-        """Shows an example of a modal dialog being invoked from a message command."""
-        modal = MyModal(title="Message Command Modal")
-        modal.title = f"Modal for Message ID: {message.id}"
-        await ctx.interaction.response.send_modal(modal)
-
-    @user_command(name="usermodal", guild_ids=db.guild_list)
-    async def modal_user(self, ctx, member):
-        """Shows an example of a modal dialog being invoked from a user command."""
-        modal = MyModal(title="User Command Modal")
-        modal.title = f"Modal for User: {member.display_name}"
-        await ctx.interaction.response.send_modal(modal)
-
     @command()
     async def modaltest(self, ctx):
         """Shows an example of modals being invoked from an interaction component (e.g. a button or select menu)"""
