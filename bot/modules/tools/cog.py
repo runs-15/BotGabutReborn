@@ -3,6 +3,25 @@ from discord.ui import InputText, Modal
 import discord, db, os, sys
 from discord.commands import Option
 
+class MyModal(Modal):
+        def __init__(self, *args, **kwargs) -> None:
+            super().__init__(*args, **kwargs)
+            self.add_item(InputText(label="Short Input", placeholder="Placeholder Test"))
+
+            self.add_item(
+                InputText(
+                    label="Longer Input",
+                    value="Longer Value\nSuper Long Value",
+                    style=discord.InputTextStyle.long,
+                )
+            )
+
+        async def callback(self, interaction: discord.Interaction):
+            embed = discord.Embed(title="Your Modal Results", color=discord.Color.random())
+            embed.add_field(name="First Input", value=self.children[0].value, inline=False)
+            embed.add_field(name="Second Input", value=self.children[1].value, inline=False)
+            await interaction.response.send_message(embeds=[embed])
+            
 class Tools(Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -107,52 +126,29 @@ class Tools(Cog):
         if ctx.author.id == 616950344747974656:
             async for member in ctx.guild.fetch_members():
                 print(member.name, member.id)
-                
-    class MyModal(Modal):
-        def __init__(self, *args, **kwargs) -> None:
-            super().__init__(*args, **kwargs)
-            self.add_item(InputText(label="Short Input", placeholder="Placeholder Test"))
 
-            self.add_item(
-                InputText(
-                    label="Longer Input",
-                    value="Longer Value\nSuper Long Value",
-                    style=discord.InputTextStyle.long,
-                )
-            )
-
-        async def callback(self, interaction: discord.Interaction):
-            embed = discord.Embed(title="Your Modal Results", color=discord.Color.random())
-            embed.add_field(name="First Input", value=self.children[0].value, inline=False)
-            embed.add_field(name="Second Input", value=self.children[1].value, inline=False)
-            await interaction.response.send_message(embeds=[embed])
-
-
-    @slash_command(name="modaltest", guild_ids=[...])
-    async def modal_slash(ctx):
+    @slash_command(name="modaltest", guild_ids=db.guild_list)
+    async def modal_slash(self, ctx):
         """Shows an example of a modal dialog being invoked from a slash command."""
         modal = MyModal(title="Slash Command Modal")
         await ctx.interaction.response.send_modal(modal)
 
-
-    @message_command(name="messagemodal", guild_ids=[...])
-    async def modal_message(ctx, message):
+    @message_command(name="messagemodal", guild_ids=db.guild_list)
+    async def modal_message(self, ctx, message):
         """Shows an example of a modal dialog being invoked from a message command."""
         modal = MyModal(title="Message Command Modal")
         modal.title = f"Modal for Message ID: {message.id}"
         await ctx.interaction.response.send_modal(modal)
 
-
-    @user_command(name="usermodal", guild_ids=[...])
-    async def modal_user(ctx, member):
+    @user_command(name="usermodal", guild_ids=db.guild_list)
+    async def modal_user(self, ctx, member):
         """Shows an example of a modal dialog being invoked from a user command."""
         modal = MyModal(title="User Command Modal")
         modal.title = f"Modal for User: {member.display_name}"
         await ctx.interaction.response.send_modal(modal)
 
-
     @command()
-    async def modaltest(ctx):
+    async def modaltest(self, ctx):
         """Shows an example of modals being invoked from an interaction component (e.g. a button or select menu)"""
 
         class MyView(discord.ui.View):
