@@ -14,7 +14,7 @@ class PresensiModal(Modal):
         self.add_item(
             InputText(
                 label="Nomor Induk Sekolah [NIS]", 
-                placeholder="ex: 12345")
+                placeholder="nnnnn ex: 12345")
             )
         self.add_item(
             InputText(
@@ -163,7 +163,6 @@ class Presensi(Cog):
     
     async def presensi_pagi(self):
         #check if presence got paused
-        await self.bot.wait_until_ready()
         pause_datang = db.siswa_con['siswa']['pause_presensi'].find({'status': 'datang'})[0]['sesi']
         if pause_datang > 0:
             db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'datang' },{ "$set": {'sesi': pause_datang - 1}})
@@ -196,7 +195,6 @@ class Presensi(Cog):
 
     async def presensi_pm(self):
         #check if presence got paused
-        await self.bot.wait_until_ready()
         pause_pm = db.siswa_con['siswa']['pause_presensi'].find({'status': 'pendalaman_materi'})[0]['sesi']
         if pause_pm > 0:
             db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'pm' },{ "$set": {'sesi': pause_pm - 1}})
@@ -229,7 +227,6 @@ class Presensi(Cog):
 
     async def presensi_sore(self):
         #check if presence got paused
-        await self.bot.wait_until_ready()
         pause_pulang = db.siswa_con['siswa']['pause_presensi'].find({'status': 'pulang'})[0]['sesi']
         if pause_pulang > 0:
             db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'pulang' },{ "$set": {'sesi': pause_pulang - 1}})
