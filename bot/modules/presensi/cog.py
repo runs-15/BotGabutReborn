@@ -58,13 +58,14 @@ class PresensiModal(Modal):
 class Presensi(Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.get_day()
     
     #@Cog.listener()
     #async def on_ready(self):
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
-        self.scheduler.add_job(self.get_day, CronTrigger(hour=4, minute=10, day_of_week="mon-fri", timezone="Asia/Jakarta"))
+        self.scheduler.add_job(self.get_day, CronTrigger(hour=0, minute=0, day_of_week="mon-fri", timezone="Asia/Jakarta"))
         self.scheduler.start()
         
     async def get_day(self):
