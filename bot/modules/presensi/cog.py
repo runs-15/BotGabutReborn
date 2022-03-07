@@ -58,7 +58,6 @@ class PresensiModal(Modal):
 class Presensi(Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.get_day()
     
     #@Cog.listener()
     #async def on_ready(self):
