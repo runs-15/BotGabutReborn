@@ -222,6 +222,10 @@ class Tools(Cog):
             for i in range(0, int(kali)):
                 await member.edit(voice_channel=random.choice(ctx.guild.voice_channels))
             await member.edit(voice_channel=init)
+            
+    @command(name='random')    
+    async def bangun(self, ctx, *cat):
+        await ctx.send(f'**{random.choice[cat]}**')
     
 def setup(bot):
     bot.add_cog(Tools(bot))
