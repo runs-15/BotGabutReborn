@@ -1,5 +1,6 @@
 from discord.ext.commands import Cog, slash_command, command, message_command, user_command
-import requests, random, datetime, db, discord
+import requests, random, datetime, db, discord, time, os
+import pandas as pd
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from discord import Embed
@@ -275,6 +276,109 @@ class Presensi(Cog):
         with requests.Session() as session:
             session.post(f"https://presensi.sman1yogya.sch.id/index.php/login_con/auth", data=payload)
             session.get(f"https://presensi.sman1yogya.sch.id/index.php/presensi_con/pulang?nis={nis}")
+
+    def update_nilai_realtime(self, session, ujian_id, mapel_id, tingkat):
+        
+        resp = session.get(f'https://cbt.sman1yogya.sch.id/index.php/admin/laporan_con/daftar_hadir?ujian_id={ujian_id}&mapel_id={mapel_id}&tingkat={tingkat}')
+        
+        tabel = pd.read_html(resp.text)
+        xi1 = pd.DataFrame(tabel[7])
+        xi2 = pd.DataFrame(tabel[12])
+        xi3 = pd.DataFrame(tabel[17])
+        xi4 = pd.DataFrame(tabel[22])
+        xi5 = pd.DataFrame(tabel[27])
+        xi6 = pd.DataFrame(tabel[32])
+        xi7 = pd.DataFrame(tabel[37])
+        xi8 = pd.DataFrame(tabel[42])
+        
+        kop = pd.DataFrame(tabel[2])
+        
+        return (kop, pd.concat([xi1, xi2, xi3, xi4, xi5, xi6, xi7, xi8]))
+        
+    async def update_nilai(self, ctx, ujian_id, mapel_id, tingkat):
+        
+        payload = {'username' : os.getenv('username_admin'), 'password' : os.getenv('password_admin')}
+        with requests.Session() as session:
+            session.post(os.getenv('url_admin'), data=payload)
+            resp = session.get(f'https://cbt.sman1yogya.sch.id/index.php/admin/laporan_con/daftar_hadir?ujian_id={ujian_id}&mapel_id={mapel_id}&tingkat={tingkat}')
+
+        xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)[1]
+        
+        await ctx.respond(f'Realtime updates for exam [{tingkat}] with\n> ujian_id : `{ujian_id}`\n> mapel_id : `{mapel_id}')
+        msg = await ctx.send(f"""
+                            GAMMA NASIM
+                            ```{xi.query("Nama == 'GAMMA NASIM'")['Nilai']}```
+                            MUHAMMAD RAFIF HANIFA
+                            ```{xi.query("Nama == 'MUHAMMAD RAFIF HANIFA'")['Nilai']}```
+                            MUHAMMAD RODHIYAN RIJALUL WAHID
+                            ```{xi.query("Nama == 'MUHAMMAD RODHIYAN RIJALUL WAHID'")['Nilai']}```
+                            RAMA ANDHIKA PRATAMA
+                            ```{xi.query("Nama == 'RAMA ANDHIKA PRATAMA'")['Nilai']}```
+                            HARUN
+                            ```{xi.query("Nama == 'HARUN'")['Nilai']}```
+                            MUSA GANI RAHMAN
+                            ```{xi.query("Nama == 'MUSA GANI RAHMAN'")['Nilai']}```
+                            EVANDHIKA AGNA MAULANA
+                            ```{xi.query("Nama == 'EVANDHIKA AGNA MAULANA'")['Nilai']}```
+                            IRFAN SURYA RAMADHAN
+                            ```{xi.query("Nama == 'IRFAN SURYA RAMADHAN'")['Nilai']}```
+                            MUHAMMAD DZAKY ASRAF
+                            ```{xi.query("Nama == 'MUHAMMAD DZAKY ASRAF'")['Nilai']}```
+                            RAYHAN ERSA NOVARDHANA
+                            ```{xi.query("Nama == 'RAYHAN ERSA NOVARDHANA'")['Nilai']}```
+                            HIKMAT SEJATI
+                            ```{xi.query("Nama == 'HIKMAT SEJATI'")['Nilai']}```
+                            TAZAKKA ARIFIN NUTRIATMA
+                            ```{xi.query("Nama == 'TAZAKKA ARIFIN NUTRIATMA'")['Nilai']}```
+                            LANANG BASWARA SAKHI
+                            ```{xi.query("Nama == 'LANANG BASWARA SAKHI'")['Nilai']}```
+                            DZAKI SENTANU NURAGUSTA
+                            ```{xi.query("Nama == 'DZAKI SENTANU NURAGUSTA'")['Nilai']}```
+                            RIZQI ILHAM MAULANA
+                            ```{xi.query("Nama == 'RIZQI ILHAM MAULANA'")['Nilai']}```
+                            ALVINENDRA TRIAJI WIBOWO
+                            ```{xi.query("Nama == 'ALVINENDRA TRIAJI WIBOWO'")['Nilai']}```
+                            """)
+        tm_start = time.time()
+        while time.time() < (tm_start + 7200):
+            time.sleep(1)
+            if xi.equals(self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)[1]) == False:
+                await msg.edit(f"""
+                                GAMMA NASIM
+                                ```{xi.query("Nama == 'GAMMA NASIM'")['Nilai']}```
+                                MUHAMMAD RAFIF HANIFA
+                                ```{xi.query("Nama == 'MUHAMMAD RAFIF HANIFA'")['Nilai']}```
+                                MUHAMMAD RODHIYAN RIJALUL WAHID
+                                ```{xi.query("Nama == 'MUHAMMAD RODHIYAN RIJALUL WAHID'")['Nilai']}```
+                                RAMA ANDHIKA PRATAMA
+                                ```{xi.query("Nama == 'RAMA ANDHIKA PRATAMA'")['Nilai']}```
+                                HARUN
+                                ```{xi.query("Nama == 'HARUN'")['Nilai']}```
+                                MUSA GANI RAHMAN
+                                ```{xi.query("Nama == 'MUSA GANI RAHMAN'")['Nilai']}```
+                                EVANDHIKA AGNA MAULANA
+                                ```{xi.query("Nama == 'EVANDHIKA AGNA MAULANA'")['Nilai']}```
+                                IRFAN SURYA RAMADHAN
+                                ```{xi.query("Nama == 'IRFAN SURYA RAMADHAN'")['Nilai']}```
+                                MUHAMMAD DZAKY ASRAF
+                                ```{xi.query("Nama == 'MUHAMMAD DZAKY ASRAF'")['Nilai']}```
+                                RAYHAN ERSA NOVARDHANA
+                                ```{xi.query("Nama == 'RAYHAN ERSA NOVARDHANA'")['Nilai']}```
+                                HIKMAT SEJATI
+                                ```{xi.query("Nama == 'HIKMAT SEJATI'")['Nilai']}```
+                                TAZAKKA ARIFIN NUTRIATMA
+                                ```{xi.query("Nama == 'TAZAKKA ARIFIN NUTRIATMA'")['Nilai']}```
+                                LANANG BASWARA SAKHI
+                                ```{xi.query("Nama == 'LANANG BASWARA SAKHI'")['Nilai']}```
+                                DZAKI SENTANU NURAGUSTA
+                                ```{xi.query("Nama == 'DZAKI SENTANU NURAGUSTA'")['Nilai']}```
+                                RIZQI ILHAM MAULANA
+                                ```{xi.query("Nama == 'RIZQI ILHAM MAULANA'")['Nilai']}```
+                                ALVINENDRA TRIAJI WIBOWO
+                                ```{xi.query("Nama == 'ALVINENDRA TRIAJI WIBOWO'")['Nilai']}```
+                                last update on {datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}
+                                """)
+            
     
 def setup(bot):
     bot.add_cog(Presensi(bot))
