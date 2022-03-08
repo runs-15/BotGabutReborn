@@ -282,18 +282,33 @@ class Presensi(Cog):
         resp = session.get(f'https://cbt.sman1yogya.sch.id/index.php/admin/laporan_con/daftar_hadir?ujian_id={ujian_id}&mapel_id={mapel_id}&tingkat={tingkat}')
         
         tabel = pd.read_html(resp.text)
-        xi1 = pd.DataFrame(tabel[7])
-        xi2 = pd.DataFrame(tabel[12])
-        xi3 = pd.DataFrame(tabel[17])
-        xi4 = pd.DataFrame(tabel[22])
-        xi5 = pd.DataFrame(tabel[27])
-        xi6 = pd.DataFrame(tabel[32])
-        xi7 = pd.DataFrame(tabel[37])
-        xi8 = pd.DataFrame(tabel[42])
+        try:
+            xi1 = pd.DataFrame(tabel[7])
+            xi2 = pd.DataFrame(tabel[12])
+            xi3 = pd.DataFrame(tabel[17])
+            xi4 = pd.DataFrame(tabel[22])
+            xi5 = pd.DataFrame(tabel[27])
+            xi6 = pd.DataFrame(tabel[32])
+            xi7 = pd.DataFrame(tabel[37])
+            xi8 = pd.DataFrame(tabel[42])
+            xi = pd.concat([xi1, xi2, xi3, xi4, xi5, xi6, xi7, xi8])
+        except:
+            try:
+                xi1 = pd.DataFrame(tabel[7])
+                xi2 = pd.DataFrame(tabel[12])
+                xi3 = pd.DataFrame(tabel[17])
+                xi4 = pd.DataFrame(tabel[22])
+                xi5 = pd.DataFrame(tabel[27])
+                xi6 = pd.DataFrame(tabel[32])
+                xi7 = pd.DataFrame(tabel[37])
+                xi = pd.concat([xi1, xi2, xi3, xi4, xi5, xi6, xi7])
+            except:
+                xi1 = pd.DataFrame(tabel[7])
+                xi = xi1
         
         kop = pd.DataFrame(tabel[2])
         
-        return (kop, pd.concat([xi1, xi2, xi3, xi4, xi5, xi6, xi7, xi8]))
+        return (kop, xi)
     
     @command(name='update_nilai')    
     async def update_nilai(self, ctx, ujian_id, mapel_id, tingkat):
@@ -305,7 +320,7 @@ class Presensi(Cog):
 
         xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)[1]
         
-        await ctx.respond(f'Realtime updates for exam [{tingkat}] with\n> ujian_id : `{ujian_id}`\n> mapel_id : `{mapel_id}')
+        await ctx.send(f'Realtime updates for exam [{tingkat}] with\n> ujian_id : `{ujian_id}`\n> mapel_id : `{mapel_id}')
         msg = await ctx.send(f"""
                             GAMMA NASIM
                             ```{xi.query("Nama == 'GAMMA NASIM'")['Nilai']}```
