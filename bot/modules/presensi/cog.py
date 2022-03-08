@@ -343,6 +343,7 @@ class Presensi(Cog):
         while time.time() < (tm_start + 7500):
             await sleep(1)
             if xi.equals(self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)[1]) == False:
+                kop, xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)
                 xi['Nilai'] = xi['Nilai'].replace(to_replace=r'/100', value='', regex=True)
                 xi['Nilai'] = pd.to_numeric(xi['Nilai'])
                 
