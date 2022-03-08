@@ -227,7 +227,7 @@ class Tools(Cog):
     @command(name='random')    
     async def bangun(self, ctx, *cat):
         data = [x for x in cat]
-        await ctx.send(f'**{random.choice[data]}**')
+        await ctx.send(f'**{random.choice(data)}**')
     
 def setup(bot):
     bot.add_cog(Tools(bot))
