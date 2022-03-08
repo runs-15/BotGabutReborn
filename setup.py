@@ -37,7 +37,8 @@ setuptools.setup(
         'pytz',
         'python-dateutil',
         'pillow',
-        'pandas'
+        'pandas',
+        'lxml'
     ],
     python_requires='>=3.6',
 )
