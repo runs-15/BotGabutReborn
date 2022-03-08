@@ -294,7 +294,8 @@ class Presensi(Cog):
         kop = pd.DataFrame(tabel[2])
         
         return (kop, pd.concat([xi1, xi2, xi3, xi4, xi5, xi6, xi7, xi8]))
-        
+    
+    @command(name='update_nilai')    
     async def update_nilai(self, ctx, ujian_id, mapel_id, tingkat):
         
         payload = {'username' : os.getenv('username_admin'), 'password' : os.getenv('password_admin')}
