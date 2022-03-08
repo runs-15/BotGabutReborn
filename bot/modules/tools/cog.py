@@ -1,3 +1,4 @@
+from aiohttp import DataQueue
 from discord.ext.commands import Cog, slash_command, command, message_command, user_command, cooldown, BucketType
 from discord.ui import InputText, Modal, Select, Button
 import discord, db, os, sys, random
@@ -225,7 +226,8 @@ class Tools(Cog):
             
     @command(name='random')    
     async def bangun(self, ctx, *cat):
-        await ctx.send(f'**{random.choice[cat]}**')
+        data = [x for x in cat]
+        await ctx.send(f'**{random.choice[data]}**')
     
 def setup(bot):
     bot.add_cog(Tools(bot))
