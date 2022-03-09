@@ -319,110 +319,124 @@ class Presensi(Cog):
     
     @command(name='update_nilai')    
     async def update_nilai(self, ctx, ujian_id, mapel_id, tingkat):
-        
-        payload = {'username' : os.getenv('username_admin'), 'password' : os.getenv('password_admin')}
-        with requests.Session() as session:
-            session.post(os.getenv('url_admin'), data=payload)
-            resp = session.get(f'https://cbt.sman1yogya.sch.id/index.php/admin/laporan_con/daftar_hadir?ujian_id={ujian_id}&mapel_id={mapel_id}&tingkat={tingkat}')
+        if ctx.channel.category_id == 898167597160341554:
+            payload = {'username' : os.getenv('username_admin'), 'password' : os.getenv('password_admin')}
+            with requests.Session() as session:
+                session.post(os.getenv('url_admin'), data=payload)
+                resp = session.get(f'https://cbt.sman1yogya.sch.id/index.php/admin/laporan_con/daftar_hadir?ujian_id={ujian_id}&mapel_id={mapel_id}&tingkat={tingkat}')
 
-        kop, xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)
-        
-        kirim = ''
-        kop.columns = ['key', 'value']
-        for index, row in kop.iterrows():
-            if row['key'] != 'Kelas':
-                kirim += "{:<32}{}\n".format(row['key'], row['value'])
-                #kirim += f"{row['key']}{row['value']}\n"
-        
-        kirim2 = ''
-        for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
-            try:
-                ranking = xi.index[xi['Nama']==i][0] + 1
-                kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
-            except Exception as e:
-                print(e)
-                kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0])
-        
-        kirim3 = xi['Nilai'].describe()
-        
-        try:
-            rank1 = xi.iloc[0]['Nama']
-            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}``````RANK 1                          : {rank1}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
-        except:
-            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
-        tm_start = time.time()
-        while time.time() < (tm_start + 7500):
-            await sleep(1)
-            try:
-                if xi.equals(self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)[1]) == False:
+            kop, xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)
+            
+            kirim = ''
+            kop.columns = ['key', 'value']
+            for index, row in kop.iterrows():
+                if row['key'] != 'Kelas':
+                    kirim += "{:<32}{}\n".format(row['key'], row['value'])
+                    #kirim += f"{row['key']}{row['value']}\n"
+            
+            kirim2 = ''
+            for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
+                try:
+                    ranking = xi.index[xi['Nama']==i][0] + 1
+                    kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
+                except Exception as e:
+                    print(e)
                     try:
-                        kop, xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)
-                        
-                        kirim = ''
-                        kop.columns = ['key', 'value']
-                        for index, row in kop.iterrows():
-                            try:
-                                if row['key'] != 'Kelas':
-                                    kirim += "{:<32}{}\n".format(row['key'], row['value'])
-                                    #kirim += f"{row['key']}{row['value']}\n"
-                            except:
-                                pass
-                        
-                        kirim2 = ''
-                        for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
-                            try:
-                                ranking = xi.index[xi['Nama']==i][0] + 1
-                                kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
-                            except Exception as e:
-                                print(e)
-                                kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0])
-                            
-                        kirim3 = xi['Nilai'].describe()
-                        try:
-                            rank1 = xi.iloc[0]['Nama']
-                            await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}``````RANK 1                          : {rank1}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
-                        except Exception as e:
-                            print(e)
-                            await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+                        kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0])
                     except:
                         pass
+            
+            kirim3 = xi['Nilai'].describe()
+            
+            try:
+                rank1 = xi.iloc[0]['Nama']
+                msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}``````RANK 1                          : {rank1}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
             except:
-                pass
-        await msg.delete()
+                msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+            tm_start = time.time()
+            while time.time() < (tm_start + 7500):
+                await sleep(1)
+                try:
+                    if xi.equals(self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)[1]) == False:
+                        try:
+                            kop, xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)
+                            
+                            kirim = ''
+                            kop.columns = ['key', 'value']
+                            for index, row in kop.iterrows():
+                                try:
+                                    if row['key'] != 'Kelas':
+                                        kirim += "{:<32}{}\n".format(row['key'], row['value'])
+                                        #kirim += f"{row['key']}{row['value']}\n"
+                                except:
+                                    pass
+                            
+                            kirim2 = ''
+                            for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
+                                try:
+                                    ranking = xi.index[xi['Nama']==i][0] + 1
+                                    kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
+                                except Exception as e:
+                                    print(e)
+                                    try:
+                                        kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0])
+                                    except:
+                                        pass
+                                
+                            kirim3 = xi['Nilai'].describe()
+                            try:
+                                rank1 = xi.iloc[0]['Nama']
+                                await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}``````RANK 1                          : {rank1}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+                            except Exception as e:
+                                print(e)
+                                await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+                        except:
+                            pass
+                except:
+                    pass
+            await msg.delete()
+        else:
+            await ctx.send('Not permitted')
     
         
     @command(name='ambil_nilai')    
     async def ambil_nilai(self, ctx, ujian_id, mapel_id, tingkat):
-        
-        payload = {'username' : os.getenv('username_admin'), 'password' : os.getenv('password_admin')}
-        with requests.Session() as session:
-            session.post(os.getenv('url_admin'), data=payload)
-            resp = session.get(f'https://cbt.sman1yogya.sch.id/index.php/admin/laporan_con/daftar_hadir?ujian_id={ujian_id}&mapel_id={mapel_id}&tingkat={tingkat}')
+        if ctx.channel.category_id == 898167597160341554:
+            
+            payload = {'username' : os.getenv('username_admin'), 'password' : os.getenv('password_admin')}
+            with requests.Session() as session:
+                session.post(os.getenv('url_admin'), data=payload)
+                resp = session.get(f'https://cbt.sman1yogya.sch.id/index.php/admin/laporan_con/daftar_hadir?ujian_id={ujian_id}&mapel_id={mapel_id}&tingkat={tingkat}')
 
-        kop, xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)
-        
-        kirim = ''
-        kop.columns = ['key', 'value']
-        for index, row in kop.iterrows():
-            if row['key'] != 'Kelas':
-                kirim += "{:<32}{}\n".format(row['key'], row['value'])
-        
-        kirim2 = ''
-        for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
+            kop, xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)
+            
+            kirim = ''
+            kop.columns = ['key', 'value']
+            for index, row in kop.iterrows():
+                if row['key'] != 'Kelas':
+                    kirim += "{:<32}{}\n".format(row['key'], row['value'])
+            
+            kirim2 = ''
+            for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
+                try:
+                    ranking = xi.index[xi['Nama']==i][0] + 1
+                    kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
+                except Exception as e:
+                    print(e)
+                    try:
+                        kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0])
+                    except:
+                        pass
+            
+            kirim3 = xi['Nilai'].describe()
+            
             try:
-                ranking = xi.index[xi['Nama']==i][0] + 1
-                kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
-            except Exception as e:
-                print(e)
-                kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0])
-        
-        kirim3 = xi['Nilai'].describe()
-        
-        try:
-            rank1 = xi.iloc[0]['Nama']
-            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}``````RANK 1                          : {rank1}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
-        except:
-            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+                rank1 = xi.iloc[0]['Nama']
+                msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}``````RANK 1                          : {rank1}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+            except:
+                msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+        else:
+            await ctx.send('Not permitted')
     
 def setup(bot):
     bot.add_cog(Presensi(bot))
