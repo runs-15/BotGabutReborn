@@ -345,7 +345,7 @@ class Presensi(Cog):
         kirim3 = xi['Nilai'].describe()
         
         try:
-            rank1 = xi.query(f"Rank == '1.0'")['Nama'].values[0]
+            rank1 = xi.query(f"Rank < 2")['Nama'].values[0]
             msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}``````RANK 1                          : {rank1}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
         except:
             msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
@@ -377,9 +377,10 @@ class Presensi(Cog):
                             
                         kirim3 = xi['Nilai'].describe()
                         try:
-                            rank1 = xi.query(f"Rank == '1.0'")['Nama'].values[0]
+                            rank1 = xi.query(f"Rank < 2")['Nama'].values[0]
                             await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}``````RANK 1                          : {rank1}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
-                        except:
+                        except Exception as e:
+                            print(e)
                             await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
                     except:
                         pass
