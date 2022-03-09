@@ -334,7 +334,7 @@ class Presensi(Cog):
         
         kirim2 = ''
         for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
-            kirim2 += "{:<32}: {:<5} / 100 {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], xi.query(f"Nama == '{i}'")['Rank'].values[0])
+            kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], xi.query(f"Nama == '{i}'")['Rank'].values[0])
         
         kirim3 = xi['Nilai'].describe()
         
@@ -364,7 +364,7 @@ class Presensi(Cog):
                         kirim2 = ''
                         for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
                             try:
-                                kirim2 += "{:<32}: {:<4} / 100 {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], xi.query(f"Nama == '{i}'")['Rank'].values[0])
+                                kirim2 += "{:<32}: {:<4} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], xi.query(f"Nama == '{i}'")['Rank'].values[0])
                             except:
                                 pass
                             
