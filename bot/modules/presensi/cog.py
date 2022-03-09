@@ -282,31 +282,41 @@ class Presensi(Cog):
         resp = session.get(f'https://cbt.sman1yogya.sch.id/index.php/admin/laporan_con/daftar_hadir?ujian_id={ujian_id}&mapel_id={mapel_id}&tingkat={tingkat}')
         
         tabel = pd.read_html(resp.text)
-        try:
-            xips = pd.DataFrame(tabel[2])
-            xi1 = pd.DataFrame(tabel[7])
-            xi2 = pd.DataFrame(tabel[12])
-            xi3 = pd.DataFrame(tabel[17])
-            xi4 = pd.DataFrame(tabel[22])
-            xi5 = pd.DataFrame(tabel[27])
-            xi6 = pd.DataFrame(tabel[32])
-            xi7 = pd.DataFrame(tabel[37])
-            xi8 = pd.DataFrame(tabel[42])
-            xi = pd.concat([xips, xi1, xi2, xi3, xi4, xi5, xi6, xi7, xi8])
-        except:
+        
+        dict_xi = {}
+        for i in [2, 7, 12, 17, 22, 27, 32, 37, 42]:
             try:
-                xips = pd.DataFrame(tabel[2])
-                xi1 = pd.DataFrame(tabel[7])
-                xi2 = pd.DataFrame(tabel[12])
-                xi3 = pd.DataFrame(tabel[17])
-                xi4 = pd.DataFrame(tabel[22])
-                xi5 = pd.DataFrame(tabel[27])
-                xi6 = pd.DataFrame(tabel[32])
-                xi7 = pd.DataFrame(tabel[37])
-                xi = pd.concat([xips, xi1, xi2, xi3, xi4, xi5, xi6, xi7])
+                dict_xi[i] = pd.DataFrame(tabel[i])
             except:
-                xi1 = pd.DataFrame(tabel[2])
-                xi = xi1
+                pass
+        
+        xi = pd.concat(dict_xi.values(), ignore_index=True)
+            
+        # try:
+        #     xips = pd.DataFrame(tabel[2])
+        #     xi1 = pd.DataFrame(tabel[7])
+        #     xi2 = pd.DataFrame(tabel[12])
+        #     xi3 = pd.DataFrame(tabel[17])
+        #     xi4 = pd.DataFrame(tabel[22])
+        #     xi5 = pd.DataFrame(tabel[27])
+        #     xi6 = pd.DataFrame(tabel[32])
+        #     xi7 = pd.DataFrame(tabel[37])
+        #     xi8 = pd.DataFrame(tabel[42])
+        #     xi = pd.concat([xips, xi1, xi2, xi3, xi4, xi5, xi6, xi7, xi8])
+        # except:
+        #     try:
+        #         xips = pd.DataFrame(tabel[2])
+        #         xi1 = pd.DataFrame(tabel[7])
+        #         xi2 = pd.DataFrame(tabel[12])
+        #         xi3 = pd.DataFrame(tabel[17])
+        #         xi4 = pd.DataFrame(tabel[22])
+        #         xi5 = pd.DataFrame(tabel[27])
+        #         xi6 = pd.DataFrame(tabel[32])
+        #         xi7 = pd.DataFrame(tabel[37])
+        #         xi = pd.concat([xips, xi1, xi2, xi3, xi4, xi5, xi6, xi7])
+        #     except:
+        #         xi1 = pd.DataFrame(tabel[2])
+        #         xi = xi1
             
         # mengolah    
         xi['Nilai'] = xi['Nilai'].replace(to_replace=r'/100', value='', regex=True)
