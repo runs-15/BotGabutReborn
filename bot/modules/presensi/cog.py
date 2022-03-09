@@ -312,7 +312,7 @@ class Presensi(Cog):
         xi['Nilai'] = xi['Nilai'].replace(to_replace=r'/100', value='', regex=True)
         xi['Nilai'] = pd.to_numeric(xi['Nilai'], errors='coerce')
         xi.dropna()
-        xi = xi.sort_values('Nilai', ascending=False)
+        xi = xi.sort_values('Nilai', ascending=False, ignore_index=True)
         kop = pd.DataFrame(tabel[1])
         
         return (kop, xi)
@@ -337,7 +337,7 @@ class Presensi(Cog):
         kirim2 = ''
         for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
             try:
-                ranking = xi[xi['Nama'] == {i}].index[0]
+                ranking = xi.index[xi['Nama']=={i}].tolist()[0]
                 kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
             except:
                 kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0])
@@ -370,7 +370,7 @@ class Presensi(Cog):
                         kirim2 = ''
                         for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
                             try:
-                                ranking = xi[xi['Nama'] == {i}].index[0]
+                                ranking = xi.index[xi['Nama']=={i}].tolist()[0]
                                 kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
                             except:
                                 kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0])
