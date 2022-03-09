@@ -389,14 +389,40 @@ class Presensi(Cog):
             except:
                 pass
         await msg.delete()
-          
-        # msg = await ctx.send(f"""```{kirim}```\nGAMMA NASIM```{xi.query("Nama == 'GAMMA NASIM'")['Nilai'].values[0]}```\nMUHAMMAD RAFIF HANIFA```{xi.query("Nama == 'MUHAMMAD RAFIF HANIFA'")['Nilai'].values[0]}```\nMUHAMMAD RODHIYAN RIJALUL WAHID```{xi.query("Nama == 'MUHAMMAD RODHIYAN RIJALUL WAHID'")['Nilai'].values[0]}```\nRAMA ANDHIKA PRATAMA```{xi.query("Nama == 'RAMA ANDHIKA PRATAMA'")['Nilai'].values[0]}```\nHARUN```{xi.query("Nama == 'HARUN'")['Nilai'].values[0]}```\nMUSA GANI RAHMAN```{xi.query("Nama == 'MUSA GANI RAHMAN'")['Nilai'].values[0]}```\nEVANDHIKA AGNA MAULANA```{xi.query("Nama == 'EVANDHIKA AGNA MAULANA'")['Nilai'].values[0]}```\nIRFAN SURYA RAMADHAN```{xi.query("Nama == 'IRFAN SURYA RAMADHAN'")['Nilai'].values[0]}```\nMUHAMMAD DZAKY ASRAF```{xi.query("Nama == 'MUHAMMAD DZAKY ASRAF'")['Nilai'].values[0]}```\nRAYHAN ERSA NOVARDHANA```{xi.query("Nama == 'RAYHAN ERSA NOVARDHANA'")['Nilai'].values[0]}```\nHIKMAT SEJATI```{xi.query("Nama == 'HIKMAT SEJATI'")['Nilai'].values[0]}```\nTAZAKKA ARIFIN NUTRIATMA```{xi.query("Nama == 'TAZAKKA ARIFIN NUTRIATMA'")['Nilai'].values[0]}```\nLANANG BASWARA SAKHI```{xi.query("Nama == 'LANANG BASWARA SAKHI'")['Nilai'].values[0]}```\nDZAKI SENTANU NURAGUSTA```{xi.query("Nama == 'DZAKI SENTANU NURAGUSTA'")['Nilai'].values[0]}```\nRIZQI ILHAM MAULANA```{xi.query("Nama == 'RIZQI ILHAM MAULANA'")['Nilai'].values[0]}```\nALVINENDRA TRIAJI WIBOWO```{xi.query("Nama == 'ALVINENDRA TRIAJI WIBOWO'")['Nilai'].values[0]}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
-        # tm_start = time.time()
-        # while time.time() < (tm_start + 7200):
-        #     await sleep(1)
-        #     if xi.equals(self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)[1]) == False:
-        #         await msg.edit(f"""```{kirim}```\nGAMMA NASIM```{xi.query("Nama == 'GAMMA NASIM'")['Nilai'].values[0]}```\nMUHAMMAD RAFIF HANIFA```{xi.query("Nama == 'MUHAMMAD RAFIF HANIFA'")['Nilai'].values[0]}```\nMUHAMMAD RODHIYAN RIJALUL WAHID```{xi.query("Nama == 'MUHAMMAD RODHIYAN RIJALUL WAHID'")['Nilai'].values[0]}```\nRAMA ANDHIKA PRATAMA```{xi.query("Nama == 'RAMA ANDHIKA PRATAMA'")['Nilai'].values[0]}```\nHARUN```{xi.query("Nama == 'HARUN'")['Nilai'].values[0]}```\nMUSA GANI RAHMAN```{xi.query("Nama == 'MUSA GANI RAHMAN'")['Nilai'].values[0]}```\nEVANDHIKA AGNA MAULANA```{xi.query("Nama == 'EVANDHIKA AGNA MAULANA'")['Nilai'].values[0]}```\nIRFAN SURYA RAMADHAN```{xi.query("Nama == 'IRFAN SURYA RAMADHAN'")['Nilai'].values[0]}```\nMUHAMMAD DZAKY ASRAF```{xi.query("Nama == 'MUHAMMAD DZAKY ASRAF'")['Nilai'].values[0]}```\nRAYHAN ERSA NOVARDHANA```{xi.query("Nama == 'RAYHAN ERSA NOVARDHANA'")['Nilai'].values[0]}```\nHIKMAT SEJATI```{xi.query("Nama == 'HIKMAT SEJATI'")['Nilai'].values[0]}```\nTAZAKKA ARIFIN NUTRIATMA```{xi.query("Nama == 'TAZAKKA ARIFIN NUTRIATMA'")['Nilai'].values[0]}```\nLANANG BASWARA SAKHI```{xi.query("Nama == 'LANANG BASWARA SAKHI'")['Nilai'].values[0]}```\nDZAKI SENTANU NURAGUSTA```{xi.query("Nama == 'DZAKI SENTANU NURAGUSTA'")['Nilai'].values[0]}```\nRIZQI ILHAM MAULANA```{xi.query("Nama == 'RIZQI ILHAM MAULANA'")['Nilai'].values[0]}```\nALVINENDRA TRIAJI WIBOWO```{xi.query("Nama == 'ALVINENDRA TRIAJI WIBOWO'")['Nilai'].values[0]}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
-        # await msg.delete()
+    
+        
+    @command(name='ambil_nilai')    
+    async def ambil_nilai(self, ctx, ujian_id, mapel_id, tingkat):
+        
+        payload = {'username' : os.getenv('username_admin'), 'password' : os.getenv('password_admin')}
+        with requests.Session() as session:
+            session.post(os.getenv('url_admin'), data=payload)
+            resp = session.get(f'https://cbt.sman1yogya.sch.id/index.php/admin/laporan_con/daftar_hadir?ujian_id={ujian_id}&mapel_id={mapel_id}&tingkat={tingkat}')
+
+        kop, xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)
+        
+        kirim = ''
+        kop.columns = ['key', 'value']
+        for index, row in kop.iterrows():
+            if row['key'] != 'Kelas':
+                kirim += "{:<32}{}\n".format(row['key'], row['value'])
+        
+        kirim2 = ''
+        for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
+            try:
+                ranking = xi.index[xi['Nama']==i][0]
+                kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
+            except Exception as e:
+                print(e)
+                kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0])
+        
+        kirim3 = xi['Nilai'].describe()
+        
+        try:
+            rank1 = xi.iloc[0]['Nama']
+            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}``````RANK 1                          : {rank1}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+        except:
+            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
     
 def setup(bot):
     bot.add_cog(Presensi(bot))
