@@ -307,9 +307,11 @@ class Presensi(Cog):
             except:
                 xi1 = pd.DataFrame(tabel[2])
                 xi = xi1
-                
+            
+        # mengolah    
         xi['Nilai'] = xi['Nilai'].replace(to_replace=r'/100', value='', regex=True)
-        xi['Nilai'] = pd.to_numeric(xi['Nilai'])
+        xi['Nilai'] = pd.to_numeric(xi['Nilai'], errors='coerce')
+        xi.dropna()
         xi['Rank'] = xi['Nilai'].rank(ascending=False)
         kop = pd.DataFrame(tabel[1])
         
