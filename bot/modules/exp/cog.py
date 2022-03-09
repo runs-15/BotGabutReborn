@@ -20,8 +20,13 @@ class Exp(Cog):
         self.levelling_channel = self.bot.get_channel(855810493397729300)
         self.text_levelling_channel = self.bot.get_channel(856069554387943427)
         self.temp_join = 0
-        self.voice_update.start()
-        self.voice_submit.start()
+        # ---------------
+        # NANTI HIDUPIN
+        # ---------------
+        # if not self.voice_update.is_running():
+        #     self.voice_update.start()
+        # if not self.voice_submit.is_running():  
+        #     self.voice_submit.start()
         # self.online_counter.start()
         # self.voice_check_update.start()
         # self.reset_vc_user.start()
