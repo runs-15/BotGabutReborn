@@ -339,7 +339,8 @@ class Presensi(Cog):
             try:
                 ranking = xi.index[xi['Nama']=={i}].tolist()[0]
                 kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
-            except:
+            except Exception as e:
+                print(e)
                 kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0])
         
         kirim3 = xi['Nilai'].describe()
@@ -372,7 +373,8 @@ class Presensi(Cog):
                             try:
                                 ranking = xi.index[xi['Nama']=={i}].tolist()[0]
                                 kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
-                            except:
+                            except Exception as e:
+                                print(e)
                                 kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0])
                             
                         kirim3 = xi['Nilai'].describe()
