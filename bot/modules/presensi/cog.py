@@ -310,6 +310,7 @@ class Presensi(Cog):
                 
         xi['Nilai'] = xi['Nilai'].replace(to_replace=r'/100', value='', regex=True)
         xi['Nilai'] = pd.to_numeric(xi['Nilai'])
+        xi['Rank'] = xi['Nilai'].rank(ascending=False)
         kop = pd.DataFrame(tabel[1])
         
         return (kop, xi)
@@ -331,16 +332,17 @@ class Presensi(Cog):
                 kirim += "{:<32}{}\n".format(row['key'], row['value'])
                 #kirim += f"{row['key']}{row['value']}\n"
         
-        xi['Rank'] = xi['Nilai'].rank(ascending=False)
-
         kirim2 = ''
         for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
             kirim2 += "{:<32}: {:<5} / 100 {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], xi.query(f"Nama == '{i}'")['Rank'].values[0])
         
         kirim3 = xi['Nilai'].describe()
         
-        await ctx.send(f'[LAPORAN DAFTAR HADIR](https://cbt.sman1yogya.sch.id/index.php/admin/laporan_con/daftar_hadir?ujian_id={ujian_id}&mapel_id={mapel_id}&tingkat={tingkat})')
-        msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}``````RANK 1                          : {xi.query(f"Rank == '1'")['Nama'].values[0]}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+        try:
+            rank1 = xi.query(f"Rank == '1'")['Nama'].values[0]
+            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}``````RANK 1                          : {rank1}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+        except:
+            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
         tm_start = time.time()
         while time.time() < (tm_start + 7500):
             await sleep(1)
@@ -358,8 +360,6 @@ class Presensi(Cog):
                                     #kirim += f"{row['key']}{row['value']}\n"
                             except:
                                 pass
-                            
-                        xi['Rank'] = xi['Nilai'].rank(ascending=False)
                         
                         kirim2 = ''
                         for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
@@ -369,7 +369,11 @@ class Presensi(Cog):
                                 pass
                             
                         kirim3 = xi['Nilai'].describe()
-                        await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}``````RANK 1                          : {xi.query(f"Rank == '1'")['Nama'].values[0]}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+                        try:
+                            rank1 = xi.query(f"Rank == '1'")['Nama'].values[0]
+                            await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}``````RANK 1                          : {rank1}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+                        except:
+                            await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
                     except:
                         pass
             except:
