@@ -322,7 +322,7 @@ class Presensi(Cog):
         xi['Nilai'] = xi['Nilai'].replace(to_replace=r'/100', value='', regex=True)
         xi['Nilai'] = pd.to_numeric(xi['Nilai'], errors='coerce')
         xi.dropna()
-        xi = xi.sort_values(['Nilai', 'Nama'], ascending=False, ignore_index=True)
+        xi = xi.sort_values(['Nilai', 'Nama'], ascending=[False, True], ignore_index=True)
         kop = pd.DataFrame(tabel[1])
         
         return (kop, xi)
