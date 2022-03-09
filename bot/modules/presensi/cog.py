@@ -337,6 +337,7 @@ class Presensi(Cog):
         
         kirim3 = xi['Nilai'].describe()
         
+        await ctx.send(f'[LAPORAN DAFTAR HADIR](https://cbt.sman1yogya.sch.id/index.php/admin/laporan_con/daftar_hadir?ujian_id={ujian_id}&mapel_id={mapel_id}&tingkat={tingkat})')
         msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
         tm_start = time.time()
         while time.time() < (tm_start + 7500):
