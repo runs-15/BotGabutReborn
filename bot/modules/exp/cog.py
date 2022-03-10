@@ -20,13 +20,10 @@ class Exp(Cog):
         self.levelling_channel = self.bot.get_channel(855810493397729300)
         self.text_levelling_channel = self.bot.get_channel(856069554387943427)
         self.temp_join = 0
-        # ---------------
-        # NANTI HIDUPIN
-        # ---------------
-        # if not self.voice_update.is_running():
-        #     self.voice_update.start()
-        # if not self.voice_submit.is_running():  
-        #     self.voice_submit.start()
+        if not self.voice_update.is_running():
+            self.voice_update.start()
+        if not self.voice_submit.is_running():  
+            self.voice_submit.start()
         # self.online_counter.start()
         # self.voice_check_update.start()
         # self.reset_vc_user.start()
@@ -71,7 +68,7 @@ class Exp(Cog):
                                                                            't_violation': 0,
                                                                            'n_violation': 0})
                 
-                for j in range(1, 501):
+                for j in range(1, 9999):
                     pembanding_bawah = 60*(j-1) + (((j-1) ** 3.8) * (1 - (0.99 ** (j-1))))
                     level            = 60*(j+0) + (((j+0) ** 3.8) * (1 - (0.99 ** (j+0))))
                     pembanding_atas  = 60*(j+1) + (((j+1) ** 3.8) * (1 - (0.99 ** (j+1))))
@@ -434,7 +431,9 @@ class Exp(Cog):
                 #boxes = int((atas/bawah) * 20)
                 #boxes = int((voice_time/(((current_level+9) ** 3.7) * (1 - (0.995 ** (current_level+9)))))*20)
 
-                hari = math.floor(voice_time / (60 * 60 * 24))
+                tahun = math.floor((voice_time / (60 * 60 * 24 * 365)))
+                pekan = math.floor((voice_time % (60 * 60 * 24 * 365)) / (60 * 60 * 24 * 7))
+                hari = math.floor((voice_time % (60 * 60 * 24 * 7)) / (60 * 60 * 24))
                 jam = math.floor((voice_time % (60 * 60 * 24)) / (60 * 60))
                 menit = math.floor((voice_time % (60 * 60)) / 60)
                 detik = math.floor(voice_time % (60))
@@ -464,9 +463,9 @@ class Exp(Cog):
                 embed.add_field(name="Level", value=current_level, inline=True)
                 embed.add_field(name="EXP", value=exp_value, inline=True)
                 try:
-                    embed.add_field(name="Time Spent in Voice Chat", value=f"{str(hari) + ' hari ' if hari != 0 else ''}{str(jam) + ' jam ' if jam != 0 else ''}{str(menit) + ' menit ' if menit != 0 else ''}{str(detik) + ' detik ' if detik != 0 else ''} ✨", inline=True)
+                    embed.add_field(name="Time Spent in Voice Chat", value=f"{str(tahun) + ' tahun ' if tahun != 0 else ''}{str(pekan) + ' pekan ' if pekan != 0 else ''}{str(hari) + ' hari ' if hari != 0 else ''}{str(jam) + ' jam ' if jam != 0 else ''}{str(menit) + ' menit ' if menit != 0 else ''}{str(detik) + ' detik ' if detik != 0 else ''}", inline=True)
                 except:
-                    embed.add_field(name="Time Spent in Voice Chat", value=f"0 ✨", inline=True)
+                    embed.add_field(name="Time Spent in Voice Chat", value=f"0", inline=True)
                 embed.add_field(name="Rank", value=f"**{int(ranking)}**{'st' if str(int(ranking))[-1] == '1' and str(int(ranking)) != '11' else ('nd' if str(int(ranking))[-1] == '2' and str(int(ranking)) != '12' else ('rd' if str(int(ranking))[-1] == '3' and str(int(ranking)) != '13' else 'th'))} of {len([m for m in user.guild.members if not m.bot])}", inline=True)
                 #embed.add_field(name="Progress Bar", value=boxes * color + (20-boxes) * ":white_large_square:", inline=False)
                 embed.set_image(url=f"attachment://{user.id}.jpg")
@@ -486,7 +485,8 @@ class Exp(Cog):
                 #boxes = int((atas/bawah) * 20)
                 #boxes = int((voice_time/(((current_level+9) ** 3.7) * (1 - (0.995 ** (current_level+9)))))*20)
 
-                hari = math.floor(voice_time / (60 * 60 * 24))
+                pekan = math.floor((voice_time % (60 * 60 * 24 * 365)) / (60 * 60 * 24 * 7))
+                hari = math.floor((voice_time % (60 * 60 * 24 * 7)) / (60 * 60 * 24))
                 jam = math.floor((voice_time % (60 * 60 * 24)) / (60 * 60))
                 menit = math.floor((voice_time % (60 * 60)) / 60)
                 detik = math.floor(voice_time % (60))
@@ -520,9 +520,9 @@ class Exp(Cog):
                 embed.add_field(name="Level", value=current_level, inline=True)
                 embed.add_field(name="EXP", value=exp_value, inline=True)
                 try:
-                    embed.add_field(name="Time Spent in Voice Chat", value=f"{str(hari) + ' hari ' if hari != 0 else ''}{str(jam) + ' jam ' if jam != 0 else ''}{str(menit) + ' menit ' if menit != 0 else ''}{str(detik) + ' detik ' if detik != 0 else ''} ✨", inline=True)
+                    embed.add_field(name="Time Spent in Voice Chat", value=f"{str(tahun) + ' tahun ' if tahun != 0 else ''}{str(pekan) + ' pekan ' if pekan != 0 else ''}{str(hari) + ' hari ' if hari != 0 else ''}{str(jam) + ' jam ' if jam != 0 else ''}{str(menit) + ' menit ' if menit != 0 else ''}{str(detik) + ' detik ' if detik != 0 else ''}", inline=True)
                 except:
-                    embed.add_field(name="Time Spent in Voice Chat", value=f"0 ✨", inline=True)
+                    embed.add_field(name="Time Spent in Voice Chat", value=f"0", inline=True)
                 embed.add_field(name="Rank", value=f"**{int(ranking)}**{'st' if str(int(ranking))[-1] == '1' else ('nd' if str(int(ranking))[-1] == '2' else ('rd' if str(int(ranking))[-1] == '3' else 'th'))} of {len([m for m in ctx.guild.members if not m.bot])}", inline=True)
                 #embed.add_field(name="Progress Bar", value=boxes * color + (20-boxes) * ":white_large_square:", inline=False)
                 embed.set_image(url=f"attachment://{ctx.author.id}.jpg")

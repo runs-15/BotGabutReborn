@@ -292,32 +292,6 @@ class Presensi(Cog):
         
         xi = pd.concat(dict_xi.values(), ignore_index=True)
             
-        # try:
-        #     xips = pd.DataFrame(tabel[2])
-        #     xi1 = pd.DataFrame(tabel[7])
-        #     xi2 = pd.DataFrame(tabel[12])
-        #     xi3 = pd.DataFrame(tabel[17])
-        #     xi4 = pd.DataFrame(tabel[22])
-        #     xi5 = pd.DataFrame(tabel[27])
-        #     xi6 = pd.DataFrame(tabel[32])
-        #     xi7 = pd.DataFrame(tabel[37])
-        #     xi8 = pd.DataFrame(tabel[42])
-        #     xi = pd.concat([xips, xi1, xi2, xi3, xi4, xi5, xi6, xi7, xi8])
-        # except:
-        #     try:
-        #         xips = pd.DataFrame(tabel[2])
-        #         xi1 = pd.DataFrame(tabel[7])
-        #         xi2 = pd.DataFrame(tabel[12])
-        #         xi3 = pd.DataFrame(tabel[17])
-        #         xi4 = pd.DataFrame(tabel[22])
-        #         xi5 = pd.DataFrame(tabel[27])
-        #         xi6 = pd.DataFrame(tabel[32])
-        #         xi7 = pd.DataFrame(tabel[37])
-        #         xi = pd.concat([xips, xi1, xi2, xi3, xi4, xi5, xi6, xi7])
-        #     except:
-        #         xi1 = pd.DataFrame(tabel[2])
-        #         xi = xi1
-            
         # mengolah    
         xi['Nilai'] = xi['Nilai'].replace(to_replace=r'/100', value='', regex=True)
         xi['Nilai'] = pd.to_numeric(xi['Nilai'], errors='coerce')
