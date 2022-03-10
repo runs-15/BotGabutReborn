@@ -485,6 +485,7 @@ class Exp(Cog):
                 #boxes = int((atas/bawah) * 20)
                 #boxes = int((voice_time/(((current_level+9) ** 3.7) * (1 - (0.995 ** (current_level+9)))))*20)
 
+                tahun = math.floor((voice_time / (60 * 60 * 24 * 365)))
                 pekan = math.floor((voice_time % (60 * 60 * 24 * 365)) / (60 * 60 * 24 * 7))
                 hari = math.floor((voice_time % (60 * 60 * 24 * 7)) / (60 * 60 * 24))
                 jam = math.floor((voice_time % (60 * 60 * 24)) / (60 * 60))
@@ -510,8 +511,6 @@ class Exp(Cog):
                 df = pd.DataFrame(data, index=[x['discord_id'] for x in data], columns=['v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
                 df['rank'] = df['v_time'].rank(ascending=False)
                 ranking = df.loc[ctx.author.id]['rank']
-
-                print(f"{str(hari) + ' hari ' if hari != 0 else ''}{str(jam) + ' jam ' if jam != 0 else ''}{str(menit) + ' menit ' if menit != 0 else ''}{str(detik) + ' detik ' if detik != 0 else ''}")
 
                 file = File(f"{ctx.author.id}.jpg", filename=f"{ctx.author.id}.jpg")
 
