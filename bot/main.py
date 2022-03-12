@@ -55,7 +55,7 @@ async def on_command_error(ctx, exc):
     else:
         print(exc)
                     
-        if (command := get(bot.commands, name=ctx.message.content.split()[0].lstrip(db.field("SELECT Prefix FROM guilds WHERE GuildID = ?", ctx.guild.id)))):
+        if (command := get(bot.commands, name=ctx.message.content.split()[0].lstrip(db.servers_con['servers']['server'].find({'server_id' : ctx.guild.id})[0]['prefix']))):
             await ctx.reply(f"```{str(exc)}```", embed=await cmd_help(ctx, command))
 
 @bot.event
