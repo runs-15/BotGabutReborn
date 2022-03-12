@@ -1,19 +1,15 @@
+from time import sleep
+#import pynacl
+#import dnspython
 from discord import Intents, Embed
-import discord
 from glob import glob
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from discord.ext import commands
 from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import when_mentioned_or
 from discord.utils import get
 import datetime
 import os, server, discord, db, datetime
-#import pynacl
-#import dnspython
-from discord.ext import commands
-from discord.ext.commands import when_mentioned_or
-from time import sleep
-from discord import Embed
-
 
 def get_prefix(bot, message):
     prefix = db.servers_con['servers']['server'].find({'server_id' : message.guild.id})[0]['prefix']
@@ -46,7 +42,6 @@ class Bot(BotBase):
         self.ready = False
         self.cogs_ready = Ready()
         self.guild = None
-        self.scheduler = AsyncIOScheduler()
         
         super().__init__(command_prefix=get_prefix, intents=Intents.all())
 
@@ -116,8 +111,6 @@ class Bot(BotBase):
             # db.commit()
             # await self.stdout.send(f"Now Online! -- This is the {count+1} launch-debug")
             # await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=f"the {count+1}{'-st' if str(count+1)[-1] == '1' else ('-nd' if str(count+1)[-1] == '2' else ('-rd' if str(count+1)[-1] == '3' else '-th'))} deployment | Version: {VERSION}"))
-            
-            self.scheduler.start()
 
             while not self.cogs_ready.all_ready():
                 await sleep(0.5)
