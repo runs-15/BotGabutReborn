@@ -103,23 +103,23 @@ class Help(Cog):
         embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar.url)
         await ctx.send(embed=embed)
     
-    @Cog.listener()        
-    async def on_command_error(self, ctx, exc):
-        if isinstance(exc, discord.ext.commands.CommandNotFound):
-            cmd_lst = ''
-            for i in self.bot.commands:
-                if ctx.message.content.split()[0].lstrip(db.servers_con['servers']['server'].find({'server_id' : ctx.guild.id})[0]['prefix']) in i.name or ctx.message.content.split()[0].lstrip(db.servers_con['servers']['server'].find({'server_id' : ctx.guild.id})[0]['prefix']) in ' '.join(i.aliases):
-                    cmd_lst += f'`{i or " ".join(i.aliases)}` '
-                    continue
-            if cmd_lst != '':
-                hlp = await ctx.reply(f"Command not available, or maybe call {cmd_lst}instead?")
-            else:
-                hlp = await ctx.reply("Command not available")
-        else:
-            print(exc)
+    # @Cog.listener()        
+    # async def on_command_error(self, ctx, exc):
+    #     if isinstance(exc, discord.ext.commands.CommandNotFound):
+    #         cmd_lst = ''
+    #         for i in self.bot.commands:
+    #             if ctx.message.content.split()[0].lstrip(db.servers_con['servers']['server'].find({'server_id' : ctx.guild.id})[0]['prefix']) in i.name or ctx.message.content.split()[0].lstrip(db.servers_con['servers']['server'].find({'server_id' : ctx.guild.id})[0]['prefix']) in ' '.join(i.aliases):
+    #                 cmd_lst += f'`{i or " ".join(i.aliases)}` '
+    #                 continue
+    #         if cmd_lst != '':
+    #             hlp = await ctx.reply(f"Command not available, or maybe call {cmd_lst}instead?")
+    #         else:
+    #             hlp = await ctx.reply("Command not available")
+    #     else:
+    #         print(exc)
                         
-            if (command := get(self.bot.commands, name=ctx.message.content.split()[0].lstrip(db.servers_con['servers']['server'].find({'server_id' : ctx.guild.id})[0]['prefix']))):
-                await ctx.reply(f"```{str(exc)}```", embed=await self.cmd_help(ctx, command))
+    #         if (command := get(self.bot.commands, name=ctx.message.content.split()[0].lstrip(db.servers_con['servers']['server'].find({'server_id' : ctx.guild.id})[0]['prefix']))):
+    #             await ctx.reply(f"```{str(exc)}```", embed=await self.cmd_help(ctx, command))
 
             
 def setup(bot):
