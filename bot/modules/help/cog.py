@@ -43,12 +43,12 @@ class Help(Cog):
             cogs_desc = ''
             for cog in sorted(self.bot.cogs):
                 cmd_list = ''
-                if len([c for c in self.bot.get_cog(cog).get_commands() if not c.hidden]) != 0:
+                if len([c for c in self.bot.get_cog(cog).get_commands() if not c.hidden or cmd != discord.SlashCommand]) != 0:
                     for cmd in self.bot.get_cog(cog).get_commands():
-                        if not cmd.hidden:
+                        if not cmd.hidden or cmd != discord.SlashCommand:
                             cmd_list += f'`{cmd.name}` '
                     desc = '{}> {}'.format(self.bot.cogs[cog].__doc__, cmd_list)
-                    cmd_count = f'[{len([c for c in self.bot.get_cog(cog).get_commands() if not c.hidden])}]'
+                    cmd_count = f'[{len([c for c in self.bot.get_cog(cog).get_commands() if not c.hidden or cmd != discord.SlashCommand])}]'
                     emb.add_field(name=f'**※{cog} Module {cmd_count}**', value=desc, inline=False)
                 
             # integrating trough uncategorized commands
@@ -56,7 +56,7 @@ class Help(Cog):
             for cmd in self.bot.walk_commands():
                 # if cog not in a cog
                 # listing command if cog name is None and command isn't hidden
-                if not cmd.cog_name and not cmd.hidden:
+                if not cmd.cog_name and (not cmd.hidden or cmd != discord.SlashCommand):
                     commands_desc += f'`{cmd.name}`\n> {cmd.help}\n'
                 
             # adding those commands to embed
