@@ -546,7 +546,7 @@ class Exp(Cog):
                 
     @command(name="vc.gacha")
     @cooldown(1, 10800, BucketType.user)
-    async def vc_gacha(self, ctx, times):
+    async def vc_gacha(self, ctx):
         items   = [+10, 
                     +5, 
                     +3,
