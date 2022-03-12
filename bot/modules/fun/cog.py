@@ -65,7 +65,8 @@ class Fun(Cog):
         embed.add_field(name="Deskripsi perintah: ", value=command.help)
         embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar.url)
         await ctx.send(embed=embed)
-            
+    
+    @Cog.listener()        
     async def on_command_error(self, ctx, exc):
         if isinstance(exc, discord.ext.commands.CommandNotFound):
             cmd_lst = ''
