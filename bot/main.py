@@ -1,4 +1,4 @@
-import os, server, discord, db
+import os, server, discord, db, datetime
 #import pynacl
 #import dnspython
 from discord.ext import commands
