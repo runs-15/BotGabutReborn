@@ -16,7 +16,7 @@ from discord import Embed
 
 
 def get_prefix(bot, message):
-    prefix = db.field("SELECT Prefix FROM guilds WHERE GuildID = ?", message.guild.id)
+    prefix = db.servers_con['servers']['server'].find({'server_id' : message.guild.id})[0]['prefix']
     return when_mentioned_or(prefix)(bot, message)
 
 def syntax(command):
@@ -94,7 +94,7 @@ class Bot(BotBase):
         if isinstance(exc, discord.ext.commands.CommandNotFound):
             cmd_lst = ''
             for i in bot.commands:
-                if ctx.message.content.split()[0].lstrip(db.field("SELECT Prefix FROM guilds WHERE GuildID = ?", ctx.guild.id)) in i.name or ctx.message.content.split()[0].lstrip(db.field("SELECT Prefix FROM guilds WHERE GuildID = ?", ctx.guild.id)) in ' '.join(i.aliases):
+                if ctx.message.content.split()[0].lstrip(db.servers_con['servers']['server'].find({'server_id' : ctx.guild.id})[0]['prefix']) in ' '.join(i.aliases):
                     cmd_lst += f'`{i or " ".join(i.aliases)}` '
                     continue
             if cmd_lst != '':
@@ -104,7 +104,7 @@ class Bot(BotBase):
         else:
             print(exc)
             
-            if (command := get(bot.commands, name=ctx.message.content.split()[0].lstrip(db.field("SELECT Prefix FROM guilds WHERE GuildID = ?", ctx.guild.id)))):
+            if (command := get(bot.commands, name=ctx.message.content.split()[0].lstrip(db.servers_con['servers']['server'].find({'server_id' : ctx.guild.id})[0]['prefix']))):
                 await ctx.reply(f"```{str(exc)}```", embed=await self.cmd_help(ctx, command))
 
     async def on_ready(self):
