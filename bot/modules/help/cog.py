@@ -28,7 +28,7 @@ class Help(Cog):
     async def cmd_help(self, ctx, command):
         embed = Embed(title=f"Bantuan perintah `{command}`", description=syntax(command), colour=int(hex(int("2f3136", 16)), 0), timestamp=datetime.datetime.now())
         embed.add_field(name="Deskripsi perintah: ", value=command.help)
-        embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar_url)
+        embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar.url)
         await ctx.send(embed=embed)
         
     @command(name = "help")
@@ -37,8 +37,8 @@ class Help(Cog):
         emb = Embed(title='Modules and Command', color=int(hex(int("2f3136", 16)), 0),
                             description=f'Use `{prefix}help <command>` to gain more information about that command\n',
                             timestamp=datetime.datetime.now())
-        emb.set_thumbnail(url=self.bot.user.avatar_url)
-        emb.set_author(name=self.bot.user.display_name, icon_url=self.bot.user.avatar_url)
+        emb.set_thumbnail(url=self.bot.user.avatar.url)
+        emb.set_author(name=self.bot.user.display_name, icon_url=self.bot.user.avatar.url)
         if cmd is None:
             cogs_desc = ''
             for cog in sorted(self.bot.cogs):

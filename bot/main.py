@@ -38,7 +38,7 @@ def syntax(command):
 async def cmd_help(ctx, command):
     embed = Embed(title=f"Bantuan perintah `{command}`", description=syntax(command), colour=int(hex(int("2f3136", 16)), 0), timestamp=datetime.datetime.now())
     embed.add_field(name="Deskripsi perintah: ", value=command.help)
-    embed.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
+    embed.set_author(name=bot.user.name, icon_url=bot.user.avatar.url)
     await ctx.send(embed=embed)
         
 async def on_command_error(ctx, exc):
