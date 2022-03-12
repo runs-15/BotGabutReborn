@@ -45,8 +45,7 @@ class Help(Cog):
                 cmd_list = ''
                 if len(self.bot.get_cog(cog).get_commands()) != 0:
                     for cmd in self.bot.get_cog(cog).get_commands():
-                        if not cmd.hidden:
-                            cmd_list += f'`{cmd.name}` '
+                        cmd_list += f'`{cmd.name}` '
                     desc = '{}> {}'.format(self.bot.cogs[cog].__doc__, cmd_list)
                     cmd_count = f'[{len([c for c in self.bot.get_cog(cog).get_commands() if not c.hidden or cmd != discord.SlashCommand])}]'
                     emb.add_field(name=f'**※{cog} Module {cmd_count}**', value=desc, inline=False)
