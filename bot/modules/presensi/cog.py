@@ -343,8 +343,8 @@ class Presensi(Cog):
                 nama = xi.iloc[i]['Nama']
                 rank_kirim += "RANK {:<32}: {:<32}  {:<5} / 100\n".format(i, nama, xi.query(f'Nama == "{key}"')['Nilai'].values[0])
                 
-            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}``````{rank_kirim}```""")
-            pengawasan = await ctx.send(f"""```{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}```""")
+            pengawasan = await ctx.send(f"""```{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
             tm_start = time.time()
             while time.time() < (tm_start + 7500):
                 await sleep(1)
@@ -384,8 +384,8 @@ class Presensi(Cog):
                                 nama = xi.iloc[i]['Nama']
                                 rank_kirim += "RANK {:<32}: {:<32}  {:<5} / 100\n".format(i, nama, xi.query(f'Nama == "{key}"')['Nilai'].values[0])
                                 
-                            await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}``````{rank_kirim}```""")
-                            await pengawasan.edit(f"""```{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+                            await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}```""")
+                            await pengawasan.edit(f"""```{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
                         except:
                             pass
                 except:
@@ -438,8 +438,8 @@ class Presensi(Cog):
                 nama = xi.iloc[i]['Nama']
                 rank_kirim += "RANK {:<32}: {:<32}  {:<5} / 100\n".format(i, nama, xi.query(f'Nama == "{key}"')['Nilai'].values[0])
                 
-            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}``````{rank_kirim}```""")
-            pengawasan = await ctx.send(f"""```{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}```""")
+            pengawasan = await ctx.send(f"""```{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
         else:
             await ctx.send('Not permitted')
             
