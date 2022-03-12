@@ -305,10 +305,10 @@ class Presensi(Cog):
     @command(name='update_nilai')    
     async def update_nilai(self, ctx, ujian_id, mapel_id, tingkat):
         if ctx.channel.category_id == 898167597160341554:
-            payload = {'username' : os.getenv('username_admin'), 'password' : os.getenv('password_admin')}
+            payload = {'username' : os.getenv('username_login'), 'password' : os.getenv('password_login')}
             with requests.Session() as session:
-                session.post(os.getenv('url_admin'), data=payload)
-                resp = session.get(f'https://cbt.sman1yogya.sch.id/index.php/admin/laporan_con/daftar_hadir?ujian_id={ujian_id}&mapel_id={mapel_id}&tingkat={tingkat}')
+                session.post(os.getenv('url_login'), data = payload)
+                resp = session.get(os.getenv('daftar_hadir'), data = {'ujian_id' : ujian_id, 'mapel_id' : mapel_id, 'tingkat' : tingkat})
 
             kop, xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)
             
