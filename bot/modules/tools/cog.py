@@ -262,6 +262,11 @@ class Tools(Cog):
                         
             if (command := get(self.bot.commands, name=ctx.message.content.split()[0].lstrip(db.field("SELECT Prefix FROM guilds WHERE GuildID = ?", ctx.guild.id)))):
                 await ctx.reply(f"```{str(exc)}```", embed=await self.cmd_help(ctx, command))
+                
+    @Cog.listener()
+    async def on_ready(self):
+        if not self.bot.ready:
+            self.bot.cogs_ready.ready_up("tools")
     
 def setup(bot):
     bot.add_cog(Tools(bot))
