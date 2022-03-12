@@ -1,15 +1,12 @@
-from time import sleep
+import os, server, discord, db, datetime
 #import pynacl
 #import dnspython
 from discord import Intents, Embed
-from glob import glob
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from time import sleep
 from discord.ext import commands
 from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import when_mentioned_or
 from discord.utils import get
-import datetime
-import os, server, discord, db, datetime
 
 def get_prefix(bot, message):
     prefix = db.servers_con['servers']['server'].find({'server_id' : message.guild.id})[0]['prefix']
@@ -82,7 +79,7 @@ class Bot(BotBase):
     async def cmd_help(self, ctx, command):
         embed = Embed(title=f"Bantuan perintah `{command}`", description=syntax(command), colour=int(hex(int("2f3136", 16)), 0), timestamp=datetime.datetime.now())
         embed.add_field(name="Deskripsi perintah: ", value=command.help)
-        embed.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
+        embed.set_author(name=bot.user.name, icon_url=bot.user.avatar.url)
         await ctx.send(embed=embed)
 
     async def on_command_error(self, ctx, exc):
