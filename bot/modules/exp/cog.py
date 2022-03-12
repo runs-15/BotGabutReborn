@@ -7,6 +7,7 @@ from discord import Embed, Status, File
 from datetime import datetime
 from PIL import Image, ImageDraw
 from discord.utils import get
+import numpy as np
 
 class Exp(Cog):
     def __init__(self, bot):
@@ -542,6 +543,52 @@ class Exp(Cog):
                 await ctx.send(file=file, embed=embed)
             else:
                 await ctx.send("Bergabunglah dalam channel voice chat terlebih dahulu!")
+                
+    @command(name="vc.gacha")
+    @cooldown(1, 10800, BucketType.user)
+    def vc_gacha(self, ctx, times):
+        items   = [+10, 
+                    +5, 
+                    +3,
+                    +2,
+                    +1,
+                    +0.8,
+                    +0.5,
+                    +0.3,
+                    -0.3,
+                    -0.8,
+                    -1,
+                    -3,
+                    -10
+                    ] # Contents
+
+        prob     = [0.0001, 
+                    0.009, 
+                    0.01,
+                    0.02,
+                    0.05,
+                    0.1,
+                    0.2,
+                    0.4,
+                    0.2,
+                    0.003,
+                    0.007,
+                    0.0005,
+                    0.0004
+                    ] # probability
+        
+        result = np.random.choice(items, 1, p=prob)
+        
+        current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
+
+        atas = int(voice_time)-int(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0)))))
+        bawah = int(60*(current_level+1) + (((current_level+1) ** 3.8) * (1 - (0.99 ** (current_level+1))))-(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0))))))
+        
+        result_exp = int((bawah - atas) * (result / 100))
+        voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time'] + result_exp
+        db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_time': voice_time}})
+        
+        await ctx.send(f'{result[0]}% of remaining xp to next level worth of {result_exp} voice chat seconds')
             
 def setup(bot):
     bot.add_cog(Exp(bot))
