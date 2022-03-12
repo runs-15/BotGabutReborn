@@ -336,15 +336,15 @@ class Presensi(Cog):
             dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
             for key, value in dalam_pengawasan.items():
                 ranking = xi.index[xi['Nama']==i][0] + 1
-                pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f"Nama == '{key}'")['Nilai'].values[0], ranking, value)
+                pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking, value)
             
             rank_kirim = ''
             for i in range(10):
                 nama = xi.iloc[i]['Nama']
-                rank_kirim += "RANK{:<28}: {:<32}  {:<5} / 100\n".format(i + 1, nama, xi.query(f'Nama == "{key}"')['Nilai'].values[0])
+                rank_kirim += "RANK {:<17}{:<5} / 100 : {:<32}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
                 
             msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}```""")
-            pengawasan = await ctx.send(f"""```{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+            pengawasan = await ctx.send(f"""\n```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
             tm_start = time.time()
             while time.time() < (tm_start + 7500):
                 await sleep(1)
@@ -382,10 +382,10 @@ class Presensi(Cog):
                             rank_kirim = ''
                             for i in range(10):
                                 nama = xi.iloc[i]['Nama']
-                                rank_kirim += "RANK{:<28}: {:<32}  {:<5} / 100\n".format(i + 1, nama, xi.query(f'Nama == "{key}"')['Nilai'].values[0])
+                                rank_kirim += "RANK {:<17}{:<5} / 100 : {:<32}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
                                 
                             await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}```""")
-                            await pengawasan.edit(f"""```{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+                            await pengawasan.edit(f"""\n```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
                         except:
                             pass
                 except:
@@ -436,10 +436,10 @@ class Presensi(Cog):
             rank_kirim = ''
             for i in range(10):
                 nama = xi.iloc[i]['Nama']
-                rank_kirim += "RANK{:<28}: {:<32}  {:<5} / 100\n".format(i + 1, nama, xi.query(f'Nama == "{key}"')['Nilai'].values[0])
+                rank_kirim += "RANK {:<17}{:<5} / 100 : {:<32}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
                 
             msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}```""")
-            pengawasan = await ctx.send(f"""```{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+            pengawasan = await ctx.send(f"""\n```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
         else:
             await ctx.send('Not permitted')
             
