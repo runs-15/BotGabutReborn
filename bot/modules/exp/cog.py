@@ -47,7 +47,8 @@ class Exp(Cog):
             checker.append(channel.members)
             members = channel.members
             if len(members) == 1:
-                continue
+                for member in members:
+                    del self.user[member.id]
             else:
                 for member in members:
                     if member.id not in self.user and not member.bot:
