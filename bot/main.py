@@ -6,9 +6,7 @@ from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import when_mentioned_or
 from discord.utils import get
 from asyncio import sleep
-from discord_components import DiscordComponents
 import datetime
-import time
 import os, server, discord, db, datetime
 #import pynacl
 #import dnspython
