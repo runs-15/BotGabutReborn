@@ -6,6 +6,7 @@ from discord.ext.commands import Cog, command, slash_command, cooldown, BucketTy
 from discord import Embed, Status, File
 from datetime import datetime
 from PIL import Image, ImageDraw
+from discord.utils import get
 
 class Exp(Cog):
     def __init__(self, bot):
@@ -408,8 +409,9 @@ class Exp(Cog):
         cnt = 1
         embed = Embed(title=f"Voice Level Leaderboard", colour=ctx.author.colour)
         for index, row in df.iterrows():
+            user = get(self.bot.get_all_members(), id=row['discord_id'])
             if cnt < 11:
-                embed.add_field(name=f"Rank : {cnt}", value=row['discord_id'].mention, inline=True)
+                embed.add_field(name=f"Rank : {cnt}", value=user.mention, inline=True)
                 cnt += 1
         embed.set_thumbnail(url=ctx.guild.icon.url)
         await ctx.send(embed=embed)
