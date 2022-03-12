@@ -40,8 +40,7 @@ async def cmd_help(ctx, command):
     embed.add_field(name="Deskripsi perintah: ", value=command.help)
     embed.set_author(name=bot.user.name, icon_url=bot.user.avatar.url)
     await ctx.send(embed=embed)
-
-@bot.listener()        
+    
 async def on_command_error(ctx, exc):
     if isinstance(exc, discord.ext.commands.CommandNotFound):
         cmd_lst = ''
