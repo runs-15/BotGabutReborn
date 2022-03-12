@@ -373,9 +373,9 @@ class Presensi(Cog):
                             kirim3 = xi['Nilai'].describe()
                             
                             pengawasan = ''
-                            for i in os.getenv('dalam_pengawasan'):
+                            for key, value in {os.getenv('dalam_pengawasan')}.items():
                                 ranking = xi.index[xi['Nama']==i][0] + 1
-                                pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
+                                pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f"Nama == '{key}'")['Nilai'].values[0], ranking, value)
                             
                             try:
                                 rank_kirim = ''
@@ -425,9 +425,9 @@ class Presensi(Cog):
             kirim3 = xi['Nilai'].describe()
             
             pengawasan = ''
-            for i in os.getenv('dalam_pengawasan'):
+            for key, value in {os.getenv('dalam_pengawasan')}.items():
                 ranking = xi.index[xi['Nama']==i][0] + 1
-                pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
+                pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f"Nama == '{key}'")['Nilai'].values[0], ranking, value)
             
             try:
                 rank_kirim = ''
