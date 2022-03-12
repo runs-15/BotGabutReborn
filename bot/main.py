@@ -5,7 +5,6 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import when_mentioned_or
 from discord.utils import get
-from asyncio import sleep
 import datetime
 import os, server, discord, db, datetime
 #import pynacl
@@ -13,7 +12,6 @@ import os, server, discord, db, datetime
 from discord.ext import commands
 from discord.ext.commands import when_mentioned_or
 from time import sleep
-from discord.utils import get
 from discord import Embed
 
 
