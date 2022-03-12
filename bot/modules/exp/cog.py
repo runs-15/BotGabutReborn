@@ -403,14 +403,13 @@ class Exp(Cog):
         daftar = db.servers_con['servers']['social_credit'].find()
         data = list(daftar)
         df = pd.DataFrame(data, index=[x['discord_id'] for x in data], columns=['discord_id', 'v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
-        df['rank'] = df['v_time'].rank(ascending=False)
-        df.set_index('rank')
+        df = df.sort_values(['v_time', 'discord_id'], ascending=[False, True], ignore_index=True)
         
-        cnt = 0
+        cnt = 1
         embed = Embed(title=f"Voice Level Leaderboard", colour=ctx.author.colour)
         for index, row in df.iterrows():
-            if cnt < 10:
-                embed.add_field(name=f"Rank : {row['rank']}", value=f"<@{int(row['discord_id'])}>", inline=True)
+            if cnt < 11:
+                embed.add_field(name=f"Rank : {cnt}", value=row['discord_id'].mention, inline=True)
                 cnt += 1
         embed.set_thumbnail(url=ctx.guild.icon.url)
         await ctx.send(embed=embed)
