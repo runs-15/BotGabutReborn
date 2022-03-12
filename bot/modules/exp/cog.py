@@ -580,12 +580,13 @@ class Exp(Cog):
         result = np.random.choice(items, 1, p=prob)
         
         current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
+        voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
 
         atas = int(voice_time)-int(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0)))))
         bawah = int(60*(current_level+1) + (((current_level+1) ** 3.8) * (1 - (0.99 ** (current_level+1))))-(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0))))))
         
         result_exp = int((bawah - atas) * (result / 100))
-        voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time'] + result_exp
+        voice_time += result_exp
         db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_time': voice_time}})
         
         await ctx.send(f'{result[0]}% of remaining xp to next level worth of {result_exp} voice chat seconds')
