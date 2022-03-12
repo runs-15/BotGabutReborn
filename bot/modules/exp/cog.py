@@ -587,9 +587,9 @@ class Exp(Cog):
         
         result_exp = int((bawah - atas) * (result / 100))
         voice_time += result_exp
-        db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_time': voice_time}})
+        db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
         
-        await ctx.send(f'{result[0]}% of remaining xp to next level worth of {result_exp} voice chat seconds')
+        await ctx.send(f'**`{result[0]}%`** of remaining xp to next level worth of **`{result_exp}`** voice chat seconds')
             
 def setup(bot):
     bot.add_cog(Exp(bot))
