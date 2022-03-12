@@ -322,11 +322,11 @@ class Presensi(Cog):
             for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
                 try:
                     ranking = xi.index[xi['Nama']==i][0] + 1
-                    kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
+                    kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking)
                 except Exception as e:
                     print(e)
                     try:
-                        kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0])
+                        kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0])
                     except:
                         pass
             
@@ -339,9 +339,9 @@ class Presensi(Cog):
                 pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f"Nama == '{key}'")['Nilai'].values[0], ranking, value)
             
             try:
-                rank_kirim = ''
                 for i in range(10):
-                    rank_kirim += "{:<32}: {:<5} / 100\n".format(xi.iloc[i]['Nama'], xi.query(f"Nama == '{xi.iloc[i]['Nama']}'")['Nilai'].values[0])
+                    nama = xi.iloc[i]['Nama']
+                    rank_kirim += "{:<32}: {:<5} / 100\n".format(nama, xi.query(f'Nama == "{key}"')['Nilai'].values[0])
                 msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
             except:
                 msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
@@ -363,11 +363,11 @@ class Presensi(Cog):
                             for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
                                 try:
                                     ranking = xi.index[xi['Nama']==i][0] + 1
-                                    kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
+                                    kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking)
                                 except Exception as e:
                                     print(e)
                                     try:
-                                        kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0])
+                                        kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0])
                                     except:
                                         pass
                             
@@ -377,12 +377,12 @@ class Presensi(Cog):
                             dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
                             for key, value in dalam_pengawasan.items():
                                 ranking = xi.index[xi['Nama']==key][0] + 1
-                                pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f"Nama == '{key}'")['Nilai'].values[0], ranking, value)
+                                pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking, value)
                             
                             try:
-                                rank_kirim = ''
                                 for i in range(10):
-                                    rank_kirim += "{:<32}: {:<5} / 100\n".format(xi.iloc[i]['Nama'], xi.query(f"Nama == '{xi.iloc[i]['Nama']}'")['Nilai'].values[0])
+                                    nama = xi.iloc[i]['Nama']
+                                    rank_kirim += "{:<32}: {:<5} / 100\n".format(nama, xi.query(f'Nama == "{key}"')['Nilai'].values[0])
                                 msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
                             except:
                                 msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
@@ -416,11 +416,11 @@ class Presensi(Cog):
             for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
                 try:
                     ranking = xi.index[xi['Nama']==i][0] + 1
-                    kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
+                    kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking)
                 except Exception as e:
                     print(e)
                     try:
-                        kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0])
+                        kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0])
                     except:
                         pass
             
@@ -430,22 +430,17 @@ class Presensi(Cog):
             dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
             for key, value in dalam_pengawasan.items():
                 ranking = xi.index[xi['Nama'] == key][0] + 1
-                pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f"Nama == '{key}'")['Nilai'].values[0], ranking, value)
+                pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking, value)
             
-            rank_kirim = ''
-            for i in range(10):
-                nama = xi.iloc[i]['Nama']
-                rank_kirim += "{:<32}: {:<5} / 100\n".format(nama, xi.query(f"Nama == '{nama}'")['Nilai'].values[0])
-            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
-            # try:
-            #     rank_kirim = ''
-            #     for i in range(10):
-            #         nama = xi.iloc[i]['Nama']
-            #         rank_kirim += "{:<32}: {:<5} / 100\n".format(nama, xi.query(f"Nama == '{nama}'")['Nilai'].values[0])
-            #     msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
-            # except Exception as e:
-            #     print(e, pengawasan, rank_kirim)
-            #     msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+            try:
+                rank_kirim = ''
+                for i in range(10):
+                    nama = xi.iloc[i]['Nama']
+                    rank_kirim += "{:<32}: {:<5} / 100\n".format(nama, xi.query(f'Nama == "{key}"')['Nilai'].values[0])
+                msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+            except Exception as e:
+                print(e, pengawasan, rank_kirim)
+                msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
         else:
             await ctx.send('Not permitted')
             
