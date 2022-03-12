@@ -343,8 +343,8 @@ class Presensi(Cog):
                 nama = xi.iloc[i]['Nama']
                 rank_kirim += "RANK {:<10}{:<5} / 100      : {:<32}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
                 
-            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}```""")
-            pengawasan = await ctx.send(f"""\n```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}```\n""")
+            pengawasan = await ctx.send(f"""```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
             tm_start = time.time()
             while time.time() < (tm_start + 7500):
                 await sleep(1)
@@ -384,8 +384,8 @@ class Presensi(Cog):
                                 nama = xi.iloc[i]['Nama']
                                 rank_kirim += "RANK {:<10}{:<5} / 100      : {:<32}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
                                 
-                            await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}```""")
-                            await pengawasan.edit(f"""\n```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+                            await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}```\n""")
+                            await pengawasan.edit(f"""```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
                         except:
                             pass
                 except:
@@ -438,8 +438,8 @@ class Presensi(Cog):
                 nama = xi.iloc[i]['Nama']
                 rank_kirim += "RANK {:<10}{:<5} / 100      : {:<32}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
                 
-            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}```""")
-            pengawasan = await ctx.send(f"""\n```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}```\n""")
+            pengawasan = await ctx.send(f"""```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
         else:
             await ctx.send('Not permitted')
             
