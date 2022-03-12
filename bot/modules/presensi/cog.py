@@ -456,11 +456,6 @@ class Presensi(Cog):
                         
             if (command := get(self.bot.commands, name=ctx.message.content.split()[0].lstrip(db.servers_con['servers']['server'].find({'server_id' : ctx.guild.id})[0]['prefix']))):
                 await ctx.reply(f"```{str(exc)}```", embed=await self.cmd_help(ctx, command))
-    
-    @Cog.listener()
-    async def on_ready(self):
-        if not self.bot.ready:
-            self.bot.cogs_ready.ready_up("presensi")
             
 def setup(bot):
     bot.add_cog(Presensi(bot))
