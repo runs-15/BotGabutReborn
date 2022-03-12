@@ -341,7 +341,7 @@ class Presensi(Cog):
             rank_kirim = ''
             for i in range(10):
                 nama = xi.iloc[i]['Nama']
-                rank_kirim += "RANK {:<32}: {:<32}  {:<5} / 100\n".format(i, nama, xi.query(f'Nama == "{key}"')['Nilai'].values[0])
+                rank_kirim += "RANK{:<28}: {:<32}  {:<5} / 100\n".format(i + 1, nama, xi.query(f'Nama == "{key}"')['Nilai'].values[0])
                 
             msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}```""")
             pengawasan = await ctx.send(f"""```{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
@@ -382,7 +382,7 @@ class Presensi(Cog):
                             rank_kirim = ''
                             for i in range(10):
                                 nama = xi.iloc[i]['Nama']
-                                rank_kirim += "RANK {:<32}: {:<32}  {:<5} / 100\n".format(i, nama, xi.query(f'Nama == "{key}"')['Nilai'].values[0])
+                                rank_kirim += "RANK{:<28}: {:<32}  {:<5} / 100\n".format(i + 1, nama, xi.query(f'Nama == "{key}"')['Nilai'].values[0])
                                 
                             await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}```""")
                             await pengawasan.edit(f"""```{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
@@ -436,7 +436,7 @@ class Presensi(Cog):
             rank_kirim = ''
             for i in range(10):
                 nama = xi.iloc[i]['Nama']
-                rank_kirim += "RANK {:<32}: {:<32}  {:<5} / 100\n".format(i, nama, xi.query(f'Nama == "{key}"')['Nilai'].values[0])
+                rank_kirim += "RANK{:<28}: {:<32}  {:<5} / 100\n".format(i + 1, nama, xi.query(f'Nama == "{key}"')['Nilai'].values[0])
                 
             msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}```""")
             pengawasan = await ctx.send(f"""```{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
