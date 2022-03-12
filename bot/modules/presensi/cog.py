@@ -333,7 +333,8 @@ class Presensi(Cog):
             kirim3 = xi['Nilai'].describe()
             
             pengawasan = ''
-            for key, value in dict(os.getenv('dalam_pengawasan')).items():
+            dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
+            for key, value in dalam_pengawasan.items():
                 ranking = xi.index[xi['Nama']==i][0] + 1
                 pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f"Nama == '{key}'")['Nilai'].values[0], ranking, value)
             
@@ -373,7 +374,8 @@ class Presensi(Cog):
                             kirim3 = xi['Nilai'].describe()
                             
                             pengawasan = ''
-                            for key, value in dict(os.getenv('dalam_pengawasan')).items():
+                            dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
+                            for key, value in dalam_pengawasan.items():
                                 ranking = xi.index[xi['Nama']==i][0] + 1
                                 pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f"Nama == '{key}'")['Nilai'].values[0], ranking, value)
                             
@@ -425,8 +427,8 @@ class Presensi(Cog):
             kirim3 = xi['Nilai'].describe()
             
             pengawasan = ''
-            print(dict(os.getenv('dalam_pengawasan')))
-            for key, value in dict(os.getenv('dalam_pengawasan')).items():
+            dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
+            for key, value in dalam_pengawasan.items():
                 ranking = xi.index[xi['Nama']==i][0] + 1
                 pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f"Nama == '{key}'")['Nilai'].values[0], ranking, value)
             
