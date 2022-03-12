@@ -27,6 +27,14 @@ class Exp(Cog):
         # self.online_counter.start()
         # self.voice_check_update.start()
         # self.reset_vc_user.start()
+
+    def number_format(self, num):
+        num = float('{:.3g}'.format(num))
+        magnitude = 0
+        while abs(num) >= 1000:
+            magnitude += 1
+            num /= 1000.0
+        return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T', 'P'][magnitude])
             
     @tasks.loop(seconds=15)   
     async def voice_update(self):
@@ -442,7 +450,7 @@ class Exp(Cog):
                 detik = math.floor(voice_time % (60))
 
                 print(hari, jam, menit, detik)
-                exp_value = f"{atas}/{bawah}"
+                exp_value = f"{self.number_format(atas)}/{self.number_format(bawah)}"
 
                 # create image or load your existing image with out=Image.open(path)
                 out = Image.new("RGB", (720, 25), (255, 255, 255))
@@ -467,7 +475,7 @@ class Exp(Cog):
                 embed.add_field(name="EXP", value=exp_value, inline=True)
                 embed.add_field(name="Rank", value=f"**{int(ranking)}**{'st' if str(int(ranking))[-1] == '1' and str(int(ranking)) != '11' else ('nd' if str(int(ranking))[-1] == '2' and str(int(ranking)) != '12' else ('rd' if str(int(ranking))[-1] == '3' and str(int(ranking)) != '13' else 'th'))} of {len([m for m in user.guild.members if not m.bot])}", inline=True)
                 try:
-                    embed.add_field(name="Time Spent in Voice Chat", value=f"{str(tahun) + ' tahun ' if tahun != 0 else ''}{str(pekan) + ' pekan ' if pekan != 0 else ''}{str(hari) + ' hari ' if hari != 0 else ''}{str(jam) + ' jam ' if jam != 0 else ''}{str(menit) + ' menit ' if menit != 0 else ''}{str(detik) + ' detik ' if detik != 0 else ''}", inline=True)
+                    embed.add_field(name="Time Spent in Voice Chat", value=f"{str(tahun) + 'y ' if tahun != 0 else ''}{str(pekan) + 'w ' if pekan != 0 else ''}{str(hari) + 'd ' if hari != 0 else ''}{str(jam) + 'h ' if jam != 0 else ''}{str(menit) + 'm ' if menit != 0 else ''}{str(detik) + 's ' if detik != 0 else ''}", inline=True)
                 except Exception as e:
                     embed.add_field(name="Time Spent in Voice Chat", value=e, inline=True)
                 #embed.add_field(name="Progress Bar", value=boxes * color + (20-boxes) * ":white_large_square:", inline=False)
@@ -496,7 +504,7 @@ class Exp(Cog):
                 detik = math.floor(voice_time % (60))
 
                 print(hari, jam, menit, detik)
-                exp_value = f"{atas}/{bawah}"
+                exp_value = f"{self.number_format(atas)}/{self.number_format(bawah)}"
 
                 # create image or load your existing image with out=Image.open(path)
                 out = Image.new("RGB", (720, 25), (255, 255, 255))
@@ -523,7 +531,7 @@ class Exp(Cog):
                 embed.add_field(name="EXP", value=exp_value, inline=True)
                 embed.add_field(name="Rank", value=f"**{int(ranking)}**{'st' if str(int(ranking))[-1] == '1' else ('nd' if str(int(ranking))[-1] == '2' else ('rd' if str(int(ranking))[-1] == '3' else 'th'))} of {len([m for m in ctx.guild.members if not m.bot])}", inline=True)
                 try:
-                    embed.add_field(name="Time Spent in Voice Chat", value=f"{str(tahun) + ' tahun ' if tahun != 0 else ''}{str(pekan) + ' pekan ' if pekan != 0 else ''}{str(hari) + ' hari ' if hari != 0 else ''}{str(jam) + ' jam ' if jam != 0 else ''}{str(menit) + ' menit ' if menit != 0 else ''}{str(detik) + ' detik ' if detik != 0 else ''}", inline=True)
+                    embed.add_field(name="Time Spent in Voice Chat", value=f"{str(tahun) + 'y ' if tahun != 0 else ''}{str(pekan) + 'w ' if pekan != 0 else ''}{str(hari) + 'd ' if hari != 0 else ''}{str(jam) + 'h ' if jam != 0 else ''}{str(menit) + 'm ' if menit != 0 else ''}{str(detik) + 's ' if detik != 0 else ''}", inline=True)
                 except Exception as e:
                     embed.add_field(name="Time Spent in Voice Chat", value=e, inline=True)
                 #embed.add_field(name="Progress Bar", value=boxes * color + (20-boxes) * ":white_large_square:", inline=False)
