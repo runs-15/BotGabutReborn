@@ -388,10 +388,10 @@ class Presensi(Cog):
     async def ambil_nilai(self, ctx, ujian_id, mapel_id, tingkat):
         if ctx.channel.category_id == 898167597160341554:
             
-            payload = {'username' : os.getenv('username_admin'), 'password' : os.getenv('password_admin')}
+            payload = {'username' : os.getenv('username_login'), 'password' : os.getenv('password_login')}
             with requests.Session() as session:
-                session.post(os.getenv('url_admin'), data=payload)
-                resp = session.get(f'https://cbt.sman1yogya.sch.id/index.php/admin/laporan_con/daftar_hadir?ujian_id={ujian_id}&mapel_id={mapel_id}&tingkat={tingkat}')
+                session.post(os.getenv('url_login'), data = payload)
+                resp = session.get(os.getenv('daftar_hadir'), data = {'ujian_id' : ujian_id, 'mapel_id' : mapel_id, 'tingkat' : tingkat})
 
             kop, xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)
             
@@ -402,7 +402,7 @@ class Presensi(Cog):
                     kirim += "{:<32}{}\n".format(row['key'], row['value'])
             
             kirim2 = ''
-            for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
+            for i in [os.getenv('list_tlp')]:
                 try:
                     ranking = xi.index[xi['Nama']==i][0] + 1
                     kirim2 += "{:<32}: {:<5} / 100    {:<3}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
@@ -415,9 +415,16 @@ class Presensi(Cog):
             
             kirim3 = xi['Nilai'].describe()
             
+            pengawasan = ''
+            for i in os.getenv('dalam_pengawasan'):
+                ranking = xi.index[xi['Nama']==i][0] + 1
+                pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(i, xi.query(f"Nama == '{i}'")['Nilai'].values[0], ranking)
+            
             try:
-                rank1 = xi.iloc[0]['Nama']
-                msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}``````RANK 1                          : {rank1}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+                rank_kirim = ''
+                for i in range(10):
+                    rank_kirim += "{:<32}: {:<5} / 100\n".format(xi.iloc[i]['Nama'], xi.query(f"Nama == '{i}'")['Nilai'].values[0])
+                msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   KETERANGAN``````{kirim2}``````{kirim3}``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
             except:
                 msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK``````{kirim2}``````{kirim3}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
         else:
