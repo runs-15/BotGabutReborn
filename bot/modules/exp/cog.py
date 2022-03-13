@@ -679,7 +679,7 @@ class Exp(Cog):
                     result = np.random.choice(list(good_needed_xp.keys()), 1, p=list(good_needed_xp.values()))
                     res = int((batas_atas - xp_sekarang) * (result[0] / 100))
                 
-                txt = f'Giving **`{result[0]}%`** of remaining xp to next level with cost `{res - cost}` seconds worth of **`{res}`** seconds [`{(0.75 * 0.5 * good_needed_xp[result[0]] * 100):.2f}%` chance]'
+                txt = f'Giving **`{result[0]}%`** of remaining xp to next level with cost `{cost}` seconds worth of **`{res - cost}`** seconds [`{(0.75 * 0.5 * good_needed_xp[result[0]] * 100):.2f}%` chance]'
                 
             elif good_determiner == 'current_xp':
                 result = np.random.choice(list(good_current_xp.keys()), 1, p=list(good_current_xp.values()))
@@ -688,7 +688,7 @@ class Exp(Cog):
                     result = np.random.choice(list(good_current_xp.keys()), 1, p=list(good_current_xp.values()))
                     res = int(xp_sekarang * (result[0] / 100))
                     
-                txt = f'Giving **`{result[0]}%`** of current xp this level with cost `{res - cost}` seconds worth of **`{res}`** seconds [`{(0.75 * 0.3 * good_current_xp[result[0]] * 100):.2f}%` chance]'
+                txt = f'Giving **`{result[0]}%`** of current xp this level with cost `{cost}` seconds worth of **`{res - cost}`** seconds [`{(0.75 * 0.3 * good_current_xp[result[0]] * 100):.2f}%` chance]'
                 
             else:
                 result = np.random.choice(list(good_current_level_xp_range.keys()), 1, p=list(good_current_level_xp_range.values()))
@@ -697,7 +697,7 @@ class Exp(Cog):
                     result = np.random.choice(list(good_current_level_xp_range.keys()), 1, p=list(good_current_level_xp_range.values()))
                     res = int(batas_atas * (result[0] / 100))
                     
-                txt = f'Giving **`{result[0]}%`** of xp range this level with cost `{res - cost}` seconds worth of **`{res}`** seconds [`{(0.75 * 0.2 * good_current_level_xp_range[result[0]] * 100):.2f}%` chance]'
+                txt = f'Giving **`{result[0]}%`** of xp range this level with cost `{cost}` seconds worth of **`{res - cost}`** seconds [`{(0.75 * 0.2 * good_current_level_xp_range[result[0]] * 100):.2f}%` chance]'
                 
         else:
             bad = ['needed_xp', 'current_xp', 'current_level_xp_range']
