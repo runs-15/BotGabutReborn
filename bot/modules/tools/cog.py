@@ -1,7 +1,8 @@
 from aiohttp import DataQueue
 from discord.ext.commands import Cog, slash_command, command, message_command, user_command, cooldown, BucketType
 from discord.ui import InputText, Modal, Select, Button
-import discord, db, os, sys, random, datetime
+import discord, db, os, sys, random, datetime, math, asyncio
+import pandas as pd
 from discord.commands import Option
 from asyncio import sleep
 from discord.utils import get
@@ -229,6 +230,61 @@ class Tools(Cog):
     async def bangun(self, ctx, *cat):
         data = [x for x in cat]
         await ctx.send(f'**{random.choice(data)}**')
+            
+    @slash_command(name="cari-data-siswa", guild_ids=db.guild_list)
+    async def cari_siswa(self, ctx, query):
+        if ctx.channel.category_id == 898167597160341554:
+            try:
+                df = pd.DataFrame(list(db.siswa_con['siswa']['data'].find()))
+                del df['_id']
+                df['nama'] = df['nama'].str.upper()
+                df['nis'] = df['nis'].astype(str)
+                
+                res = df.query('nis.str.contains(@query) or nama.str.contains(@query) or kelas.str.contains(@query) or kelamin.str.contains(@query) or agama.str.contains(@query) or lm.str.contains(@query)', engine='python')
+                data = res.values.tolist()
+                name = res.columns.values.tolist()
+                await ctx.respond(f"**Data Siswa** contents:\n\n**{name}**")
+                
+                lst = [str(n) for n in data]
+                per_page = 10 # 10 members per page
+                pages = math.ceil(len(lst) / per_page)
+                cur_page = 1
+                chunk = lst[:per_page]
+                linebreak = "\n"
+                message = await ctx.send(f"Page {cur_page}/{pages}:\n{linebreak.join(chunk)}")
+                await message.add_reaction("◀️")
+                await message.add_reaction("▶️")
+                active = True
+                
+                def check(reaction, user):
+                    return user == ctx.author and str(reaction.emoji) in ["◀️", "▶️"] # or you can use unicodes, respectively: "\u25c0" or "\u25b6"
+                    
+                while active:
+                    try:
+                        reaction, user = await self.bot.wait_for("reaction_add", timeout=60, check=check)
+                                                
+                        if str(reaction.emoji) == "▶️" and cur_page != pages:
+                            cur_page += 1
+                            if cur_page != pages:
+                                chunk = lst[(cur_page-1)*per_page:cur_page*per_page]
+                            else:
+                                chunk = lst[(cur_page-1)*per_page:]
+                            await message.edit(content=f"Page {cur_page}/{pages}:\n{linebreak.join(chunk)}")
+                            await message.remove_reaction(reaction, user)
+                            
+                        elif str(reaction.emoji) == "◀️" and cur_page > 1:
+                            cur_page -= 1
+                            chunk = lst[(cur_page-1)*per_page:cur_page*per_page]
+                            await message.edit(content=f"Page {cur_page}/{pages}:\n{linebreak.join(chunk)}")
+                            await message.remove_reaction(reaction, user)
+                    except asyncio.TimeoutError:
+                        await message.delete()
+                        active = False
+                
+            except Exception as e:
+                await ctx.send(f"Exception: {e}")
+        else:
+            await ctx.send(f"Not permitted!")
     
 def setup(bot):
     bot.add_cog(Tools(bot))
