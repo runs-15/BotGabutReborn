@@ -58,6 +58,7 @@ class PresensiModal(Modal):
             await user.send(embed=embed)
 
 class Presensi(Cog):
+    """Modul yang mengatur mengenai sekolah dan presensi otomatis"""
     def __init__(self, bot):
         self.bot = bot
     
