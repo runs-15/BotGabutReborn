@@ -252,7 +252,7 @@ class Tools(Cog):
                 cur_page = 1
                 chunk = lst[:per_page]
                 linebreak = "\n"
-                message = await ctx.send(f"Page {cur_page}/{pages}:\n{linebreak.join(chunk)}")
+                message = await ctx.send(f"{linebreak.join(chunk)}\nPage `{cur_page}` / `{pages}`")
                 await message.add_reaction("◀️")
                 await message.add_reaction("▶️")
                 active = True
@@ -270,13 +270,13 @@ class Tools(Cog):
                                 chunk = lst[(cur_page-1)*per_page:cur_page*per_page]
                             else:
                                 chunk = lst[(cur_page-1)*per_page:]
-                            await message.edit(content=f"Page {cur_page}/{pages}:\n{linebreak.join(chunk)}")
+                            await message.edit(content=f"{linebreak.join(chunk)}\nPage `{cur_page}` / `{pages}`")
                             await message.remove_reaction(reaction, user)
                             
                         elif str(reaction.emoji) == "◀️" and cur_page > 1:
                             cur_page -= 1
                             chunk = lst[(cur_page-1)*per_page:cur_page*per_page]
-                            await message.edit(content=f"Page {cur_page}/{pages}:\n{linebreak.join(chunk)}")
+                            await message.edit(content=f"{linebreak.join(chunk)}\nPage `{cur_page}` / `{pages}`")
                             await message.remove_reaction(reaction, user)
                     except asyncio.TimeoutError:
                         await message.delete()
