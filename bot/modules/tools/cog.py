@@ -235,6 +235,7 @@ class Tools(Cog):
     async def cari_siswa(self, ctx, query):
         if ctx.channel.category_id == 898167597160341554:
             try:
+                await ctx.respond('wait...', ephemeral=True)
                 df = pd.DataFrame(list(db.siswa_con['siswa']['data'].find()))
                 del df['_id']
                 df['nama'] = df['nama'].str.upper()
@@ -244,7 +245,7 @@ class Tools(Cog):
                 res = df.query('nis.str.contains(@query) or nama.str.contains(@query) or kelas.str.contains(@query) or kelamin.str.contains(@query) or agama.str.contains(@query) or lm.str.contains(@query)', engine='python')
                 data = res.values.tolist()
                 name = res.columns.values.tolist()
-                await ctx.respond(f"**Data Siswa** contents:\n\n**{name}**")
+                await ctx.send(f"**Data Siswa** contents:\n\n**{name}**")
                 
                 lst = [str(n) for n in data]
                 per_page = 10 # 10 members per page
