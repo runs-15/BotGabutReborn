@@ -240,6 +240,7 @@ class Tools(Cog):
                 df['nama'] = df['nama'].str.upper()
                 df['nis'] = df['nis'].astype(str)
                 
+                query = query.upper()
                 res = df.query('nis.str.contains(@query) or nama.str.contains(@query) or kelas.str.contains(@query) or kelamin.str.contains(@query) or agama.str.contains(@query) or lm.str.contains(@query)', engine='python')
                 data = res.values.tolist()
                 name = res.columns.values.tolist()
