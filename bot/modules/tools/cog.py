@@ -283,9 +283,9 @@ class Tools(Cog):
                         active = False
                 
             except Exception as e:
-                await ctx.send(f"Exception: {e}")
+                await ctx.respond(f"Exception: {e}")
         else:
-            await ctx.send(f"Not permitted!")
+            await ctx.respond(f"Not permitted!")
     
 def setup(bot):
     bot.add_cog(Tools(bot))
