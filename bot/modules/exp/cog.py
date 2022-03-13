@@ -638,7 +638,7 @@ class Exp(Cog):
         
         voice_time += res
         db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
-        await ctx.send(txt)
+        await ctx.reply(txt)
                     
     @command(name="vc.single-pull")
     @cooldown(3, 3600, BucketType.user)
@@ -753,7 +753,7 @@ class Exp(Cog):
         except:
             db.servers_con['servers']['others'].insert_one({'discord_id' : ctx.author.id, 'v_pity': 1})
         
-        await ctx.send(txt)
+        await ctx.reply(txt)
             
 def setup(bot):
     bot.add_cog(Exp(bot))
