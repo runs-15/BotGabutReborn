@@ -548,49 +548,83 @@ class Exp(Cog):
     @command(name="vc.gacha")
     @cooldown(1, 10800, BucketType.user)
     async def vc_gacha(self, ctx):
-        items   = [+10, 
-                    +5, 
-                    +3,
-                    +2,
-                    +1,
-                    +0.8,
-                    +0.5,
-                    +0.3,
-                    -0.3,
-                    -0.8,
-                    -1,
-                    -3,
-                    -10
-                    ] # Contents
-
-        prob     = [0.0001, 
-                    0.009, 
-                    0.01,
-                    0.02,
-                    0.05,
-                    0.1,
-                    0.2,
-                    0.4,
-                    0.2,
-                    0.003,
-                    0.007,
-                    0.0005,
-                    0.0004
-                    ] # probability
-        
-        result = np.random.choice(items, 1, p=prob)
-        
         current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
         voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
 
-        atas = int(voice_time)-int(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0)))))
-        bawah = int(60*(current_level+1) + (((current_level+1) ** 3.8) * (1 - (0.99 ** (current_level+1))))-(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0))))))
+        xp_sekarang = int(voice_time)-int(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0)))))
+        batas_atas = int(60*(current_level+1) + (((current_level+1) ** 3.8) * (1 - (0.99 ** (current_level+1))))-(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0))))))
         
-        result_exp = int((bawah - atas) * (result / 100))
-        voice_time += result_exp
+        good                        = ['needed_xp', 'current_xp', 'current_level_xp_range']
+        good_needed_xp              = { 100 : 0.0001,
+                                        50  : 0.0039,
+                                        10  : 0.006,
+                                        5   : 0.02,
+                                        3   : 0.07,
+                                        2   : 0.2,
+                                        1   : 0.4,
+                                        0.8 : 0.2,
+                                        0.5 : 0.05,
+                                        0.3 : 0.05}
+        good_current_xp             = good_needed_xp 
+        good_current_level_xp_range = good_needed_xp
+
+        bad                         = ['needed_xp', 'current_xp', 'current_level_xp_range']
+        bad_needed_xp               = { -100 : 0.0001,
+                                        -50  : 0.0039,
+                                        -10  : 0.006,
+                                        -5   : 0.02,
+                                        -3   : 0.07,
+                                        -2   : 0.2,
+                                        -1   : 0.4,
+                                        -0.8 : 0.2,
+                                        -0.5 : 0.05,
+                                        -0.3 : 0.05}
+        bad_current_xp              = bad_needed_xp
+        bad_current_level_xp_range  = bad_needed_xp
+
+        determiner = np.random.choice(['good', 'bad'], 1, p=[0.7, 0.3])
+
+        if determiner == 'good':
+            good = ['needed_xp', 'current_xp', 'current_level_xp_range']
+            good_determiner = np.random.choice(good, 1, p=[0.5, 0.3, 0.2])
+            
+            if good_determiner == 'needed_xp':
+                result = np.random.choice(list(good_needed_xp.keys()), 1, p=list(good_needed_xp.values()))
+                res = int((batas_atas - xp_sekarang) * (result[0] / 100))
+                txt = f'Giving {result[0]}% of remaining xp to next level worth of {res} seconds ({0,7 * 0,5 * good_needed_xp[result[0]] * 100} percentage)'
+                
+            elif good_determiner == 'current_xp':
+                result = np.random.choice(list(good_current_xp.keys()), 1, p=list(good_current_xp.values()))
+                res = int(xp_sekarang * (result[0] / 100))
+                txt = f'Giving {result[0]}% of current xp this level worth of {res} seconds ({0,7 * 0,3 * good_current_xp[result[0]] * 100} percentage)'
+                
+            else:
+                result = np.random.choice(list(good_current_level_xp_range.keys()), 1, p=list(good_current_level_xp_range.values()))
+                res = int(batas_atas * (result[0] / 100))
+                txt = f'Giving {result[0]}% of xp range this level worth of {res} seconds ({0,7 * 0,2 * good_current_level_xp_range[result[0]] * 100} percentage)'
+                
+        else:
+            bad = ['needed_xp', 'current_xp', 'current_level_xp_range']
+            bad_determiner = np.random.choice(bad, 1, p=[0.5, 0.3, 0.2])
+            
+            if bad_determiner == 'needed_xp':
+                result = np.random.choice(list(bad_needed_xp.keys()), 1, p=list(bad_needed_xp.values()))
+                res = int((batas_atas - xp_sekarang) * (result[0] / 100))
+                txt = f'Giving {result[0]}% of remaining xp to next level worth of {res} seconds ({0,7 * 0,5 * bad_needed_xp[result[0]] * 100} percentage)'
+                
+            elif bad_determiner == 'current_xp':
+                result = np.random.choice(list(bad_current_xp.keys()), 1, p=list(bad_current_xp.values()))
+                res = int(xp_sekarang * (result[0] / 100))
+                txt = f'Giving {result[0]}% of current xp this level worth of {res} seconds ({0,7 * 0,3 * bad_current_xp[result[0]] * 100} percentage)'
+                
+            else:
+                result = np.random.choice(list(bad_current_level_xp_range.keys()), 1, p=list(bad_current_level_xp_range.values()))
+                res = int(batas_atas * (result[0] / 100))
+                txt = f'Giving {result[0]}% of xp range this level worth of {res} seconds ({0,7 * 0,2 * bad_current_level_xp_range[result[0]] * 100} percentage)'
+        
+        voice_time += res
         db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
-        
-        await ctx.send(f'**`{result[0]}%`** of remaining xp to next level worth of **`{result_exp}`** voice chat seconds')
+        await ctx.send(txt)
             
 def setup(bot):
     bot.add_cog(Exp(bot))
