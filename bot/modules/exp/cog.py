@@ -670,11 +670,11 @@ class Exp(Cog):
                                         30  : 0.006,
                                         25  : 0.02,
                                         10  : 0.07,
-                                        7   : 0.2,
-                                        6   : 0.4,
                                         5   : 0.2,
-                                        4   : 0.05,
-                                        3   : 0.05}
+                                        3   : 0.4,
+                                        4   : 0.2,
+                                        6   : 0.05,
+                                        7   : 0.05}
         good_current_xp             = good_needed_xp 
         good_current_level_xp_range = good_needed_xp
 
