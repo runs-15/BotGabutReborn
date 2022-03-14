@@ -107,8 +107,8 @@ class Exp(Cog):
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': level}})
                 
                     res = 0
-                    for i in range(level + 1):
-                        res += self.factor(i)
+                    for j in range(level + 1):
+                        res += self.factor(j)
                     
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
                     
@@ -118,8 +118,8 @@ class Exp(Cog):
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': level}})
                     
                     res = 0
-                    for i in range(level + 1):
-                        res += self.factor(i)
+                    for j in range(level + 1):
+                        res += self.factor(j)
                     
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
                     await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah diturunkan ke level **`{level}`** dalam *voice chat*!")
