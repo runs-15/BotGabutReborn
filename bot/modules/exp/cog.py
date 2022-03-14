@@ -97,6 +97,8 @@ class Exp(Cog):
                     
                 if 10 > level > current_level:
                     await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{level}`** dalam *voice chat*!")
+                if level < current_level:
+                    await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah diturunkan ke level **`{level}`** dalam *voice chat*!")
                     
                     res = 0
                     for i in range(level + 1):
