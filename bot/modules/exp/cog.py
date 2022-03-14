@@ -74,6 +74,7 @@ class Exp(Cog):
                     current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['v_level']
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_time': voice_time}})
                 else:
+                    current_level = 0
                     db.servers_con['servers']['social_credit'].insert_one({'discord_id' : i,
                                                                            'v_exp'      : 0, 
                                                                            'v_time'     : 0,
@@ -85,7 +86,7 @@ class Exp(Cog):
                                                                            't_violation': 0,
                                                                            'n_violation': 0})
                 
-                for j in range(1, 9999):
+                for j in range(current_level, 9999):
                     pembanding_bawah = 60*(j-1) + (((j-1) ** 3.8) * (1 - (0.99 ** (j-1))))
                     level            = 60*(j+0) + (((j+0) ** 3.8) * (1 - (0.99 ** (j+0))))
                     pembanding_atas  = 60*(j+1) + (((j+1) ** 3.8) * (1 - (0.99 ** (j+1))))
@@ -638,8 +639,23 @@ class Exp(Cog):
                 txt = f'Giving **`{result[0]}%`** of xp range this level worth of **`{res}`** seconds [`{(0.7 * 0.2 * bad_current_level_xp_range[result[0]] * 100):.2f}%` chance]'
         
         voice_time += res
+        
+        j = current_level
+        pembanding_bawah = 60*(j-1) + (((j-1) ** 3.8) * (1 - (0.99 ** (j-1))))
+        level            = 60*(j+0) + (((j+0) ** 3.8) * (1 - (0.99 ** (j+0))))
+        pembanding_atas  = 60*(j+1) + (((j+1) ** 3.8) * (1 - (0.99 ** (j+1))))
+        
+        if level > voice_time >= pembanding_bawah:
+            level_txt = None
+        elif level <= voice_time < pembanding_atas:
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': current_level + 1}})
+            level_txt = f'```your level was increased by 1 to {current_level + 1}```'
+        elif level > voice_time >= pembanding_bawah:
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': current_level - 1}})
+            level_txt = f'``your level was decreased by 1 to {current_level - 1}```'
+                
         db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
-        await ctx.reply(txt)
+        await ctx.reply(txt + level_txt if level_txt != None else None)
                     
     @command(name="vc.single-pull")
     @cooldown(3, 3600, BucketType.user)
@@ -736,6 +752,21 @@ class Exp(Cog):
                 txt = f'Giving **`{result[0]}%`** of xp range this level worth of **`{res - cost}`** seconds [`{(0.6 * 0.2 * bad_current_level_xp_range[result[0]] * 100):.2f}%` chance]'
         
         voice_time += (res - cost)
+        
+        j = current_level
+        pembanding_bawah = 60*(j-1) + (((j-1) ** 3.8) * (1 - (0.99 ** (j-1))))
+        level            = 60*(j+0) + (((j+0) ** 3.8) * (1 - (0.99 ** (j+0))))
+        pembanding_atas  = 60*(j+1) + (((j+1) ** 3.8) * (1 - (0.99 ** (j+1))))
+        
+        if level > voice_time >= pembanding_bawah:
+            level_txt = None
+        elif level <= voice_time < pembanding_atas:
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': current_level + 1}})
+            level_txt = f'```your level was increased by 1 to {current_level + 1}```'
+        elif level > voice_time >= pembanding_bawah:
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': current_level - 1}})
+            level_txt = f'``your level was decreased by 1 to {current_level - 1}```'
+            
         db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
         
         try:
@@ -747,7 +778,7 @@ class Exp(Cog):
         if result == 100:
             db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_pity': 0}})
         
-        await ctx.reply(txt)
+        await ctx.reply(txt + level_txt if level_txt != None else None)
         
     @command(name="vc.unlimited-pull")
     @cooldown(1, 60, BucketType.user)
@@ -858,10 +889,25 @@ class Exp(Cog):
             
             summary += (res - cost)
             voice_time += (res - cost)
+            
+            j = current_level
+            pembanding_bawah = 60*(j-1) + (((j-1) ** 3.8) * (1 - (0.99 ** (j-1))))
+            level            = 60*(j+0) + (((j+0) ** 3.8) * (1 - (0.99 ** (j+0))))
+            pembanding_atas  = 60*(j+1) + (((j+1) ** 3.8) * (1 - (0.99 ** (j+1))))
+            
+            if level > voice_time >= pembanding_bawah:
+                level_txt = None
+            elif level <= voice_time < pembanding_atas:
+                db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': current_level + 1}})
+                level_txt = f'```your level was increased by 1 to {current_level + 1}```'
+            elif level > voice_time >= pembanding_bawah:
+                db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': current_level - 1}})
+                level_txt = f'``your level was decreased by 1 to {current_level - 1}```'
+                
             db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
             db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_chance': chance + 0.01}})
             
-            await ctx.reply(f'{txt}\n```Current chance : {((chance + 0.02) * 100):.2f}%```')
+            await ctx.reply(f'{txt}\n```Current chance : {((chance + 0.02) * 100):.2f}%```' + level_txt if level_txt != None else None)
             await sleep(1)
         await ctx.reply(embed = Embed(title = 'Pull Summary', description = f'The result of {str(times) + " pulls are :" if times > 1 else " pull is :"}\n> **`{summary}` exp earned**\n> Current chance **`{((chance + 0.02) * 100):.2f}%`**'))
             
