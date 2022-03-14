@@ -812,7 +812,7 @@ class Exp(Cog):
             xp_sekarang = int(voice_time)-int(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0)))))
             batas_atas = int(60*(current_level+1) + (((current_level+1) ** 3.8) * (1 - (0.99 ** (current_level+1))))-(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0))))))
             
-            cost =int(((1 / 100) * xp_sekarang) + ((1 / 100) * batas_atas))
+            cost =int(5/10 * (((1 / 100) * xp_sekarang) + ((1 / 100) * batas_atas)))
             db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': xp_sekarang - cost}})
             
             
