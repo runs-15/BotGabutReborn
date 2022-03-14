@@ -665,6 +665,13 @@ class Exp(Cog):
         cost =int(((1 / 100) * xp_sekarang) + ((1 / 100) * batas_atas))
         db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': xp_sekarang - cost}})
         
+        # reset variable
+        current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
+        voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
+
+        xp_sekarang = int(voice_time)-int(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0)))))
+        batas_atas = int(60*(current_level+1) + (((current_level+1) ** 3.8) * (1 - (0.99 ** (current_level+1))))-(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0))))))
+        
         good                        = ['needed_xp', 'current_xp', 'current_level_xp_range']
         good_needed_xp              = { 100 : 0.0001,
                                         50  : 0.0039,
@@ -760,9 +767,10 @@ class Exp(Cog):
         await ctx.reply(txt)
         
     @command(name="vc.unlimited-pull")
+    @cooldown(1, 60, BucketType.user)
     async def vc_unlimitedpull(self, ctx, times = 1):
         """
-        > Non-free gacha attemp for increasing / decreasing your exp. No cooldown, but starts with 2% chance that increasing by 2% for each pull. Cost 50% of (1% base level exp + 1% current exp) that recalculated after each pull.
+        > Non-free gacha attemp for increasing / decreasing your exp. 60s cooldown, but starts with 2% chance that increasing by 2% for each pull. Cost 50% of (1% base level exp + 1% current exp) that recalculated after each pull.
 
         **Params:**
         >    **`times`** (Optional[`int`]) → times of pull. Defaults to `{1}`, maximum to `{10}`
@@ -815,7 +823,12 @@ class Exp(Cog):
             cost =int(5/10 * (((1 / 100) * xp_sekarang) + ((1 / 100) * batas_atas)))
             db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': xp_sekarang - cost}})
             
-            
+            # reset variable
+            current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
+            voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
+
+            xp_sekarang = int(voice_time)-int(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0)))))
+            batas_atas = int(60*(current_level+1) + (((current_level+1) ** 3.8) * (1 - (0.99 ** (current_level+1))))-(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0))))))
 
             determiner = np.random.choice(['good', 'bad'], 1, p=[chance, 1 - chance])
 
