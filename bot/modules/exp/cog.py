@@ -84,6 +84,8 @@ class Exp(Cog):
                     voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['v_time'] + total_time
                     current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['v_level']
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_time': voice_time}})
+                    real_time = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['v_exp'] + total_time
+                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': real_time}})
                 else:
                     current_level = 0
                     db.servers_con['servers']['social_credit'].insert_one({'discord_id' : i,
@@ -105,27 +107,13 @@ class Exp(Cog):
                     
                 if current_level < level:
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': level}})
-                
-                    # res = 0
-                    # for j in range(level + 1):
-                    #     res += self.factor(j)
                     
-                    # db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
-                    
-                    # await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{level}`** dalam *voice chat*!")
-                    print(f"Selamat <@{i}>! Anda telah mencapai level **`{level}`** dalam *voice chat*!")
+                    await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{level}`** dalam *voice chat*!")
                     
                 elif level < current_level:
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': level}})
                     
-                    # res = 0
-                    # for j in range(level + 1):
-                    #     res += self.factor(j)
-                    
-                    # db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
-                    
-                    # await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah diturunkan ke level **`{level}`** dalam *voice chat*!")
-                    print(f"Selamat <@{i}>! Anda telah diturunkan ke level **`{level}`** dalam *voice chat*!")
+                    await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah diturunkan ke level **`{level}`** dalam *voice chat*!")
                 
                 # for j in range(current_level, 9999):
                 #     pembanding_bawah = 60*(j-1) + (((j-1) ** 3.8) * (1 - (0.99 ** (j-1))))
@@ -164,6 +152,14 @@ class Exp(Cog):
                                                                         'v_violation': 0,
                                                                         't_violation': 0,
                                                                         'n_violation': 0})
+            await ctx.send("Command Executed!")
+            
+    @command(name="exp.initialize", hidden = True)
+    async def reset_user(self, ctx):
+        if ctx.author.id == 616950344747974656:
+            for member in [m for m in ctx.guild.members if not m.bot]:
+                real_time = db.servers_con['servers']['social_credit'].find({'discord_id' : member.id})[0]['v_time']
+                db.servers_con['servers']['social_credit'].update_one({'discord_id' : member.id}, {"$set": {'v_exp': real_time}})
             await ctx.send("Command Executed!")
 
     @command(name="vc.reset")
@@ -483,6 +479,7 @@ class Exp(Cog):
             if db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_time'] != None:
                 #color = choice([":blue_square:", ":brown_square:", ":green_square:", ":orange_square:", ":purple_square:", ":red_square:", ":yellow_square:"])
                 voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_time']
+                real_time = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_exp']
                 current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_level']
                 
                 current_exp = self.cur_exp(voice_time)
@@ -491,12 +488,12 @@ class Exp(Cog):
                 #boxes = int((atas/bawah) * 20)
                 #boxes = int((voice_time/(((current_level+9) ** 3.7) * (1 - (0.995 ** (current_level+9)))))*20)
 
-                tahun = math.floor((voice_time / (60 * 60 * 24 * 365)))
-                pekan = math.floor((voice_time % (60 * 60 * 24 * 365)) / (60 * 60 * 24 * 7))
-                hari = math.floor((voice_time % (60 * 60 * 24 * 7)) / (60 * 60 * 24))
-                jam = math.floor((voice_time % (60 * 60 * 24)) / (60 * 60))
-                menit = math.floor((voice_time % (60 * 60)) / 60)
-                detik = math.floor(voice_time % (60))
+                tahun = math.floor((real_time / (60 * 60 * 24 * 365)))
+                pekan = math.floor((real_time % (60 * 60 * 24 * 365)) / (60 * 60 * 24 * 7))
+                hari = math.floor((real_time % (60 * 60 * 24 * 7)) / (60 * 60 * 24))
+                jam = math.floor((real_time % (60 * 60 * 24)) / (60 * 60))
+                menit = math.floor((real_time % (60 * 60)) / 60)
+                detik = math.floor(real_time % (60))
 
                 exp_value = f"{self.number_format(current_exp)}/{self.number_format(batas_atas)}"
 
@@ -536,6 +533,7 @@ class Exp(Cog):
             if db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time'] != None:
                 #color = choice([":blue_square:", ":brown_square:", ":green_square:", ":orange_square:", ":purple_square:", ":red_square:", ":yellow_square:"])
                 voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
+                real_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_exp']
                 current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
 
                 current_exp = self.cur_exp(voice_time)
@@ -544,12 +542,12 @@ class Exp(Cog):
                 #boxes = int((atas/bawah) * 20)
                 #boxes = int((voice_time/(((current_level+9) ** 3.7) * (1 - (0.995 ** (current_level+9)))))*20)
 
-                tahun = math.floor((voice_time / (60 * 60 * 24 * 365)))
-                pekan = math.floor((voice_time % (60 * 60 * 24 * 365)) / (60 * 60 * 24 * 7))
-                hari = math.floor((voice_time % (60 * 60 * 24 * 7)) / (60 * 60 * 24))
-                jam = math.floor((voice_time % (60 * 60 * 24)) / (60 * 60))
-                menit = math.floor((voice_time % (60 * 60)) / 60)
-                detik = math.floor(voice_time % (60))
+                tahun = math.floor((real_time / (60 * 60 * 24 * 365)))
+                pekan = math.floor((real_time % (60 * 60 * 24 * 365)) / (60 * 60 * 24 * 7))
+                hari = math.floor((real_time % (60 * 60 * 24 * 7)) / (60 * 60 * 24))
+                jam = math.floor((real_time % (60 * 60 * 24)) / (60 * 60))
+                menit = math.floor((real_time % (60 * 60)) / 60)
+                detik = math.floor(real_time % (60))
 
                 print(hari, jam, menit, detik)
                 exp_value = f"{self.number_format(current_exp)}/{self.number_format(batas_atas)}"
@@ -709,7 +707,7 @@ class Exp(Cog):
             level_txt = f'```your level was decreased to {level}```'
                 
         db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
-        await ctx.reply(f'{txt} {level_txt if level_txt != None else None}')
+        await ctx.reply(f'{txt} {level_txt if level_txt != None else "```no level increment or decrement```"}')
                     
     @command(name="vc.single-pull")
     @cooldown(3, 3600, BucketType.user)
@@ -845,7 +843,7 @@ class Exp(Cog):
             
         db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
         
-        await ctx.reply(f'{txt} {level_txt if level_txt != None else None}')
+        await ctx.reply(f'{txt} {level_txt if level_txt != None else "```no level increment or decrement```"}')
         
     @command(name="vc.unlimited-pull")
     @cooldown(1, 60, BucketType.user)
@@ -987,7 +985,7 @@ class Exp(Cog):
             db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
             db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_chance': chance + 0.01}})
             
-            await ctx.reply(f'{txt}\n```Current chance : {((chance + 0.02) * 100):.2f}%```{level_txt if level_txt != None else None}')
+            await ctx.reply(f'{txt}\n```Current chance : {((chance + 0.02) * 100):.2f}%```{level_txt if level_txt != None else "```no level increment or decrement```"}')
             await sleep(1)
         await ctx.reply(embed = Embed(title = 'Pull Summary', description = f'The result of {str(times) + " pulls are :" if times > 1 else " pull is :"}\n> **`{summary}` exp earned**\n> Current chance **`{((chance + 0.02) * 100):.2f}%`**'))
             
