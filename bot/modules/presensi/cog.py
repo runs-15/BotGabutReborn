@@ -338,14 +338,20 @@ class Presensi(Cog):
             pengawasan = ''
             dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
             for key, value in dalam_pengawasan.items():
-                ranking = xi.index[xi['Nama']==i][0] + 1
-                pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking, value)
+                try:
+                    ranking = xi.index[xi['Nama']==i][0] + 1
+                    pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking, value)
+                except:
+                        pass
             
             rank_kirim = ''
             for i in range(10):
-                nama = xi.iloc[i]['Nama']
-                rank_kirim += "RANK {:<10}{:<5} / 100      : {:<32}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
-                
+                try:
+                    nama = xi.iloc[i]['Nama']
+                    rank_kirim += "RANK {:<10}{:<5} / 100      : {:<32}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
+                except:
+                    pass
+                    
             msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA```""")
             pengawasan = await ctx.send(f"""```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
             tm_start = time.time()
@@ -379,13 +385,18 @@ class Presensi(Cog):
                             pengawasan = ''
                             dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
                             for key, value in dalam_pengawasan.items():
-                                ranking = xi.index[xi['Nama']==key][0] + 1
-                                pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking, value)
-                            
+                                try:
+                                    ranking = xi.index[xi['Nama']==key][0] + 1
+                                    pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking, value)
+                                except:
+                                    pass
                             rank_kirim = ''
                             for i in range(10):
-                                nama = xi.iloc[i]['Nama']
-                                rank_kirim += "RANK {:<10}{:<5} / 100      : {:<32}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
+                                try:
+                                    nama = xi.iloc[i]['Nama']
+                                    rank_kirim += "RANK {:<10}{:<5} / 100      : {:<32}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
+                                except:
+                                    pass
                                 
                             await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA```""")
                             await pengawasan.edit(f"""```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
