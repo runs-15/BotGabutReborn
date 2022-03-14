@@ -95,25 +95,25 @@ class Exp(Cog):
                     level += 1
                     voice_time -= self.factor(level)
                     
-                if 10 > level > current_level:
-                    await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{level}`** dalam *voice chat*!")
+                if 10 < current_level < level:
+                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': level}})
+                    # await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{level}`** dalam *voice chat*!")
                 
                     res = 0
                     for i in range(level + 1):
                         res += self.factor(i)
                     
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
-                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': level}})
                     
-                if level < current_level:
-                    await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah diturunkan ke level **`{level}`** dalam *voice chat*!")
+                elif level < current_level:
+                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': level}})
+                    # await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah diturunkan ke level **`{level}`** dalam *voice chat*!")
                     
                     res = 0
                     for i in range(level + 1):
                         res += self.factor(i)
                     
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
-                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': level}})
                 
                 # for j in range(current_level, 9999):
                 #     pembanding_bawah = 60*(j-1) + (((j-1) ** 3.8) * (1 - (0.99 ** (j-1))))
