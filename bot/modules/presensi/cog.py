@@ -320,6 +320,7 @@ class Presensi(Cog):
             for index, row in kop.iterrows():
                 if row['key'] != 'Kelas':
                     kirim += "{:<32}{}\n".format(row['key'], row['value'])
+            await ctx.send(f'```{kirim}```')
             
             kirim2 = ''
             for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
@@ -352,11 +353,10 @@ class Presensi(Cog):
                 except:
                     pass
                     
-            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA```""")
+            msg = await ctx.send(f"""```NAMA SISWA                      : NILAI          RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA```""")
             pengawasan = await ctx.send(f"""```{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
             tm_start = time.time()
             while time.time() < (tm_start + 7500):
-                await sleep(1)
                 try:
                     if xi.equals(self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)[1]) == False:
                         try:
@@ -398,12 +398,13 @@ class Presensi(Cog):
                                 except:
                                     pass
                                 
-                            await msg.edit(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA```""")
+                            await msg.edit(f"""```NAMA SISWA                      : NILAI          RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA```""")
                             await pengawasan.edit(f"""```{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
                         except:
                             pass
                 except:
                     pass
+                await sleep(30)
             await msg.delete()
         else:
             await ctx.send('Not permitted')
