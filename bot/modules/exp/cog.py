@@ -771,9 +771,9 @@ class Exp(Cog):
             ctx.command.reset_cooldown(ctx) 
         
         good                        = ['needed_xp', 'current_xp', 'current_level_xp_range']
-        good_needed_xp              = { 200 : 0.05,
-                                        100 : 0.15,
-                                        50  : 0.8}
+        good_needed_xp              = { 1000 : 0.05,
+                                        500 : 0.15,
+                                        300  : 0.8}
         good_current_xp             = good_needed_xp 
         good_current_level_xp_range = good_needed_xp
 
