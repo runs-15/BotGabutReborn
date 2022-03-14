@@ -456,11 +456,12 @@ class Presensi(Cog):
             for i in range(10):
                 try:
                     nama = xi.iloc[i]['Nama']
-                    rank_kirim += "RANK {:<2} ({:<5})   : {}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
+                    rank_kirim += "RANK {:<2} ({}) : {}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
                 except:
                     pass
                 
-            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI   RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+            await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI   RANK   RERATA KELAS```""")
+            msg = await ctx.send(f"""```{kirim2}``````{kirim3}```\n```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
         else:
             await ctx.send('Not permitted')
             
