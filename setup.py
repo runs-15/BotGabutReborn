@@ -38,7 +38,8 @@ setuptools.setup(
         'python-dateutil',
         'pillow',
         'pandas',
-        'lxml'
+        'lxml',
+        'html5lib'
     ],
     python_requires='>=3.6',
 )

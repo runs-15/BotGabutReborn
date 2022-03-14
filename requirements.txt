@@ -16,3 +16,4 @@ python-dateutil
 pandas
 pillow
 lxml
+html5lib

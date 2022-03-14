@@ -326,7 +326,7 @@ class Presensi(Cog):
             for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
                 try:
                     ranking = xi.index[xi['Nama']==i][0] + 1
-                    kirim2 += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, round(xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0], 2))
+                    kirim2 += "{:<32}: {:<5}   {:<4}   {}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, round(xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0], 2))
                 except Exception as e:
                     print(e)
                     try:
@@ -341,7 +341,7 @@ class Presensi(Cog):
             for key, value in dalam_pengawasan.items():
                 try:
                     ranking = xi.index[xi['Nama']==i][0] + 1
-                    pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking, value)
+                    pengawasan += "{:<32}: {:<5}   {:<4}   {}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking, value)
                 except:
                         pass
             
@@ -349,11 +349,11 @@ class Presensi(Cog):
             for i in range(10):
                 try:
                     nama = xi.iloc[i]['Nama']
-                    rank_kirim += "RANK {:<10}{:<5} / 100      : {:<32}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
+                    rank_kirim += "RANK {:<2} ({:<5})   : {}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
                 except:
                     pass
                     
-            msg = await ctx.send(f"""```NAMA SISWA                      : NILAI          RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA```""")
+            msg = await ctx.send(f"""```NAMA SISWA                      : NILAI   RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA```""")
             pengawasan = await ctx.send(f"""```{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
             tm_start = time.time()
             while time.time() < (tm_start + 7500):
@@ -372,7 +372,7 @@ class Presensi(Cog):
                             for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
                                 try:
                                     ranking = xi.index[xi['Nama']==i][0] + 1
-                                    kirim2 += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, round(xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0], 2))
+                                    kirim2 += "{:<32}: {:<5}   {:<4}   {}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, round(xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0], 2))
                                 except Exception as e:
                                     print(e)
                                     try:
@@ -387,18 +387,18 @@ class Presensi(Cog):
                             for key, value in dalam_pengawasan.items():
                                 try:
                                     ranking2 = xi.index[xi['Nama'] == key][0] + 1
-                                    pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking2, value)
+                                    pengawasan += "{:<32}: {:<5}   {:<4}   {}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking2, value)
                                 except:
                                     pass
                             rank_kirim = ''
                             for i in range(10):
                                 try:
                                     nama = xi.iloc[i]['Nama']
-                                    rank_kirim += "RANK {:<10}{:<5} / 100      : {:<32}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
+                                    rank_kirim += "RANK {:<2} ({:<5})   : {}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
                                 except:
                                     pass
                                 
-                            await msg.edit(f"""```NAMA SISWA                      : NILAI          RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA```""")
+                            await msg.edit(f"""```NAMA SISWA                      : NILAI   RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA```""")
                             await pengawasan.edit(f"""```{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
                         except Exception as e:
                             print(e)
@@ -431,7 +431,7 @@ class Presensi(Cog):
             for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
                 try:
                     ranking = xi.index[xi['Nama']==i][0] + 1
-                    kirim2 += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, round(xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0], 2))
+                    kirim2 += "{:<32}: {:<5}   {:<4}   {}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, round(xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0], 2))
                 except Exception as e:
                     print(e)
                     try:
@@ -442,11 +442,11 @@ class Presensi(Cog):
             kirim3 = xi['Nilai'].describe()
             
             pengawasan = ''
-            dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
+            dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
             for key, value in dalam_pengawasan.items():
                 try:
                     ranking2 = xi.index[xi['Nama'] == key][0] + 1
-                    pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking2, value)
+                    pengawasan += "{:<32}: {:<5}   {:<4}   {}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking2, value)
                 except:
                     pass
             
@@ -455,11 +455,11 @@ class Presensi(Cog):
             for i in range(10):
                 try:
                     nama = xi.iloc[i]['Nama']
-                    rank_kirim += "RANK {:<10}{:<5} / 100      : {:<32}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
+                    rank_kirim += "RANK {:<2} ({:<5})   : {}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
                 except:
                     pass
                 
-            msg = await ctx.send(embed = Embed(description = f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***"""))
+            msg = await ctx.send(embed = Embed(description = f"""```{kirim}```\n```NAMA SISWA                      : NILAI   RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***"""))
         else:
             await ctx.send('Not permitted')
             
