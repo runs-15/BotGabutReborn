@@ -35,6 +35,14 @@ class Exp(Cog):
         
     def factor(self, level):
         return int(60 * level + ((level ** 3.8) * (1 - (0.99 ** level))))
+    
+    def exp(self, xp):
+        level = 0
+        exp = xp
+        while exp > self.factor(level):
+            level += 1
+            exp -= self.factor(level)
+        return int(exp)
 
     def number_format(self, num):
         num = float('{:.3g}'.format(num))
@@ -97,7 +105,7 @@ class Exp(Cog):
                     
                 if 10 < current_level < level:
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': level}})
-                    # await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{level}`** dalam *voice chat*!")
+                    await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{level}`** dalam *voice chat*!")
                 
                     res = 0
                     for i in range(level + 1):
@@ -107,7 +115,7 @@ class Exp(Cog):
                     
                 elif level < current_level:
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': level}})
-                    # await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah diturunkan ke level **`{level}`** dalam *voice chat*!")
+                    await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah diturunkan ke level **`{level}`** dalam *voice chat*!")
                     
                     res = 0
                     for i in range(level + 1):
@@ -472,9 +480,9 @@ class Exp(Cog):
                 #color = choice([":blue_square:", ":brown_square:", ":green_square:", ":orange_square:", ":purple_square:", ":red_square:", ":yellow_square:"])
                 voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_time']
                 current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_level']
-
-                atas = int(voice_time)-int(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0)))))
-                bawah = int(60*(current_level+1) + (((current_level+1) ** 3.8) * (1 - (0.99 ** (current_level+1))))-(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0))))))
+                
+                current_exp = self.exp(voice_time)
+                batas_atas = self.factor(current_level + 1)
 
                 #boxes = int((atas/bawah) * 20)
                 #boxes = int((voice_time/(((current_level+9) ** 3.7) * (1 - (0.995 ** (current_level+9)))))*20)
@@ -486,8 +494,7 @@ class Exp(Cog):
                 menit = math.floor((voice_time % (60 * 60)) / 60)
                 detik = math.floor(voice_time % (60))
 
-                print(hari, jam, menit, detik)
-                exp_value = f"{self.number_format(atas)}/{self.number_format(bawah)}"
+                exp_value = f"{self.number_format(current_exp)}/{self.number_format(batas_atas)}"
 
                 # create image or load your existing image with out=Image.open(path)
                 out = Image.new("RGB", (720, 25), (255, 255, 255))
@@ -495,7 +502,7 @@ class Exp(Cog):
 
                 # draw the progress bar to given location, width, progress and color
                 #choice(["lime", "orange", "purple", "pink", "yellow"])
-                d = self.drawProgressBar(d, 0, 0, 720, 25, (atas/bawah), bg="white", fg=tuple(int(str(user.colour).replace("#", "")[i:i+2], 16) for i in (0, 2, 4)))
+                d = self.drawProgressBar(d, 0, 0, 720, 25, (current_exp/batas_atas), bg="white", fg=tuple(int(str(user.colour).replace("#", "")[i:i+2], 16) for i in (0, 2, 4)))
                 out.save(f"{user.id}.jpg")
 
                 daftar = db.servers_con['servers']['social_credit'].find()
@@ -527,8 +534,8 @@ class Exp(Cog):
                 voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
                 current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
 
-                atas = int(voice_time)-int(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0)))))
-                bawah = int(60*(current_level+1) + (((current_level+1) ** 3.8) * (1 - (0.99 ** (current_level+1))))-(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0))))))
+                current_exp = self.exp(voice_time)
+                batas_atas = self.factor(current_level + 1)
 
                 #boxes = int((atas/bawah) * 20)
                 #boxes = int((voice_time/(((current_level+9) ** 3.7) * (1 - (0.995 ** (current_level+9)))))*20)
@@ -541,7 +548,7 @@ class Exp(Cog):
                 detik = math.floor(voice_time % (60))
 
                 print(hari, jam, menit, detik)
-                exp_value = f"{self.number_format(atas)}/{self.number_format(bawah)}"
+                exp_value = f"{self.number_format(current_exp)}/{self.number_format(batas_atas)}"
 
                 # create image or load your existing image with out=Image.open(path)
                 out = Image.new("RGB", (720, 25), (255, 255, 255))
@@ -551,7 +558,7 @@ class Exp(Cog):
 
                 # draw the progress bar to given location, width, progress and color
                 #choice(["lime", "orange", "purple", "pink", "yellow"])
-                d = self.drawProgressBar(d, 0, 0, 720, 25, (atas/bawah), bg="white", fg=tuple(int(str(ctx.author.colour).replace("#", "")[i:i+2], 16) for i in (0, 2, 4)))
+                d = self.drawProgressBar(d, 0, 0, 720, 25, (current_exp/batas_atas), bg="white", fg=tuple(int(str(ctx.author.colour).replace("#", "")[i:i+2], 16) for i in (0, 2, 4)))
                 out.save(f"{ctx.author.id}.jpg")
 
                 daftar = db.servers_con['servers']['social_credit'].find()
@@ -597,8 +604,8 @@ class Exp(Cog):
         current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
         voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
 
-        xp_sekarang = int(voice_time)-int(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0)))))
-        batas_atas = int(60*(current_level+1) + (((current_level+1) ** 3.8) * (1 - (0.99 ** (current_level+1))))-(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0))))))
+        xp_sekarang = self.exp(voice_time)
+        batas_atas = self.factor(current_level + 1)
         
         good                        = ['needed_xp', 'current_xp', 'current_level_xp_range']
         good_needed_xp              = { 100 : 0.0001,
@@ -720,8 +727,8 @@ class Exp(Cog):
         current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
         voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
 
-        xp_sekarang = int(voice_time)-int(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0)))))
-        batas_atas = int(60*(current_level+1) + (((current_level+1) ** 3.8) * (1 - (0.99 ** (current_level+1))))-(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0))))))
+        xp_sekarang = self.exp(voice_time)
+        batas_atas = self.factor(current_level + 1)
         
         cost =int(((1 / 100) * xp_sekarang) + ((1 / 100) * batas_atas))
         
@@ -893,8 +900,8 @@ class Exp(Cog):
             current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
             voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
 
-            xp_sekarang = int(voice_time)-int(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0)))))
-            batas_atas = int(60*(current_level+1) + (((current_level+1) ** 3.8) * (1 - (0.99 ** (current_level+1))))-(60*(current_level+0) + (((current_level+0) ** 3.8) * (1 - (0.99 ** (current_level+0))))))
+            xp_sekarang = self.exp(voice_time)
+            batas_atas = self.factor(current_level + 1)
             
             cost =int(5/10 * (((1 / 100) * xp_sekarang) + ((1 / 100) * batas_atas)))
 
