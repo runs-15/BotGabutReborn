@@ -283,6 +283,7 @@ class Presensi(Cog):
         
         resp = session.get(f'https://cbt.sman1yogya.sch.id/index.php/admin/laporan_con/daftar_hadir?ujian_id={ujian_id}&mapel_id={mapel_id}&tingkat={tingkat}')
         
+        print(resp.text)
         tabel = pd.read_html(resp.text)
         
         dict_xi = {}
