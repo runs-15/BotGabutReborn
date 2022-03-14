@@ -155,7 +155,7 @@ class Exp(Cog):
             await ctx.send("Command Executed!")
             
     @command(name="exp.initialize", hidden = True)
-    async def reset_user(self, ctx):
+    async def reset_exp(self, ctx):
         if ctx.author.id == 616950344747974656:
             for member in [m for m in ctx.guild.members if not m.bot]:
                 real_time = db.servers_con['servers']['social_credit'].find({'discord_id' : member.id})[0]['v_time']
