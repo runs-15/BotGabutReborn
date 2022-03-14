@@ -830,6 +830,7 @@ class Exp(Cog):
                         result = np.random.choice(list(good_needed_xp.keys()), 1, p=list(good_needed_xp.values()))
                         res = int((batas_atas - xp_sekarang) * (result[0] / 100))
                     
+                    db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_chance': 0}})
                     txt = f'Giving **`{result[0]}%`** of remaining xp to next level with cost `{cost}` seconds worth of **`{res - cost}`** seconds [`{(0.45 * 0.5 * good_needed_xp[result[0]] * 100):.2f}%` chance]'
                     
                 elif good_determiner == 'current_xp':
@@ -838,7 +839,8 @@ class Exp(Cog):
                     while res - cost < 0:
                         result = np.random.choice(list(good_current_xp.keys()), 1, p=list(good_current_xp.values()))
                         res = int(xp_sekarang * (result[0] / 100))
-                        
+                    
+                    db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_chance': 0}})    
                     txt = f'Giving **`{result[0]}%`** of current xp this level with cost `{cost}` seconds worth of **`{res - cost}`** seconds [`{(0.45 * 0.3 * good_current_xp[result[0]] * 100):.2f}%` chance]'
                     
                 else:
@@ -847,7 +849,8 @@ class Exp(Cog):
                     while res - cost < 0:
                         result = np.random.choice(list(good_current_level_xp_range.keys()), 1, p=list(good_current_level_xp_range.values()))
                         res = int(batas_atas * (result[0] / 100))
-                        
+                    
+                    db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_chance': 0}})    
                     txt = f'Giving **`{result[0]}%`** of xp range this level with cost `{cost}` seconds worth of **`{res - cost}`** seconds [`{(0.45 * 0.2 * good_current_level_xp_range[result[0]] * 100):.2f}%` chance]'
                     
             else:
@@ -874,7 +877,7 @@ class Exp(Cog):
             
             db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_chance': chance + 0.02}})
             
-            await ctx.reply(f'{txt}\n```Current chance : {(chance + 0.02) * 100}%```')
+            await ctx.reply(f'{txt}\n```Current chance : {((chance + 0.02) * 100):.2f}%```')
             
 def setup(bot):
     bot.add_cog(Exp(bot))
