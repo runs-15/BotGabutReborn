@@ -863,7 +863,7 @@ class Exp(Cog):
             
             await ctx.reply(f'{txt}\n```Current chance : {((chance + 0.02) * 100):.2f}%```')
             await sleep(1)
-        await ctx.reply(Embed(title = 'Pull Summary', description = f'The result of {str(times) + " pulls are :" if times > 1 else " pull is :"}\n> **`{summary}` exp earned**\n> Current chance **`{((chance + 0.02) * 100):.2f}%`**'))
+        await ctx.reply(embed = Embed(title = 'Pull Summary', description = f'The result of {str(times) + " pulls are :" if times > 1 else " pull is :"}\n> **`{summary}` exp earned**\n> Current chance **`{((chance + 0.02) * 100):.2f}%`**'))
             
 def setup(bot):
     bot.add_cog(Exp(bot))
