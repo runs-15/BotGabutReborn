@@ -459,8 +459,7 @@ class Presensi(Cog):
                 except:
                     pass
                 
-            msg = await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA```""")
-            pengawasan = await ctx.send(f"""```{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+            msg = await ctx.send(embed = Embed(description = f"""```{kirim}```\n```NAMA SISWA                      : NILAI          RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***"""))
         else:
             await ctx.send('Not permitted')
             
