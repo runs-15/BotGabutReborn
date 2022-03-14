@@ -36,7 +36,7 @@ class Exp(Cog):
     def factor(self, level):
         return int(60 * level + ((level ** 3.8) * (1 - (0.99 ** level))))
     
-    def exp(self, xp):
+    def cur_exp(self, xp):
         level = 0
         exp = xp
         while exp > self.factor(level):
@@ -481,7 +481,7 @@ class Exp(Cog):
                 voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_time']
                 current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_level']
                 
-                current_exp = self.exp(voice_time)
+                current_exp = self.cur_exp(voice_time)
                 batas_atas = self.factor(current_level + 1)
 
                 #boxes = int((atas/bawah) * 20)
@@ -534,7 +534,7 @@ class Exp(Cog):
                 voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
                 current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
 
-                current_exp = self.exp(voice_time)
+                current_exp = self.cur_exp(voice_time)
                 batas_atas = self.factor(current_level + 1)
 
                 #boxes = int((atas/bawah) * 20)
@@ -604,7 +604,7 @@ class Exp(Cog):
         current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
         voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
 
-        xp_sekarang = self.exp(voice_time)
+        xp_sekarang = self.cur_exp(voice_time)
         batas_atas = self.factor(current_level + 1)
         
         good                        = ['needed_xp', 'current_xp', 'current_level_xp_range']
@@ -727,7 +727,7 @@ class Exp(Cog):
         current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
         voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
 
-        xp_sekarang = self.exp(voice_time)
+        xp_sekarang = self.cur_exp(voice_time)
         batas_atas = self.factor(current_level + 1)
         
         cost =int(((1 / 100) * xp_sekarang) + ((1 / 100) * batas_atas))
@@ -900,7 +900,7 @@ class Exp(Cog):
             current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
             voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
 
-            xp_sekarang = self.exp(voice_time)
+            xp_sekarang = self.cur_exp(voice_time)
             batas_atas = self.factor(current_level + 1)
             
             cost =int(5/10 * (((1 / 100) * xp_sekarang) + ((1 / 100) * batas_atas)))
