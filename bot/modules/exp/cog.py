@@ -799,13 +799,13 @@ class Exp(Cog):
         bad_current_xp              = bad_needed_xp
         bad_current_level_xp_range  = bad_needed_xp
         
-        try:
-            chance = db.servers_con['servers']['others'].find({'discord_id' : ctx.author.id})[0]['v_chance']
-        except:
-            chance = 0.02
-            db.servers_con['servers']['others'].insert_one({'discord_id' : ctx.author.id, 'v_pity': 0.02})
-        
         for i in range(times):
+            try:
+                chance = db.servers_con['servers']['others'].find({'discord_id' : ctx.author.id})[0]['v_chance']
+            except:
+                chance = 0.02
+                db.servers_con['servers']['others'].insert_one({'discord_id' : ctx.author.id, 'v_chance': 0.02})
+                
             current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
             voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
 
