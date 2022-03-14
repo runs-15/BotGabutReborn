@@ -386,8 +386,8 @@ class Presensi(Cog):
                             dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
                             for key, value in dalam_pengawasan.items():
                                 try:
-                                    ranking = xi.index[xi['Nama']==key][0] + 1
-                                    pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking, value)
+                                    ranking2 = xi.index[xi['Nama'] == key][0] + 1
+                                    pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking2, value)
                                 except:
                                     pass
                             rank_kirim = ''
@@ -400,8 +400,8 @@ class Presensi(Cog):
                                 
                             await msg.edit(f"""```NAMA SISWA                      : NILAI          RANK   RERATA KELAS``````{kirim2}``````{kirim3}```\n```OTHER DATA```""")
                             await pengawasan.edit(f"""```{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
-                        except:
-                            pass
+                        except Exception as e:
+                            print(e)
                 except:
                     pass
                 await sleep(30)
@@ -445,8 +445,8 @@ class Presensi(Cog):
             dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
             for key, value in dalam_pengawasan.items():
                 try:
-                    ranking = xi.index[xi['Nama'] == key][0] + 1
-                    pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking, value)
+                    ranking2 = xi.index[xi['Nama'] == key][0] + 1
+                    pengawasan += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking2, value)
                 except:
                     pass
             

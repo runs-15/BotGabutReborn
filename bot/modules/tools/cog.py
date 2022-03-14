@@ -287,6 +287,15 @@ class Tools(Cog):
                 await ctx.respond(f"Exception: {e}")
         else:
             await ctx.respond(f"Not permitted!")
+            
+    @command(name='random')    
+    async def bangun(self, ctx, *cat):
+        embed1 = discord.Embed(description = 'a'*2000)
+        embed2 = discord.Embed(description = 'a'*2000)
+        embed3 = discord.Embed(description = 'a'*2000)
+        embed4 = discord.Embed(description = 'a'*2000)
+        embed5 = discord.Embed(description = 'a'*2000)
+        await ctx.send(embeds = [embed1, embed2, embed3, embed4, embed5])
     
 def setup(bot):
     bot.add_cog(Tools(bot))
