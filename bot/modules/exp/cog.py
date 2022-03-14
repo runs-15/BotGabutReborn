@@ -791,6 +791,7 @@ class Exp(Cog):
         bad_current_xp              = bad_needed_xp
         bad_current_level_xp_range  = bad_needed_xp
         
+        summary = 0
         for i in range(times):
             try:
                 chance = db.servers_con['servers']['others'].find({'discord_id' : ctx.author.id})[0]['v_chance']
@@ -855,12 +856,14 @@ class Exp(Cog):
                     res = int(batas_atas * (result[0] / 100))
                     txt = f'Giving **`{result[0]}%`** of xp range this level worth of **`{res - cost}`** seconds [`{((1 - chance) * 0.2 * bad_current_level_xp_range[result[0]] * 100):.2f}%` chance]'
             
+            summary += (res - cost)
             voice_time += (res - cost)
             db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
             db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_chance': chance + 0.01}})
             
             await ctx.reply(f'{txt}\n```Current chance : {((chance + 0.02) * 100):.2f}%```')
             await sleep(1)
+        await ctx.reply(Embed(title = 'Pull Summary', description = f'The result of {str(times) + " pulls are :" if times > 1 else " pull is :"}\n> **`{summary}` exp earned**\n> Current chance **`{((chance + 0.02) * 100):.2f}%`**'))
             
 def setup(bot):
     bot.add_cog(Exp(bot))
