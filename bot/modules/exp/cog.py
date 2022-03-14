@@ -32,6 +32,9 @@ class Exp(Cog):
         # self.online_counter.start()
         # self.voice_check_update.start()
         # self.reset_vc_user.start()
+        
+    def factor(self, level):
+        return int(60 * level + ((level ** 3.8) * (1 - (0.99 ** level))))
 
     def number_format(self, num):
         num = float('{:.3g}'.format(num))
@@ -85,25 +88,42 @@ class Exp(Cog):
                                                                            'v_violation': 0,
                                                                            't_violation': 0,
                                                                            'n_violation': 0})
+
+                level = 0
                 
-                for j in range(current_level, 9999):
-                    pembanding_bawah = 60*(j-1) + (((j-1) ** 3.8) * (1 - (0.99 ** (j-1))))
-                    level            = 60*(j+0) + (((j+0) ** 3.8) * (1 - (0.99 ** (j+0))))
-                    pembanding_atas  = 60*(j+1) + (((j+1) ** 3.8) * (1 - (0.99 ** (j+1))))
-                    if level > voice_time >= pembanding_bawah:
-                        continue
-                    elif level <= voice_time < pembanding_atas:
-                        if current_level != j:
-                            sum_of_exp = int(sum([60*(x+0) + (((x+0) ** 3.8) * (1 - (0.99 ** (x+0)))) for x in range(1, j + 1)]))
-                            if j >= 10:
-                                await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{j}`** dalam *voice chat*!")
-                            db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': sum_of_exp}})
-                            db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': j}})
-                            break
-                        else:
-                            break
-                    else:
-                        continue
+                while voice_time > self.factor(level):
+                    level += 1
+                    voice_time -= self.factor(level)
+                    
+                if 10 > level > current_level:
+                    await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{level}`** dalam *voice chat*!")
+                    
+                    res = 0
+                    for i in range(level + 1):
+                        res += self.factor(i)
+                    
+                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
+                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': level}})
+                
+                # for j in range(current_level, 9999):
+                #     pembanding_bawah = 60*(j-1) + (((j-1) ** 3.8) * (1 - (0.99 ** (j-1))))
+                #     level            = 60*(j+0) + (((j+0) ** 3.8) * (1 - (0.99 ** (j+0))))
+                #     pembanding_atas  = 60*(j+1) + (((j+1) ** 3.8) * (1 - (0.99 ** (j+1))))
+                #     if level > voice_time >= pembanding_bawah:
+                #         continue
+                #     elif level <= voice_time < pembanding_atas:
+                #         if current_level != j:
+                #             sum_of_exp = int(sum([60*(x+0) + (((x+0) ** 3.8) * (1 - (0.99 ** (x+0)))) for x in range(1, j + 1)]))
+                #             if j >= 10:
+                #                 await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{j}`** dalam *voice chat*!")
+                #             db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': sum_of_exp}})
+                #             db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': j}})
+                #             break
+                #         else:
+                #             break
+                #     else:
+                #         continue
+                
                 self.user[i]["time"] = int(time.time())
             except Exception:
                 print(traceback.format_exc())
@@ -640,19 +660,34 @@ class Exp(Cog):
         
         voice_time += res
         
-        j = current_level
-        pembanding_bawah = 60*(j-1) + (((j-1) ** 3.8) * (1 - (0.99 ** (j-1))))
-        level            = 60*(j+0) + (((j+0) ** 3.8) * (1 - (0.99 ** (j+0))))
-        pembanding_atas  = 60*(j+1) + (((j+1) ** 3.8) * (1 - (0.99 ** (j+1))))
-        
-        if level > voice_time >= pembanding_bawah:
-            level_txt = None
-        elif level <= voice_time < pembanding_atas:
-            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': current_level + 1}})
-            level_txt = f'```your level was increased by 1 to {current_level + 1}```'
-        elif level > voice_time >= pembanding_bawah:
-            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': current_level - 1}})
-            level_txt = f'``your level was decreased by 1 to {current_level - 1}```'
+        level = 0
+        level_txt = None
+            
+        while voice_time > self.factor(level):
+            level += 1
+            voice_time -= self.factor(level)
+            
+        if 10 > level > current_level:
+            await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{level}`** dalam *voice chat*!")
+            
+            res = 0
+            for i in range(level + 1):
+                res += self.factor(i)
+            
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_exp': res + voice_time}})
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': level}})
+            level_txt = f'```your level was increased to {level}```'
+
+        elif level < current_level:
+            await self.levelling_channel.send(f"Selamat <@{i}>! Anda diturunkan mencapai level **`{level}`** dalam *voice chat*!")
+            
+            res = 0
+            for i in range(level + 1):
+                res += self.factor(i)
+            
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_exp': res + voice_time}})
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': level}})
+            level_txt = f'``your level was decreased to {level}```'
                 
         db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
         await ctx.reply(txt + level_txt if level_txt != None else None)
@@ -753,21 +788,34 @@ class Exp(Cog):
         
         voice_time += (res - cost)
         
-        j = current_level
-        pembanding_bawah = 60*(j-1) + (((j-1) ** 3.8) * (1 - (0.99 ** (j-1))))
-        level            = 60*(j+0) + (((j+0) ** 3.8) * (1 - (0.99 ** (j+0))))
-        pembanding_atas  = 60*(j+1) + (((j+1) ** 3.8) * (1 - (0.99 ** (j+1))))
-        
-        if level > voice_time >= pembanding_bawah:
-            level_txt = None
-        elif level <= voice_time < pembanding_atas:
-            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': current_level + 1}})
-            level_txt = f'```your level was increased by 1 to {current_level + 1}```'
-        elif level > voice_time >= pembanding_bawah:
-            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': current_level - 1}})
-            level_txt = f'``your level was decreased by 1 to {current_level - 1}```'
+        level = 0
+        level_txt = None
             
-        db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
+        while voice_time > self.factor(level):
+            level += 1
+            voice_time -= self.factor(level)
+            
+        if 10 > level > current_level:
+            await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{level}`** dalam *voice chat*!")
+            
+            res = 0
+            for i in range(level + 1):
+                res += self.factor(i)
+            
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_exp': res + voice_time}})
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': level}})
+            level_txt = f'```your level was increased to {level}```'
+
+        elif level < current_level:
+            await self.levelling_channel.send(f"Selamat <@{i}>! Anda diturunkan mencapai level **`{level}`** dalam *voice chat*!")
+            
+            res = 0
+            for i in range(level + 1):
+                res += self.factor(i)
+            
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_exp': res + voice_time}})
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': level}})
+            level_txt = f'``your level was decreased to {level}```'
         
         try:
             pity = db.servers_con['servers']['others'].find({'discord_id' : ctx.author.id})[0]['v_pity']
@@ -777,6 +825,8 @@ class Exp(Cog):
             
         if result == 100:
             db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_pity': 0}})
+            
+        db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
         
         await ctx.reply(txt + level_txt if level_txt != None else None)
         
@@ -890,19 +940,34 @@ class Exp(Cog):
             summary += (res - cost)
             voice_time += (res - cost)
             
-            j = current_level
-            pembanding_bawah = 60*(j-1) + (((j-1) ** 3.8) * (1 - (0.99 ** (j-1))))
-            level            = 60*(j+0) + (((j+0) ** 3.8) * (1 - (0.99 ** (j+0))))
-            pembanding_atas  = 60*(j+1) + (((j+1) ** 3.8) * (1 - (0.99 ** (j+1))))
-            
-            if level > voice_time >= pembanding_bawah:
-                level_txt = None
-            elif level <= voice_time < pembanding_atas:
-                db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': current_level + 1}})
-                level_txt = f'```your level was increased by 1 to {current_level + 1}```'
-            elif level > voice_time >= pembanding_bawah:
-                db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': current_level - 1}})
-                level_txt = f'``your level was decreased by 1 to {current_level - 1}```'
+            level = 0
+            level_txt = None
+                
+            while voice_time > self.factor(level):
+                level += 1
+                voice_time -= self.factor(level)
+                
+            if 10 > level > current_level:
+                await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{level}`** dalam *voice chat*!")
+                
+                res = 0
+                for i in range(level + 1):
+                    res += self.factor(i)
+                
+                db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_exp': res + voice_time}})
+                db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': level}})
+                level_txt = f'```your level was increased to {level}```'
+
+            elif level < current_level:
+                await self.levelling_channel.send(f"Selamat <@{i}>! Anda diturunkan mencapai level **`{level}`** dalam *voice chat*!")
+                
+                res = 0
+                for i in range(level + 1):
+                    res += self.factor(i)
+                
+                db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_exp': res + voice_time}})
+                db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': level}})
+                level_txt = f'``your level was decreased to {level}```'
                 
             db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
             db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_chance': chance + 0.01}})
