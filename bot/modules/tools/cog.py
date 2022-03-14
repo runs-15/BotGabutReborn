@@ -288,7 +288,7 @@ class Tools(Cog):
         else:
             await ctx.respond(f"Not permitted!")
             
-    @command(name='random')    
+    @command(name='test-embed')    
     async def bangun(self, ctx, *cat):
         embed1 = discord.Embed(description = 'a'*2000)
         embed2 = discord.Embed(description = 'a'*2000)
