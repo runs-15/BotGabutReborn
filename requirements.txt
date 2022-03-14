@@ -17,3 +17,4 @@ pandas
 pillow
 lxml
 html5lib
+beautifulsoup4

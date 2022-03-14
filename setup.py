@@ -39,7 +39,8 @@ setuptools.setup(
         'pillow',
         'pandas',
         'lxml',
-        'html5lib'
+        'html5lib',
+        'beautifulsoup4'
     ],
     python_requires='>=3.6',
 )
