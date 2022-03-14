@@ -778,15 +778,15 @@ class Exp(Cog):
 
         bad                         = ['needed_xp', 'current_xp', 'current_level_xp_range']
         bad_needed_xp               = { -100 : 0.0001,
-                                        -50  : 0.0039,
-                                        -10  : 0.006,
-                                        -5   : 0.02,
-                                        -3   : 0.07,
-                                        -2   : 0.2,
-                                        -1   : 0.4,
-                                        -0.8 : 0.2,
-                                        -0.5 : 0.05,
-                                        -0.3 : 0.05}
+                                        -75  : 0.0039,
+                                        -50  : 0.006,
+                                        -20   : 0.02,
+                                        -10   : 0.07,
+                                        -9   : 0.2,
+                                        -8   : 0.4,
+                                        -7 : 0.2,
+                                        -6 : 0.05,
+                                        -5 : 0.05}
         bad_current_xp              = bad_needed_xp
         bad_current_level_xp_range  = bad_needed_xp
         
