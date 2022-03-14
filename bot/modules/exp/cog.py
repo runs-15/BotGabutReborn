@@ -101,7 +101,7 @@ class Exp(Cog):
                 temp = voice_time
                 while temp > self.factor(level):
                     level += 1
-                    temp -= (self.factor(current_level + 1) - self.factor(current_level))
+                    temp -= (self.factor(level + 1) - self.factor(level))
                     
                 if current_level < level:
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': level}})
@@ -112,7 +112,8 @@ class Exp(Cog):
                     
                     # db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
                     
-                    await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{level}`** dalam *voice chat*!")
+                    # await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{level}`** dalam *voice chat*!")
+                    print(f"Selamat <@{i}>! Anda telah mencapai level **`{level}`** dalam *voice chat*!")
                     
                 elif level < current_level:
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': level}})
@@ -123,7 +124,8 @@ class Exp(Cog):
                     
                     # db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
                     
-                    await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah diturunkan ke level **`{level}`** dalam *voice chat*!")
+                    # await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah diturunkan ke level **`{level}`** dalam *voice chat*!")
+                    print(f"Selamat <@{i}>! Anda telah diturunkan ke level **`{level}`** dalam *voice chat*!")
                 
                 # for j in range(current_level, 9999):
                 #     pembanding_bawah = 60*(j-1) + (((j-1) ** 3.8) * (1 - (0.99 ** (j-1))))
