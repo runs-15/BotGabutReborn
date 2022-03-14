@@ -326,7 +326,7 @@ class Presensi(Cog):
             for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
                 try:
                     ranking = xi.index[xi['Nama']==i][0] + 1
-                    kirim2 += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0])
+                    kirim2 += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, round(xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0], 2))
                 except Exception as e:
                     print(e)
                     try:
@@ -372,7 +372,7 @@ class Presensi(Cog):
                             for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
                                 try:
                                     ranking = xi.index[xi['Nama']==i][0] + 1
-                                    kirim2 += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0])
+                                    kirim2 += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, round(xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0], 2))
                                 except Exception as e:
                                     print(e)
                                     try:
@@ -431,7 +431,7 @@ class Presensi(Cog):
             for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
                 try:
                     ranking = xi.index[xi['Nama']==i][0] + 1
-                    kirim2 += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0])
+                    kirim2 += "{:<32}: {:<5} / 100    {:<4}   {:<7}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, round(xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0], 2))
                 except Exception as e:
                     print(e)
                     try:
