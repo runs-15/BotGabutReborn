@@ -768,6 +768,7 @@ class Exp(Cog):
         
         if times > 10:
             raise Exception('times should not exceed 10')
+            ctx.command.reset_cooldown(ctx) 
         
         good                        = ['needed_xp', 'current_xp', 'current_level_xp_range']
         good_needed_xp              = { 200 : 0.05,
