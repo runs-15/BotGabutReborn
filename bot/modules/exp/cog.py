@@ -874,8 +874,8 @@ class Exp(Cog):
         good_needed_xp              = { 1000 : 0.003,
                                         500 : 0.007,
                                         300 : 0.04,
-                                        150 : 0.15,
-                                        100  : 0.8}
+                                        200 : 0.15,
+                                        150  : 0.8}
         good_current_xp             = good_needed_xp 
         good_current_level_xp_range = good_needed_xp
 
