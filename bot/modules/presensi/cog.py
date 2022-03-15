@@ -339,13 +339,13 @@ class Presensi(Cog):
             dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
             for key, value in dalam_pengawasan.items():
                 try:
-                    ranking = xi.index[xi['Nama']==i][0] + 1
+                    ranking = xi.index[xi['Nama'] == key][0] + 1
                     pengawasan += "{:<32}: {:<5}   {:<4}   {}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking, value)
                 except:
                         pass
             
             rank_kirim = ''
-            for i in range(10):
+            for i in range(9):
                 try:
                     nama = xi.iloc[i]['Nama']
                     rank_kirim += "RANK {:<2} ({:<5})   : {}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
@@ -390,7 +390,7 @@ class Presensi(Cog):
                                 except:
                                     pass
                             rank_kirim = ''
-                            for i in range(10):
+                            for i in range(9):
                                 try:
                                     nama = xi.iloc[i]['Nama']
                                     rank_kirim += "RANK {:<2} ({}) : {}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
@@ -450,7 +450,7 @@ class Presensi(Cog):
             
 
             rank_kirim = ''
-            for i in range(10):
+            for i in range(9):
                 try:
                     nama = xi.iloc[i]['Nama']
                     rank_kirim += "RANK {:<2} ({}) : {}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
