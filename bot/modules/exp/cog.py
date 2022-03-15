@@ -39,9 +39,9 @@ class Exp(Cog):
     def cur_exp(self, xp):
         level = 0
         exp = xp
-        while exp > self.factor(level):
+        while exp > (self.factor(level + 1) - self.factor(level)):
             level += 1
-            exp -= self.factor(level)
+            exp -= (self.factor(level + 1) - self.factor(level))
         return int(exp)
 
     def number_format(self, num):
