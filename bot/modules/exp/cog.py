@@ -980,7 +980,7 @@ class Exp(Cog):
                 # db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
                 level_txt = f'```your level was increased to {level}```'
                 xp_sekarang = self.cur_exp(voice_time)
-                batas_atas = self.factor(current_level + 1) - self.factor(current_level)
+                batas_atas = self.factor(level + 1) - self.factor(level)
                 
             elif level < current_level:
                 db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': level}})
@@ -992,7 +992,7 @@ class Exp(Cog):
                 # db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
                 level_txt = f'```your level was decreased to {level}```'
                 xp_sekarang = self.cur_exp(voice_time)
-                batas_atas = self.factor(current_level + 1) - self.factor(current_level)
+                batas_atas = self.factor(level + 1) - self.factor(level)
                 
             db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
             db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_chance': chance + 0.01}})
