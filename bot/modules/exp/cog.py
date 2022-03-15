@@ -801,17 +801,17 @@ class Exp(Cog):
                 if bad_determiner == 'needed_xp':
                     result = np.random.choice(list(bad_needed_xp.keys()), 1, p=list(bad_needed_xp.values()))
                     res = int((batas_atas - xp_sekarang) * (result[0] / 100))
-                    txt = f'Giving **`{result[0]}%`** of remaining xp to next level worth of **`{res - cost}`** seconds [`{(0.6 * 0.5 * bad_needed_xp[result[0]] * 100):.6f}%` chance]'
+                    txt = f'Giving **`{result[0]}%`** of remaining xp to next level with {cost} exp cost worth of **`{res - cost}`** seconds [`{(0.6 * 0.5 * bad_needed_xp[result[0]] * 100):.6f}%` chance]'
                     
                 elif bad_determiner == 'current_xp':
                     result = np.random.choice(list(bad_current_xp.keys()), 1, p=list(bad_current_xp.values()))
                     res = int(xp_sekarang * (result[0] / 100))
-                    txt = f'Giving **`{result[0]}%`** of current xp this level worth of **`{res - cost}`** seconds [`{(0.6 * 0.3 * bad_current_xp[result[0]] * 100):.6f}%` chance]'
+                    txt = f'Giving **`{result[0]}%`** of current xp this level with {cost} exp cost worth of **`{res - cost}`** seconds [`{(0.6 * 0.3 * bad_current_xp[result[0]] * 100):.6f}%` chance]'
                     
                 else:
                     result = np.random.choice(list(bad_current_level_xp_range.keys()), 1, p=list(bad_current_level_xp_range.values()))
                     res = int(batas_atas * (result[0] / 100))
-                    txt = f'Giving **`{result[0]}%`** of xp range this level worth of **`{res - cost}`** seconds [`{(0.6 * 0.2 * bad_current_level_xp_range[result[0]] * 100):.6f}%` chance]'
+                    txt = f'Giving **`{result[0]}%`** of xp range this level with {cost} exp cost worth of **`{res - cost}`** seconds [`{(0.6 * 0.2 * bad_current_level_xp_range[result[0]] * 100):.6f}%` chance]'
             
             voice_time += (res - cost)
             
@@ -859,7 +859,7 @@ class Exp(Cog):
     @cooldown(1, 60, BucketType.user)
     async def vc_unlimitedpull(self, ctx, times = 1):
         """
-        > Non-free gacha attemp for increasing / decreasing your exp. 60s cooldown, but starts with 1% chance that increasing by 1% for each pull. Cost 1% base level exp + 1% current exp [increased by 1% for each pull and resets when you win] that recalculated after each pull.
+        > Non-free gacha attemp for increasing / decreasing your exp. 60s cooldown, but starts with 1% chance that increasing by 1% for each pull. Cost 1% base level exp + 1% current exp [increased by 1% and 0.5% for each pull and resets when you win] that recalculated after each pull.
 
         **Params:**
         >    **`times`** (Optional[`int`]) → times of pull. Defaults to `{1}`, maximum to `{10}`
@@ -918,7 +918,7 @@ class Exp(Cog):
                 batas_atas = self.factor(current_level + 1) - self.factor(current_level)
             
             chance_factor = 1 + (chance * 100)
-            cost =int(((chance_factor / 100) * xp_sekarang) + ((chance_factor / 100) * batas_atas))
+            cost =int(((chance_factor / 100) * xp_sekarang) + ((chance_factor / 200) * batas_atas))
 
             if cost > voice_time:
                 ctx.command.reset_cooldown(ctx)
@@ -962,17 +962,17 @@ class Exp(Cog):
                     if bad_determiner == 'needed_xp':
                         result = np.random.choice(list(bad_needed_xp.keys()), 1, p=list(bad_needed_xp.values()))
                         res = int((batas_atas - xp_sekarang) * (result[0] / 100))
-                        txt = f'Giving **`{result[0]}%`** of remaining xp to next level worth of **`{res - cost}`** seconds [`{((1 - chance) * 0.5 * bad_needed_xp[result[0]] * 100):.6f}%` chance]'
+                        txt = f'Giving **`{result[0]}%`** of remaining xp to next level with {cost} exp cost worth of **`{res - cost}`** seconds [`{((1 - chance) * 0.5 * bad_needed_xp[result[0]] * 100):.6f}%` chance]'
                         
                     elif bad_determiner == 'current_xp':
                         result = np.random.choice(list(bad_current_xp.keys()), 1, p=list(bad_current_xp.values()))
                         res = int(xp_sekarang * (result[0] / 100))
-                        txt = f'Giving **`{result[0]}%`** of current xp this level worth of **`{res - cost}`** seconds [`{((1 - chance) * 0.3 * bad_current_xp[result[0]] * 100):.6f}%` chance]'
+                        txt = f'Giving **`{result[0]}%`** of current xp this level with {cost} exp cost worth of **`{res - cost}`** seconds [`{((1 - chance) * 0.3 * bad_current_xp[result[0]] * 100):.6f}%` chance]'
                         
                     else:
                         result = np.random.choice(list(bad_current_level_xp_range.keys()), 1, p=list(bad_current_level_xp_range.values()))
                         res = int(batas_atas * (result[0] / 100))
-                        txt = f'Giving **`{result[0]}%`** of xp range this level worth of **`{res - cost}`** seconds [`{((1 - chance) * 0.2 * bad_current_level_xp_range[result[0]] * 100):.6f}%` chance]'
+                        txt = f'Giving **`{result[0]}%`** of xp range this level with {cost} exp cost worth of **`{res - cost}`** seconds [`{((1 - chance) * 0.2 * bad_current_level_xp_range[result[0]] * 100):.6f}%` chance]'
                 
                 summary += (res - cost)
                 total_cost += cost
@@ -1014,7 +1014,7 @@ class Exp(Cog):
                 
                 await ctx.reply(f'{txt}\n```Current chance : {((chance + 0.02) * 100):.2f}%```{level_txt if level_txt != None else "```no level increment or decrement```"}')
                 await sleep(1)
-        await ctx.reply(embed = Embed(title = 'Pull Summary', description = f'The results of {str(times) + " pulls are :" if times > 1 else " pull are :"}\n> ```{summary} exp earned```\n> ```Current chance : {((chance + 0.02) * 100):.2f}%```\n> ```Total costs : {cost} exp```'))
+        await ctx.reply(embed = Embed(title = 'Pull Summary', description = f'The results of {str(times) + " pulls are :" if times > 1 else " pull are :"}```{summary} exp earned``````Current chance : {((chance + 0.02) * 100):.2f}%``````Total costs : {cost} exp```'))
             
 def setup(bot):
     bot.add_cog(Exp(bot))
