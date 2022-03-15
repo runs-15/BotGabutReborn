@@ -319,7 +319,6 @@ class Presensi(Cog):
             for index, row in kop.iterrows():
                 if row['key'] != 'Kelas':
                     kirim += "{:<32}{}\n".format(row['key'], row['value'])
-            await ctx.send(f'```{kirim}```')
             
             kirim2 = ''
             for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
@@ -345,7 +344,7 @@ class Presensi(Cog):
                         pass
             
             rank_kirim = ''
-            for i in range(9):
+            for i in range(5):
                 try:
                     nama = xi.iloc[i]['Nama']
                     rank_kirim += "RANK {:<2} ({:<5})   : {}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
@@ -390,7 +389,7 @@ class Presensi(Cog):
                                 except:
                                     pass
                             rank_kirim = ''
-                            for i in range(9):
+                            for i in range(5):
                                 try:
                                     nama = xi.iloc[i]['Nama']
                                     rank_kirim += "RANK {:<2} ({}) : {}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
@@ -450,7 +449,7 @@ class Presensi(Cog):
             
 
             rank_kirim = ''
-            for i in range(9):
+            for i in range(5):
                 try:
                     nama = xi.iloc[i]['Nama']
                     rank_kirim += "RANK {:<2} ({}) : {}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
