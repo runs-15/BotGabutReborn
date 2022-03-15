@@ -1014,7 +1014,7 @@ class Exp(Cog):
                 
                 await ctx.reply(f'{txt}\n```Current chance : {((chance + 0.02) * 100):.2f}%```{level_txt if level_txt != None else "```no level increment or decrement```"}')
                 await sleep(1)
-        await ctx.reply(embed = Embed(title = 'Pull Summary', description = f'The results of {str(times) + " pulls are :" if times > 1 else " pull are :"}```{summary} exp earned``````Current chance : {((chance + 0.02) * 100):.2f}%``````Total costs : {cost} exp```'))
+        await ctx.reply(embed = Embed(title = 'Pull Summary', description = f'The results of {str(times) + " pulls are :" if times > 1 else " pull are :"}```{summary} exp earned``````Current chance : {((chance + 0.02) * 100):.2f}%``````Total costs : {total_cost} exp```'))
             
 def setup(bot):
     bot.add_cog(Exp(bot))
