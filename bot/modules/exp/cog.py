@@ -101,7 +101,7 @@ class Exp(Cog):
 
                 level = 0
                 temp = voice_time
-                while temp > self.factor(level):
+                while temp > (self.factor(level + 1) - self.factor(level)):
                     level += 1
                     temp -= (self.factor(level + 1) - self.factor(level))
                     
@@ -686,7 +686,7 @@ class Exp(Cog):
         level = 0
         level_txt = None
         temp = voice_time
-        while temp > self.factor(level):
+        while temp > (self.factor(level + 1) - self.factor(level)):
             level += 1
             temp -= self.factor(level + 1) - self.factor(level)
             
@@ -818,7 +818,7 @@ class Exp(Cog):
             level = 0
             level_txt = None
             temp = voice_time
-            while temp > self.factor(level):
+            while temp > (self.factor(level + 1) - self.factor(level)):
                 level += 1
                 temp -= self.factor(level + 1) - self.factor(level)
                 
@@ -859,7 +859,7 @@ class Exp(Cog):
     @cooldown(1, 60, BucketType.user)
     async def vc_unlimitedpull(self, ctx, times = 1):
         """
-        > Non-free gacha attemp for increasing / decreasing your exp. 60s cooldown, but starts with 1% chance that increasing by 1% for each pull. Cost 50% of (1% base level exp + 1% current exp) that recalculated after each pull.
+        > Non-free gacha attemp for increasing / decreasing your exp. 60s cooldown, but starts with 1% chance that increasing by 1% for each pull. Cost 1% base level exp + 1% current exp [increased by 0.2% for each pull and resets when you win] that recalculated after each pull.
 
         **Params:**
         >    **`times`** (Optional[`int`]) → times of pull. Defaults to `{1}`, maximum to `{10}`
@@ -915,7 +915,8 @@ class Exp(Cog):
                 xp_sekarang = self.cur_exp(voice_time)
                 batas_atas = self.factor(current_level + 1) - self.factor(current_level)
             
-            cost =int(5/10 * (((1 / 100) * xp_sekarang) + ((1 / 100) * batas_atas)))
+            chance_factor = 1 + (0.2 * chance * 100)
+            cost =int(((chance_factor / 100) * xp_sekarang) + ((chance_factor / 100) * batas_atas))
 
             if cost > voice_time:
                 ctx.command.reset_cooldown(ctx)
@@ -977,7 +978,7 @@ class Exp(Cog):
                 level = 0
                 level_txt = None
                 temp = voice_time
-                while temp > self.factor(level):
+                while temp > (self.factor(level + 1) - self.factor(level)):
                     level += 1
                     temp -= self.factor(level + 1) - self.factor(level)
                     
@@ -1010,7 +1011,7 @@ class Exp(Cog):
                 
                 await ctx.reply(f'{txt}\n```Current chance : {((chance + 0.02) * 100):.2f}%```{level_txt if level_txt != None else "```no level increment or decrement```"}')
                 await sleep(1)
-            await ctx.reply(embed = Embed(title = 'Pull Summary', description = f'The result of {str(times) + " pulls are :" if times > 1 else " pull is :"}\n> **`{summary}` exp earned**\n> Current chance **`{((chance + 0.02) * 100):.2f}%`**'))
+        await ctx.reply(embed = Embed(title = 'Pull Summary', description = f'The result of {str(times) + " pulls are :" if times > 1 else " pull is :"}\n> **`{summary}` exp earned**\n> Current chance **`{((chance + 0.02) * 100):.2f}%`**'))
             
 def setup(bot):
     bot.add_cog(Exp(bot))
