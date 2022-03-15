@@ -871,9 +871,11 @@ class Exp(Cog):
             raise Exception('times should not exceed 10')
         
         good                        = ['needed_xp', 'current_xp', 'current_level_xp_range']
-        good_needed_xp              = { 1000 : 0.05,
-                                        500 : 0.15,
-                                        300  : 0.8}
+        good_needed_xp              = { 1000 : 0.003,
+                                        500 : 0.007,
+                                        300 : 0.04,
+                                        150 : 0.15,
+                                        100  : 0.8}
         good_current_xp             = good_needed_xp 
         good_current_level_xp_range = good_needed_xp
 
@@ -892,6 +894,7 @@ class Exp(Cog):
         bad_current_level_xp_range  = bad_needed_xp
         
         summary = 0
+        batas_atas, xp_sekarang = 0, 0
         for i in range(times):
             try:
                 chance = db.servers_con['servers']['others'].find({'discord_id' : ctx.author.id})[0]['v_chance']
@@ -902,8 +905,9 @@ class Exp(Cog):
             current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
             voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
 
-            xp_sekarang = self.cur_exp(voice_time)
-            batas_atas = self.factor(current_level + 1) - self.factor(current_level)
+            if batas_atas == 0:
+                xp_sekarang = self.cur_exp(voice_time)
+                batas_atas = self.factor(current_level + 1) - self.factor(current_level)
             
             cost =int(5/10 * (((1 / 100) * xp_sekarang) + ((1 / 100) * batas_atas)))
 
@@ -975,6 +979,8 @@ class Exp(Cog):
                     
                 # db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
                 level_txt = f'```your level was increased to {level}```'
+                xp_sekarang = self.cur_exp(voice_time)
+                batas_atas = self.factor(current_level + 1) - self.factor(current_level)
                 
             elif level < current_level:
                 db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': level}})
@@ -985,6 +991,8 @@ class Exp(Cog):
                 
                 # db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
                 level_txt = f'```your level was decreased to {level}```'
+                xp_sekarang = self.cur_exp(voice_time)
+                batas_atas = self.factor(current_level + 1) - self.factor(current_level)
                 
             db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
             db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_chance': chance + 0.01}})
