@@ -354,7 +354,7 @@ class Presensi(Cog):
             await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI   RANK   RERATA KELAS```""")
             msg = await ctx.send(f"""```{kirim2}``````{kirim3}```\n```OTHER DATA``````{rank_kirim}``````{pengawasan}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
             tm_start = time.time()
-            while time.time() < (tm_start + 7500):
+            while time.time() < (tm_start + 7500) and int(time.time()) % 30 == 0:
                 try:
                     if xi.equals(self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)[1]) == False:
                         try:
@@ -401,7 +401,6 @@ class Presensi(Cog):
                             print(e)
                 except:
                     pass
-                await sleep(30)
             await msg.delete()
         else:
             await ctx.send('Not permitted')
