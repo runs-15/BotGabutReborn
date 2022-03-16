@@ -48,9 +48,9 @@ class Exp(Cog):
     def vc_cur_exp(self, xp):
         level = 0
         exp = xp
-        while exp > (self.vc_factor(level + 1) - self.vc_factor(level)):
+        while exp > (self.voice_factor(level + 1) - self.voice_factor(level)):
             level += 1
-            exp -= (self.vc_factor(level + 1) - self.vc_factor(level))
+            exp -= (self.voice_factor(level + 1) - self.voice_factor(level))
         return int(exp)
 
     def number_format(self, num):
