@@ -91,7 +91,7 @@ class Exp(Cog):
                 total_time = int(time.time()) - self.user[i]["time"]
                 if db.servers_con['servers']['social_credit'].find({'discord_id' : i}) != None:
                     current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['v_level']
-                    u_current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['v_level']
+                    u_current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['u_level']
                     u_exp = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['u_exp'] + total_time
                     real_time = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['v_exp'] + total_time
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': real_time}})
@@ -542,7 +542,7 @@ class Exp(Cog):
                 daftar = db.servers_con['servers']['social_credit'].find()
                 data = list(daftar)
                 df = pd.DataFrame(data, index=[x['discord_id'] for x in data], columns=['discord_id', 'v_exp', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence', 'u_exp', 'u_level'])
-                df['rank'] = df['v_exp'].rank(ascending=False)
+                df['rank'] = df['u_exp'].rank(ascending=False)
                 ranking = df.loc[user.id]['rank']
 
                 file = File(f"{user.id}.jpg", filename=f"{user.id}.jpg")
@@ -597,7 +597,7 @@ class Exp(Cog):
                 daftar = db.servers_con['servers']['social_credit'].find()
                 data = list(daftar)
                 df = pd.DataFrame(data, index=[x['discord_id'] for x in data], columns=['discord_id', 'v_exp', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence', 'u_exp', 'u_level'])
-                df['rank'] = df['v_exp'].rank(ascending=False)
+                df['rank'] = df['u_exp'].rank(ascending=False)
                 ranking = df.loc[ctx.author.id]['rank']
 
                 file = File(f"{ctx.author.id}.jpg", filename=f"{ctx.author.id}.jpg")
@@ -1192,7 +1192,7 @@ class Exp(Cog):
 
         if determiner == 'good':
             res = 2 * voice_time
-            txt = f'Giving **`{res}%`** of xp'
+            txt = f'Giving **`{res}`** of xp'
                 
         else:
             res = 1
