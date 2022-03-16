@@ -20,8 +20,6 @@ class Exp(Cog):
 
     @Cog.listener()
     async def on_ready(self):
-        self.voice_data = []
-        self.text_data = []
         self.levelling_channel = self.bot.get_channel(855810493397729300)
         self.text_levelling_channel = self.bot.get_channel(856069554387943427)
         self.temp_join = 0
@@ -36,12 +34,23 @@ class Exp(Cog):
     def factor(self, level):
         return int(60 * level + ((level ** 3.8) * (1 - (0.99 ** level))))
     
+    def voice_factor(self, level):
+        return int(3600 * level)
+    
     def cur_exp(self, xp):
         level = 0
         exp = xp
         while exp > (self.factor(level + 1) - self.factor(level)):
             level += 1
             exp -= (self.factor(level + 1) - self.factor(level))
+        return int(exp)
+    
+    def vc_cur_exp(self, xp):
+        level = 0
+        exp = xp
+        while exp > (self.vc_factor(level + 1) - self.vc_factor(level)):
+            level += 1
+            exp -= (self.vc_factor(level + 1) - self.vc_factor(level))
         return int(exp)
 
     def number_format(self, num):
@@ -81,30 +90,30 @@ class Exp(Cog):
             try:
                 total_time = int(time.time()) - self.user[i]["time"]
                 if db.servers_con['servers']['social_credit'].find({'discord_id' : i}) != None:
-                    voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['v_time'] + total_time
                     current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['v_level']
-                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_time': voice_time}})
                     real_time = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['v_exp'] + total_time
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': real_time}})
+                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'u_exp': real_time}})
                 else:
                     current_level = 0
                     voice_time = total_time
                     db.servers_con['servers']['social_credit'].insert_one({'discord_id' : i,
-                                                                           'v_exp'      : 0, 
-                                                                           'v_time'     : 0,
+                                                                           'v_exp'      : voice_time, 
                                                                            'v_level'    : 0,
                                                                            't_exp'      : 0,
                                                                            't_time'     : 0,
                                                                            't_level'    : 0,
                                                                            'v_violation': 0,
                                                                            't_violation': 0,
-                                                                           'n_violation': 0})
+                                                                           'n_violation': 0,
+                                                                           'u_exp'      : voice_time,
+                                                                           'u_level'    : 0})
 
                 level = 0
                 temp = voice_time
-                while temp > (self.factor(level + 1) - self.factor(level)):
+                while temp > (self.voice_factor(level + 1) - self.voice_factor(level)):
                     level += 1
-                    temp -= (self.factor(level + 1) - self.factor(level))
+                    temp -= (self.voice_factor(level + 1) - self.voice_factor(level))
                     
                 if current_level < level:
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': level}})
@@ -143,16 +152,17 @@ class Exp(Cog):
     async def reset_user(self, ctx):
         if ctx.author.id == 616950344747974656:
             for member in [m for m in ctx.guild.members if not m.bot]:
-                db.servers_con['servers']['social_credit'].insert_one({ 'discord_id' : member.id,
-                                                                        'v_exp'      : 0, 
-                                                                        'v_time'     : 0,
-                                                                        'v_level'    : 0,
-                                                                        't_exp'      : 0,
-                                                                        't_time'     : 0,
-                                                                        't_level'    : 0,
-                                                                        'v_violation': 0,
-                                                                        't_violation': 0,
-                                                                        'n_violation': 0})
+                db.servers_con['servers']['social_credit'].insert_one({'discord_id' : member.id,
+                                                                           'v_exp'      : 0, 
+                                                                           'v_level'    : 0,
+                                                                           't_exp'      : 0,
+                                                                           't_time'     : 0,
+                                                                           't_level'    : 0,
+                                                                           'v_violation': 0,
+                                                                           't_violation': 0,
+                                                                           'n_violation': 0,
+                                                                           'u_exp'      : 0,
+                                                                           'u_level'    : 0})
             await ctx.send("Command Executed!")
             
     @command(name="exp.initialize", hidden = True)
@@ -160,12 +170,14 @@ class Exp(Cog):
         if ctx.author.id == 616950344747974656:
             for member in [m for m in ctx.guild.members if not m.bot]:
                 try:
-                    pindahexp = db.servers_con['servers']['social_credit'].find({'discord_id' : member.id})[0]['v_time']
-                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : member.id}, {"$set": {'u_exp': pindahexp}})
-                    levelexp = db.servers_con['servers']['social_credit'].find({'discord_id' : member.id})[0]['v_level']
-                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : member.id}, {"$set": {'u_level': levelexp}})
+                    # pindahexp = db.servers_con['servers']['social_credit'].find({'discord_id' : member.id})[0]['v_time']
+                    # db.servers_con['servers']['social_credit'].update_one({'discord_id' : member.id}, {"$set": {'u_exp': pindahexp}})
+                    # levelexp = db.servers_con['servers']['social_credit'].find({'discord_id' : member.id})[0]['v_level']
+                    # db.servers_con['servers']['social_credit'].update_one({'discord_id' : member.id}, {"$set": {'u_level': levelexp}})
                     
-                    # db.servers_con['servers']['social_credit'].update_one({},{'$unset':{'v_time' : ''}})
+                    db.servers_con['servers']['social_credit'].update_one({},{'$unset':{'v_time' : ''}})
+                    db.servers_con['servers']['others'].updateMany( {}, { '$rename': { "v_pity": "u_pity" } } )
+                    db.servers_con['servers']['others'].updateMany( {}, { '$rename': { "v_chance": "u_chance" } } )
                     
                     print(f'{member.id} executed')
                 except Exception as e:
@@ -457,8 +469,8 @@ class Exp(Cog):
     async def vc_rank(self, ctx):
         daftar = db.servers_con['servers']['social_credit'].find()
         data = list(daftar)
-        df = pd.DataFrame(data, index=[x['discord_id'] for x in data], columns=['discord_id', 'v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
-        df = df.sort_values(['v_time', 'discord_id'], ascending=[False, True], ignore_index=True)
+        df = pd.DataFrame(data, index=[x['discord_id'] for x in data], columns=['discord_id', 'v_exp', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence', 'u_exp', 'u_level'])
+        df = df.sort_values(['v_exp', 'discord_id'], ascending=[False, True], ignore_index=True)
         
         cnt = 1
         embed = Embed(title=f"Voice Level Leaderboard", colour=ctx.author.colour)
@@ -486,13 +498,12 @@ class Exp(Cog):
         > ```<prefix>vc.stats @someone```
         """
         if user != None:
-            if db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_time'] != None:
+            if db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_exp'] != None:
                 #color = choice([":blue_square:", ":brown_square:", ":green_square:", ":orange_square:", ":purple_square:", ":red_square:", ":yellow_square:"])
-                voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_time']
                 real_time = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_exp']
                 current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_level']
                 
-                current_exp = self.cur_exp(voice_time)
+                current_exp = self.vc_cur_exp(real_time)
                 batas_atas = self.factor(current_level + 1) - self.factor(current_level)
 
                 #boxes = int((atas/bawah) * 20)
@@ -518,8 +529,8 @@ class Exp(Cog):
 
                 daftar = db.servers_con['servers']['social_credit'].find()
                 data = list(daftar)
-                df = pd.DataFrame(data, index=[x['discord_id'] for x in data], columns=['v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
-                df['rank'] = df['v_time'].rank(ascending=False)
+                df = pd.DataFrame(data, index=[x['discord_id'] for x in data], columns=['discord_id', 'v_exp', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence', 'u_exp', 'u_level'])
+                df['rank'] = df['v_exp'].rank(ascending=False)
                 ranking = df.loc[user.id]['rank']
 
                 file = File(f"{user.id}.jpg", filename=f"{user.id}.jpg")
@@ -540,13 +551,12 @@ class Exp(Cog):
             else:
                 await ctx.send("User ini belum bergabung dalam voice chat!")
         else:
-            if db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time'] != None:
+            if db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_exp'] != None:
                 #color = choice([":blue_square:", ":brown_square:", ":green_square:", ":orange_square:", ":purple_square:", ":red_square:", ":yellow_square:"])
-                voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
                 real_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_exp']
                 current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
 
-                current_exp = self.cur_exp(voice_time)
+                current_exp = self.vc_cur_exp(real_time)
                 batas_atas = self.factor(current_level + 1) - self.factor(current_level)
 
                 #boxes = int((atas/bawah) * 20)
@@ -559,7 +569,6 @@ class Exp(Cog):
                 menit = math.floor((real_time % (60 * 60)) / 60)
                 detik = math.floor(real_time % (60))
 
-                print(hari, jam, menit, detik)
                 exp_value = f"{self.number_format(current_exp)}/{self.number_format(batas_atas)}"
 
                 # create image or load your existing image with out=Image.open(path)
@@ -575,8 +584,8 @@ class Exp(Cog):
 
                 daftar = db.servers_con['servers']['social_credit'].find()
                 data = list(daftar)
-                df = pd.DataFrame(data, index=[x['discord_id'] for x in data], columns=['v_exp', 'v_time', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence'])
-                df['rank'] = df['v_time'].rank(ascending=False)
+                df = pd.DataFrame(data, index=[x['discord_id'] for x in data], columns=['discord_id', 'v_exp', 'v_level', 't_exp', 't_time', 't_level', 'v_violence', 't_violence', 'n_violence', 'u_exp', 'u_level'])
+                df['rank'] = df['v_exp'].rank(ascending=False)
                 ranking = df.loc[ctx.author.id]['rank']
 
                 file = File(f"{ctx.author.id}.jpg", filename=f"{ctx.author.id}.jpg")
@@ -613,8 +622,8 @@ class Exp(Cog):
         **Example:**
         > ```<prefix>vc.gacha```
         """
-        current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
-        voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
+        current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_level']
+        voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_time']
 
         xp_sekarang = self.cur_exp(voice_time)
         batas_atas = self.factor(current_level + 1) - self.factor(current_level)
@@ -697,7 +706,7 @@ class Exp(Cog):
             temp -= self.factor(level + 1) - self.factor(level)
             
         if current_level < level:
-            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': level}})
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_level': level}})
             
             # res = 0
             # for i in range(level + 1):
@@ -707,7 +716,7 @@ class Exp(Cog):
             level_txt = f'```your level was increased to {level}```'
             
         elif level < current_level:
-            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': level}})
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_level': level}})
             
             # res = 0
             # for i in range(level + 1):
@@ -716,7 +725,7 @@ class Exp(Cog):
             # db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
             level_txt = f'```your level was decreased to {level}```'
                 
-        db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
+        db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_time': voice_time}})
         await ctx.reply(f'{txt} {level_txt if level_txt != None else "```no level increment or decrement```"}')
                     
     @command(name="vc.single-pull")
@@ -734,8 +743,8 @@ class Exp(Cog):
         **Example:**
         > ```<prefix>vc.single-pull```
         """
-        current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
-        voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
+        current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_level']
+        voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_time']
 
         xp_sekarang = self.cur_exp(voice_time)
         batas_atas = self.factor(current_level + 1) - self.factor(current_level)
@@ -829,7 +838,7 @@ class Exp(Cog):
                 temp -= self.factor(level + 1) - self.factor(level)
                 
             if current_level < level:
-                db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': level}})
+                db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_level': level}})
                 
                 # res = 0
                 # for i in range(level + 1):
@@ -839,7 +848,7 @@ class Exp(Cog):
                 level_txt = f'```your level was increased to {level}```'
                 
             elif level < current_level:
-                db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': level}})
+                db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_level': level}})
                 
                 # res = 0
                 # for i in range(level + 1):
@@ -849,15 +858,15 @@ class Exp(Cog):
                 level_txt = f'```your level was decreased to {level}```'
             
             try:
-                pity = db.servers_con['servers']['others'].find({'discord_id' : ctx.author.id})[0]['v_pity']
-                db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_pity': pity + 1}})
+                pity = db.servers_con['servers']['others'].find({'discord_id' : ctx.author.id})[0]['u_pity']
+                db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_pity': pity + 1}})
             except:
-                db.servers_con['servers']['others'].insert_one({'discord_id' : ctx.author.id, 'v_pity': 1})
+                db.servers_con['servers']['others'].insert_one({'discord_id' : ctx.author.id, 'u_pity': 1})
                 
             if result == 100:
-                db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_pity': 0}})
+                db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_pity': 0}})
                 
-            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_exp': voice_time}})
             
             await ctx.reply(f'{txt} {level_txt if level_txt != None else "```no level increment or decrement```"}')
         
@@ -911,13 +920,13 @@ class Exp(Cog):
         batas_atas, xp_sekarang = 0, 0
         for i in range(times):
             try:
-                chance = db.servers_con['servers']['others'].find({'discord_id' : ctx.author.id})[0]['v_chance']
+                chance = db.servers_con['servers']['others'].find({'discord_id' : ctx.author.id})[0]['u_chance']
             except:
                 chance = 0.01
-                db.servers_con['servers']['others'].insert_one({'discord_id' : ctx.author.id, 'v_chance': chance})
+                db.servers_con['servers']['others'].insert_one({'discord_id' : ctx.author.id, 'u_chance': chance})
                 
-            current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
-            voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_time']
+            current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_level']
+            voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_exp']
 
             if batas_atas == 0:
                 xp_sekarang = self.cur_exp(voice_time)
@@ -942,7 +951,7 @@ class Exp(Cog):
                         res = int((batas_atas - xp_sekarang) * (result[0] / 100))
                         
                         chance = 0
-                        db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_chance': chance}})
+                        db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_chance': chance}})
                         txt = f'Giving **`{result[0]}%`** of remaining xp to next level with cost `{cost}` seconds worth of **`{res - cost}`** seconds [`{(chance * 0.5 * good_needed_xp[result[0]] * 100):.6f}%` chance]'
                         
                     elif good_determiner == 'current_xp':
@@ -950,7 +959,7 @@ class Exp(Cog):
                         res = int(xp_sekarang * (result[0] / 100))
                         
                         chance = 0
-                        db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_chance': chance}})    
+                        db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_chance': chance}})    
                         txt = f'Giving **`{result[0]}%`** of current xp this level with cost `{cost}` seconds worth of **`{res - cost}`** seconds [`{(chance * 0.3 * good_current_xp[result[0]] * 100):.6f}%` chance]'
                         
                     else:
@@ -958,7 +967,7 @@ class Exp(Cog):
                         res = int(batas_atas * (result[0] / 100))
                         
                         chance = 0
-                        db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_chance': chance}})    
+                        db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_chance': chance}})    
                         txt = f'Giving **`{result[0]}%`** of xp range this level with cost `{cost}` seconds worth of **`{res - cost}`** seconds [`{(chance * 0.2 * good_current_level_xp_range[result[0]] * 100):.6f}%` chance]'
                         
                 else:
@@ -992,7 +1001,7 @@ class Exp(Cog):
                     temp -= self.factor(level + 1) - self.factor(level)
                     
                 if current_level < level:
-                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': level}})
+                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_level': level}})
                     
                     # res = 0
                     # for i in range(level + 1):
@@ -1004,7 +1013,7 @@ class Exp(Cog):
                     batas_atas = self.factor(level + 1) - self.factor(level)
                     
                 elif level < current_level:
-                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_level': level}})
+                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_level': level}})
                     
                     # res = 0
                     # for i in range(level + 1):
@@ -1015,12 +1024,12 @@ class Exp(Cog):
                     xp_sekarang = self.cur_exp(voice_time)
                     batas_atas = self.factor(level + 1) - self.factor(level)
                     
-                db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_time': voice_time}})
-                db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'v_chance': chance + 0.01}})
+                db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_exp': voice_time}})
+                db.servers_con['servers']['others'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_chance': round(chance + 0.01, 2)}})
                 
                 await ctx.reply(f'{txt}\n```Current chance : {((chance + 0.02) * 100):.2f}%```{level_txt if level_txt != None else "```no level increment or decrement```"}')
                 await sleep(1)
-        await ctx.reply(embed = Embed(title = 'Pull Summary', description = f'The results of {str(times) + " pulls are :" if times > 1 else " pull are :"}```{summary} exp earned``````Current chance : {((chance + 0.02) * 100):.2f}%``````Total costs : {total_cost} exp```'))
+        await ctx.reply(embed = Embed(title = 'Pull Summary', description = f'The results of {str(times) + " pulls are :" if times > 1 else " pull are :"}```Total costs : {total_cost} exp`````` Exp earned : {summary}``````Current chance : {((chance + 0.02) * 100):.2f}%```'))
             
 def setup(bot):
     bot.add_cog(Exp(bot))
