@@ -760,7 +760,7 @@ class Exp(Cog):
         > ```<prefix>vc.gacha```
         """
         current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_level']
-        voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_time']
+        voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_exp']
 
         xp_sekarang = self.cur_exp(voice_time)
         batas_atas = self.factor(current_level + 1) - self.factor(current_level)
@@ -862,7 +862,7 @@ class Exp(Cog):
             # db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
             level_txt = f'```your level was decreased to {level}```'
                 
-        db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_time': voice_time}})
+        db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_exp': voice_time}})
         await ctx.reply(f'{txt} {level_txt if level_txt != None else "```no level increment or decrement```"}')
                     
     @command(name="vc.single-pull")
@@ -881,7 +881,7 @@ class Exp(Cog):
         > ```<prefix>vc.single-pull```
         """
         current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_level']
-        voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_time']
+        voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_exp']
 
         xp_sekarang = self.cur_exp(voice_time)
         batas_atas = self.factor(current_level + 1) - self.factor(current_level)
@@ -1186,7 +1186,7 @@ class Exp(Cog):
         > ```<prefix>vc.all-in-pull```
         """
         current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_level']
-        voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_time']
+        voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_exp']
 
         determiner = np.random.choice(['good', 'bad'], 1, p=[0.5, 0.5])
 
@@ -1227,7 +1227,7 @@ class Exp(Cog):
             # db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
             level_txt = f'```your level was decreased to {level}```'
                 
-        db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_time': voice_time}})
+        db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_exp': voice_time}})
         await ctx.reply(f'{txt} {level_txt if level_txt != None else "```no level increment or decrement```"}')
             
 def setup(bot):
