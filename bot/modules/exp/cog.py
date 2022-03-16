@@ -129,7 +129,7 @@ class Exp(Cog):
                     
                 u_level = 0
                 u_temp = u_exp
-                while temp > (self.factor(u_level + 1) - self.factor(u_level)):
+                while u_temp > (self.factor(u_level + 1) - self.factor(u_level)):
                     u_level += 1
                     u_temp -= (self.factor(u_level + 1) - self.factor(u_level))
                     
