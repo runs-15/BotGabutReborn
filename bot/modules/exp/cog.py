@@ -176,8 +176,8 @@ class Exp(Cog):
                     # db.servers_con['servers']['social_credit'].update_one({'discord_id' : member.id}, {"$set": {'u_level': levelexp}})
                     
                     db.servers_con['servers']['social_credit'].update_one({},{'$unset':{'v_time' : ''}})
-                    db.servers_con['servers']['others'].updateMany( {}, { '$rename': { "v_pity": "u_pity" } } )
-                    db.servers_con['servers']['others'].updateMany( {}, { '$rename': { "v_chance": "u_chance" } } )
+                    db.servers_con['servers']['others'].update_many( {}, { '$rename': { "v_pity": "u_pity" } } )
+                    db.servers_con['servers']['others'].update_many( {}, { '$rename': { "v_chance": "u_chance" } } )
                     
                     print(f'{member.id} executed')
                 except Exception as e:
