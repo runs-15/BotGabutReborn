@@ -91,9 +91,11 @@ class Exp(Cog):
                 total_time = int(time.time()) - self.user[i]["time"]
                 if db.servers_con['servers']['social_credit'].find({'discord_id' : i}) != None:
                     current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['v_level']
+                    u_current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['v_level']
+                    u_exp = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['u_exp'] + total_time
                     real_time = db.servers_con['servers']['social_credit'].find({'discord_id' : i})[0]['v_exp'] + total_time
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': real_time}})
-                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'u_exp': real_time}})
+                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'u_exp': u_exp}})
                 else:
                     current_level = 0
                     voice_time = real_time
@@ -124,6 +126,22 @@ class Exp(Cog):
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': level}})
                     
                     await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah diturunkan ke level **`{level}`** dalam *voice chat*!")
+                    
+                u_level = 0
+                u_temp = u_exp
+                while temp > (self.factor(u_level + 1) - self.factor(u_level)):
+                    u_level += 1
+                    u_temp -= (self.factor(u_level + 1) - self.factor(u_level))
+                    
+                if u_current_level < u_level:
+                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'u_level': u_level}})
+                    
+                    await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{u_level}`** dalam *user exp*!")
+                    
+                elif u_level < u_current_level:
+                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': u_level}})
+                    
+                    await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah diturunkan ke level **`{u_level}`** dalam *user exp*!")
                 
                 # for j in range(current_level, 9999):
                 #     pembanding_bawah = 60*(j-1) + (((j-1) ** 3.8) * (1 - (0.99 ** (j-1))))
@@ -533,7 +551,7 @@ class Exp(Cog):
 
                 file = File(f"{user.id}.jpg", filename=f"{user.id}.jpg")
 
-                embed = Embed(title=f"{user.name}'s Voice Level Stats", colour=user.colour)
+                embed = Embed(title=f"{user.name}'s User Level Stats", colour=user.colour)
                 embed.add_field(name="Name", value=user.mention, inline=True)
                 embed.add_field(name="Level", value=current_level, inline=True)
                 embed.add_field(name="EXP", value=exp_value, inline=True)
@@ -588,7 +606,7 @@ class Exp(Cog):
 
                 file = File(f"{ctx.author.id}.jpg", filename=f"{ctx.author.id}.jpg")
 
-                embed = Embed(title=f"{ctx.author.name}'s Voice Level Stats", colour=ctx.author.colour)
+                embed = Embed(title=f"{ctx.author.name}'s User Level Stats", colour=ctx.author.colour)
                 embed.add_field(name="Name", value=ctx.author.mention, inline=True)
                 embed.add_field(name="Level", value=current_level, inline=True)
                 embed.add_field(name="EXP", value=exp_value, inline=True)
@@ -1026,8 +1044,8 @@ class Exp(Cog):
         good_current_level_xp_range = good_needed_xp
 
         bad                         = ['needed_xp', 'current_xp', 'current_level_xp_range']
-        bad_needed_xp               = { -100 : 0.0001,
-                                        -75  : 0.0039,
+        bad_needed_xp               = { -200 : 0.0001,
+                                        -100  : 0.0039,
                                         -50  : 0.006,
                                         -20   : 0.02,
                                         -10   : 0.07,
@@ -1100,17 +1118,17 @@ class Exp(Cog):
                     if bad_determiner == 'needed_xp':
                         result = np.random.choice(list(bad_needed_xp.keys()), 1, p=list(bad_needed_xp.values()))
                         res = int((batas_atas - xp_sekarang) * (result[0] / 100))
-                        txt = f'Giving **`{result[0]}%`** of remaining xp to next level with {cost} exp cost worth of **`{res - cost}`** seconds [`{((1 - chance) * 0.5 * bad_needed_xp[result[0]] * 100):.6f}%` chance]'
+                        txt = f'Giving **`{result[0]}%`** of remaining xp to next level with `{cost}` exp cost worth of **`{res - cost}`** seconds [`{((1 - chance) * 0.5 * bad_needed_xp[result[0]] * 100):.6f}%` chance]'
                         
                     elif bad_determiner == 'current_xp':
                         result = np.random.choice(list(bad_current_xp.keys()), 1, p=list(bad_current_xp.values()))
                         res = int(xp_sekarang * (result[0] / 100))
-                        txt = f'Giving **`{result[0]}%`** of current xp this level with {cost} exp cost worth of **`{res - cost}`** seconds [`{((1 - chance) * 0.3 * bad_current_xp[result[0]] * 100):.6f}%` chance]'
+                        txt = f'Giving **`{result[0]}%`** of current xp this level with `{cost}` exp cost worth of **`{res - cost}`** seconds [`{((1 - chance) * 0.3 * bad_current_xp[result[0]] * 100):.6f}%` chance]'
                         
                     else:
                         result = np.random.choice(list(bad_current_level_xp_range.keys()), 1, p=list(bad_current_level_xp_range.values()))
                         res = int(batas_atas * (result[0] / 100))
-                        txt = f'Giving **`{result[0]}%`** of xp range this level with {cost} exp cost worth of **`{res - cost}`** seconds [`{((1 - chance) * 0.2 * bad_current_level_xp_range[result[0]] * 100):.6f}%` chance]'
+                        txt = f'Giving **`{result[0]}%`** of xp range this level with `{cost}` exp cost worth of **`{res - cost}`** seconds [`{((1 - chance) * 0.2 * bad_current_level_xp_range[result[0]] * 100):.6f}%` chance]'
                 
                 summary += (res - cost)
                 total_cost += cost
