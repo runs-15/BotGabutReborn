@@ -96,9 +96,9 @@ class Exp(Cog):
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'u_exp': real_time}})
                 else:
                     current_level = 0
-                    voice_time = total_time
+                    voice_time = real_time
                     db.servers_con['servers']['social_credit'].insert_one({'discord_id' : i,
-                                                                           'v_exp'      : voice_time, 
+                                                                           'v_exp'      : real_time, 
                                                                            'v_level'    : 0,
                                                                            't_exp'      : 0,
                                                                            't_time'     : 0,
@@ -106,11 +106,11 @@ class Exp(Cog):
                                                                            'v_violation': 0,
                                                                            't_violation': 0,
                                                                            'n_violation': 0,
-                                                                           'u_exp'      : voice_time,
+                                                                           'u_exp'      : real_time,
                                                                            'u_level'    : 0})
 
                 level = 0
-                temp = voice_time
+                temp = real_time
                 while temp > (self.voice_factor(level + 1) - self.voice_factor(level)):
                     level += 1
                     temp -= (self.voice_factor(level + 1) - self.voice_factor(level))
