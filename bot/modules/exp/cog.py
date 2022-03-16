@@ -84,7 +84,7 @@ class Exp(Cog):
             print(f"\tVoice updated with {self.temp_join} people!")
         self.temp_join = len(self.user)
 
-    @tasks.loop(seconds=60)
+    @tasks.loop(seconds=15)
     async def voice_submit(self):
         for i in self.user:
             try:
@@ -512,7 +512,7 @@ class Exp(Cog):
         if user != None:
             if db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['u_exp'] != None:
                 #color = choice([":blue_square:", ":brown_square:", ":green_square:", ":orange_square:", ":purple_square:", ":red_square:", ":yellow_square:"])
-                real_time = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['u_exp']
+                real_time = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_exp']
                 current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['u_level']
                 
                 current_exp = self.cur_exp(real_time)
