@@ -35,7 +35,7 @@ class Exp(Cog):
         return int(60 * level + ((level ** 3.8) * (1 - (0.99 ** level))))
     
     def voice_factor(self, level):
-        return int(3600 * level)
+        return int(86400 * level)
     
     def cur_exp(self, xp):
         level = 0
@@ -504,7 +504,7 @@ class Exp(Cog):
                 current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : user.id})[0]['v_level']
                 
                 current_exp = self.vc_cur_exp(real_time)
-                batas_atas = self.factor(current_level + 1) - self.factor(current_level)
+                batas_atas = self.voice_factor(current_level + 1) - self.voice_factor(current_level)
 
                 #boxes = int((atas/bawah) * 20)
                 #boxes = int((voice_time/(((current_level+9) ** 3.7) * (1 - (0.995 ** (current_level+9)))))*20)
@@ -557,7 +557,7 @@ class Exp(Cog):
                 current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['v_level']
 
                 current_exp = self.vc_cur_exp(real_time)
-                batas_atas = self.factor(current_level + 1) - self.factor(current_level)
+                batas_atas = self.voice_factor(current_level + 1) - self.voice_factor(current_level)
 
                 #boxes = int((atas/bawah) * 20)
                 #boxes = int((voice_time/(((current_level+9) ** 3.7) * (1 - (0.995 ** (current_level+9)))))*20)
