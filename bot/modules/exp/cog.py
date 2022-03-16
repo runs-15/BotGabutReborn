@@ -88,6 +88,7 @@ class Exp(Cog):
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': real_time}})
                 else:
                     current_level = 0
+                    voice_time = total_time
                     db.servers_con['servers']['social_credit'].insert_one({'discord_id' : i,
                                                                            'v_exp'      : 0, 
                                                                            'v_time'     : 0,
@@ -159,8 +160,13 @@ class Exp(Cog):
         if ctx.author.id == 616950344747974656:
             for member in [m for m in ctx.guild.members if not m.bot]:
                 try:
-                    real_time = db.servers_con['servers']['social_credit'].find({'discord_id' : member.id})[0]['v_time']
-                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : member.id}, {"$set": {'v_exp': real_time}})
+                    pindahexp = db.servers_con['servers']['social_credit'].find({'discord_id' : member.id})[0]['v_time']
+                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : member.id}, {"$set": {'u_exp': pindahexp}})
+                    levelexp = db.servers_con['servers']['social_credit'].find({'discord_id' : member.id})[0]['v_level']
+                    db.servers_con['servers']['social_credit'].update_one({'discord_id' : member.id}, {"$set": {'u_level': levelexp}})
+                    
+                    # db.servers_con['servers']['social_credit'].update_one({},{'$unset':{'v_time' : ''}})
+                    
                     print(f'{member.id} executed')
                 except Exception as e:
                     print(e)
@@ -859,7 +865,7 @@ class Exp(Cog):
     @cooldown(1, 60, BucketType.user)
     async def vc_unlimitedpull(self, ctx, times = 1):
         """
-        > Non-free gacha attemp for increasing / decreasing your exp. 60s cooldown, but starts with 1% chance that increasing by 1% for each pull. Cost 1% base level exp + 1% current exp [increased by 1% and 0.5% for each pull and resets when you win] that recalculated after each pull.
+        > Non-free gacha attemp for increasing / decreasing your exp. 60s cooldown, but starts with 1% chance that increasing by 1% for each pull. Cost 1% base level exp + 1% current exp [increased by 0.5% and 1% for each pull and resets when you win] that recalculated after each pull.
 
         **Params:**
         >    **`times`** (Optional[`int`]) → times of pull. Defaults to `{1}`, maximum to `{10}`
@@ -918,7 +924,7 @@ class Exp(Cog):
                 batas_atas = self.factor(current_level + 1) - self.factor(current_level)
             
             chance_factor = 1 + (chance * 100)
-            cost =int(((chance_factor / 100) * xp_sekarang) + ((chance_factor / 200) * batas_atas))
+            cost =int(((chance_factor / 100) * xp_sekarang) + ((chance_factor / 1000) * batas_atas))
 
             if cost > voice_time:
                 ctx.command.reset_cooldown(ctx)
