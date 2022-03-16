@@ -136,12 +136,8 @@ class Exp(Cog):
                 if u_current_level < u_level:
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'u_level': u_level}})
                     
-                    await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah mencapai level **`{u_level}`** dalam *user exp*!")
-                    
                 elif u_level < u_current_level:
                     db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_level': u_level}})
-                    
-                    await self.levelling_channel.send(f"Selamat <@{i}>! Anda telah diturunkan ke level **`{u_level}`** dalam *user exp*!")
                 
                 # for j in range(current_level, 9999):
                 #     pembanding_bawah = 60*(j-1) + (((j-1) ** 3.8) * (1 - (0.99 ** (j-1))))
@@ -1026,6 +1022,8 @@ class Exp(Cog):
         **Example:**
         > ```<prefix>vc.unlimited-pull 5```
         """
+        raise Exception('currently disabled.')
+        
         times = int(times)
         
         if times > 10:
@@ -1171,6 +1169,66 @@ class Exp(Cog):
                 await ctx.reply(f'{txt}\n```Current chance : {((chance + 0.02) * 100):.2f}%```{level_txt if level_txt != None else "```no level increment or decrement```"}')
                 await sleep(1)
         await ctx.reply(embed = Embed(title = 'Pull Summary', description = f'The results of {str(times) + " pulls are :" if times > 1 else " pull are :"}```Total costs : {total_cost} exp`````` Exp earned : {summary}``````Current chance : {((chance + 0.02) * 100):.2f}%```'))
+        
+    @command(name="vc.all-in-pull")
+    @cooldown(1, 60, BucketType.user)
+    async def vc_allinpull(self, ctx):
+        """
+        > All-in gacha [50% : 50% (2x amount : 1)]
+
+        **Params:**
+        >    takes no parameter
+
+        **Returns:**
+        >    **`str`** → gacha result
+
+        **Example:**
+        > ```<prefix>vc.all-in-pull```
+        """
+        current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_level']
+        voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_time']
+
+        determiner = np.random.choice(['good', 'bad'], 1, p=[0.5, 0.5])
+
+        if determiner == 'good':
+            res = 2 * voice_time
+            txt = f'Giving **`{res}%`** of xp'
+                
+        else:
+            res = 1
+            txt = f'Resetting your xp to **`1`**'
+        
+        voice_time = res
+        
+        level = 0
+        level_txt = None
+        temp = voice_time
+        while temp > (self.factor(level + 1) - self.factor(level)):
+            level += 1
+            temp -= self.factor(level + 1) - self.factor(level)
+            
+        if current_level < level:
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_level': level}})
+            
+            # res = 0
+            # for i in range(level + 1):
+            #     res += self.factor(i)
+                
+            # db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
+            level_txt = f'```your level was increased to {level}```'
+            
+        elif level < current_level:
+            db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_level': level}})
+            
+            # res = 0
+            # for i in range(level + 1):
+            #     res += self.factor(i)
+            
+            # db.servers_con['servers']['social_credit'].update_one({'discord_id' : i}, {"$set": {'v_exp': res + voice_time}})
+            level_txt = f'```your level was decreased to {level}```'
+                
+        db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_time': voice_time}})
+        await ctx.reply(f'{txt} {level_txt if level_txt != None else "```no level increment or decrement```"}')
             
 def setup(bot):
     bot.add_cog(Exp(bot))
