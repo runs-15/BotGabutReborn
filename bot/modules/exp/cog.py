@@ -84,7 +84,7 @@ class Exp(Cog):
             print(f"\tVoice updated with {self.temp_join} people!")
         self.temp_join = len(self.user)
 
-    @tasks.loop(seconds=15)
+    @tasks.loop(seconds=60)
     async def voice_submit(self):
         for i in self.user:
             try:
@@ -1022,7 +1022,6 @@ class Exp(Cog):
         **Example:**
         > ```<prefix>vc.unlimited-pull 5```
         """
-        raise Exception('currently disabled.')
         
         times = int(times)
         
