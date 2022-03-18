@@ -64,3 +64,10 @@ def add_exp(discord_id, exp):
     elif level < current_level:
         servers_con['servers']['social_credit'].update_one({'discord_id' : discord_id}, {"$set": {'u_level': level}})
         
+def number_format(self, num):
+    num = float('{:.3g}'.format(num))
+    magnitude = 0
+    while abs(num) >= 1000:
+        magnitude += 1
+        num /= 1000.0
+    return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T', 'P'][magnitude])
