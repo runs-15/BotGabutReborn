@@ -264,6 +264,14 @@ class Games(Cog):
     @cooldown(1, 300, BucketType.user)
     async def deadly_rps(self, ctx, member : discord.Member):
         player = {ctx.author.id : None, member.id : None}
+        a_exp = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_exp']
+        b_exp = db.servers_con['servers']['social_credit'].find({'discord_id' : member.id})[0]['u_exp']
+        
+        if a_exp > b_exp:
+            taruhan = b_exp
+        elif a_exp == b_exp:
+            taruhan = a_exp
+            
         
         class MyView(discord.ui.View):
             @discord.ui.select(
@@ -298,34 +306,42 @@ class Games(Cog):
                 winner = None
                 if player[ctx.author.id] != None and player[member.id] != None:
                     if player[ctx.author.id] == 'Rock' and player[member.id] == 'Paper':
-                        winner = member.id
+                        winner = member
+                        loser = ctx.author
                     
                     elif player[ctx.author.id] == 'Rock' and player[member.id] == 'Scissors':
-                        winner = ctx.author.id
+                        winner = ctx.author
+                        loser = member
                     
                     elif player[ctx.author.id] == 'Paper' and player[member.id] == 'Rock':
-                        winner = ctx.author.id
+                        winner = ctx.author
+                        loser = member
                     
                     elif player[ctx.author.id] == 'Paper' and player[member.id] == 'Scissors':
-                        winner = member.id
+                        winner = member
+                        loser = ctx.author
                     
                     elif player[ctx.author.id] == 'Scissors' and player[member.id] == 'Rock':
-                        winner = member.id
+                        winner = member
+                        loser = ctx.author
                     
                     elif player[ctx.author.id] == 'Scissors' and player[member.id] == 'Paper':
-                        winner = ctx.author.id
+                        winner = ctx.author
+                        loser = member
                     
                     else:
                         winner = None
                     
                 if winner != None:
-                    await interaction.response.send_message(f"The RPS winner is {winner.mention}!")
+                    db.add_exp(winner.id, taruhan)
+                    db.add_exp(loser.id, -taruhan)
+                    await interaction.response.send_message(f"The RPS winner is {winner.mention}! Got a total of {taruhan} exp")
                 else:
                     await interaction.response.send_message(f"The RPS ended in a draw.")
           
         try:
             view = MyView()
-            msg = await ctx.interaction.response.send_message(f"Deadly RPS between {ctx.author.mention} v.s. {member.mention}", view=view)
+            msg = await ctx.interaction.response.send_message(embed = Embed(title=f"Deadly RPS between {ctx.author.mention} v.s. {member.mention}", description=f"{taruhan} exp will be given to the winner. The bid consist of:\n> `{ctx.author.mention} with {taruhan / a_exp * 100}%` of exp `[{a_exp} exp]`\n> {member.mention} with `{taruhan / b_exp * 100}%` of exp `[{b_exp} exp]`"), view=view)
         except asyncio.TimeoutError:
             msg = await ctx.interaction.response.edit_message('Timeout!')
             await msg.delete()
