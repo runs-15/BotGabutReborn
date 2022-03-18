@@ -56,7 +56,7 @@ class Games(Cog):
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
             return await soal.edit(embed=Embed(title='Time Up!', description=f'Your exp was decreased by **`{-1/2 * exp_multiplier}`**'), delete_after=60)
 
-        if guess.content == answer:
+        if int(guess.content) == int(answer) or float(guess.content) == float(answer):
             db.add_exp(ctx.author.id, exp_multiplier)
             
             await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'), delete_after=60)
@@ -115,7 +115,7 @@ class Games(Cog):
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
             return await soal.edit(embed=Embed(title='Time Up!', description=f'Your exp was decreased by **`{-1/2 * exp_multiplier}`**'), delete_after=60)
 
-        if guess.content == answer:
+        if int(guess.content) == int(answer) or float(guess.content) == float(answer):
             db.add_exp(ctx.author.id, exp_multiplier)
             
             await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'), delete_after=60)
@@ -174,7 +174,7 @@ class Games(Cog):
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
             return await soal.edit(embed=Embed(title='Time Up!', description=f'Your exp was decreased by **`{-1/2 * exp_multiplier}`**'), delete_after=60)
 
-        if guess.content == answer:
+        if int(guess.content) == int(answer) or float(guess.content) == float(answer):
             db.add_exp(ctx.author.id, exp_multiplier)
             
             await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'), delete_after=60)
