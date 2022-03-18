@@ -214,7 +214,7 @@ class Tools(Cog):
     @cooldown(1, 300, BucketType.user)
     async def modal_vcc(self, ctx):
         """Shows an example of a modal dialog being invoked from a slash command."""
-        modal = createVC(title="CreateCustom Voice Channel")
+        modal = createVC(title="Create Custom Voice Channel")
         await ctx.interaction.response.send_modal(modal)
     
     @command(name='bangunin_orang')    

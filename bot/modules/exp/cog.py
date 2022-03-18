@@ -551,10 +551,6 @@ class Exp(Cog):
                 embed.add_field(name="Name", value=user.mention, inline=True)
                 embed.add_field(name="Level", value=current_level, inline=True)
                 embed.add_field(name="EXP", value=exp_value, inline=True)
-                try:
-                    embed.add_field(name="Time Spent in Voice Chat", value=f"{str(tahun) + 'y ' if tahun != 0 else ''}{str(pekan) + 'w ' if pekan != 0 else ''}{str(hari) + 'd ' if hari != 0 else ''}{str(jam) + 'h ' if jam != 0 else ''}{str(menit) + 'm ' if menit != 0 else ''}{str(detik) + 's ' if detik != 0 else ''}", inline=True)
-                except Exception as e:
-                    embed.add_field(name="Time Spent in Voice Chat", value=e, inline=True)
                 embed.add_field(name="Rank", value=f"**{int(ranking)}**{'st' if str(int(ranking))[-1] == '1' else ('nd' if str(int(ranking))[-1] == '2' else ('rd' if str(int(ranking))[-1] == '3' else 'th'))} of {len([m for m in ctx.guild.members if not m.bot])}", inline=True)
                 #embed.add_field(name="Progress Bar", value=boxes * color + (20-boxes) * ":white_large_square:", inline=False)
                 embed.set_image(url=f"attachment://{user.id}.jpg")
@@ -606,11 +602,6 @@ class Exp(Cog):
                 embed.add_field(name="Name", value=ctx.author.mention, inline=True)
                 embed.add_field(name="Level", value=current_level, inline=True)
                 embed.add_field(name="EXP", value=exp_value, inline=True)
-                
-                try:
-                    embed.add_field(name="Time Spent in Voice Chat", value=f"{str(tahun) + 'y ' if tahun != 0 else ''}{str(pekan) + 'w ' if pekan != 0 else ''}{str(hari) + 'd ' if hari != 0 else ''}{str(jam) + 'h ' if jam != 0 else ''}{str(menit) + 'm ' if menit != 0 else ''}{str(detik) + 's ' if detik != 0 else ''}", inline=True)
-                except Exception as e:
-                    embed.add_field(name="Time Spent in Voice Chat", value=e, inline=True)
                 embed.add_field(name="Rank", value=f"**{int(ranking)}**{'st' if str(int(ranking))[-1] == '1' else ('nd' if str(int(ranking))[-1] == '2' else ('rd' if str(int(ranking))[-1] == '3' else 'th'))} of {len([m for m in ctx.guild.members if not m.bot])}", inline=True)
                 #embed.add_field(name="Progress Bar", value=boxes * color + (20-boxes) * ":white_large_square:", inline=False)
                 embed.set_image(url=f"attachment://{ctx.author.id}.jpg")
@@ -744,7 +735,7 @@ class Exp(Cog):
             else:
                 await ctx.send("Bergabunglah dalam channel voice chat terlebih dahulu!")
     
-    @command(name="vc.free-pull")
+    @command(name="u.free-pull")
     @cooldown(1, 10800, BucketType.user)
     async def vc_freepull(self, ctx):
         """
@@ -865,7 +856,7 @@ class Exp(Cog):
         db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_exp': voice_time}})
         await ctx.reply(f'{txt} {level_txt if level_txt != None else "```no level increment or decrement```"}')
                     
-    @command(name="vc.single-pull")
+    @command(name="u.single-pull")
     @cooldown(3, 3600, BucketType.user)
     async def vc_singlepull(self, ctx):
         """
@@ -1007,7 +998,7 @@ class Exp(Cog):
             
             await ctx.reply(f'{txt} {level_txt if level_txt != None else "```no level increment or decrement```"}')
         
-    @command(name="vc.unlimited-pull")
+    @command(name="u.unlimited-pull")
     @cooldown(1, 60, BucketType.user)
     async def vc_unlimitedpull(self, ctx, times = 1):
         """
@@ -1169,7 +1160,7 @@ class Exp(Cog):
                 await sleep(1)
         await ctx.reply(embed = Embed(title = 'Pull Summary', description = f'The results of {str(times) + " pulls are :" if times > 1 else " pull are :"}```Total costs : {total_cost} exp`````` Exp earned : {summary}``````Current chance : {((chance + 0.02) * 100):.2f}%```'))
         
-    @command(name="vc.all-in-pull")
+    @command(name="u.all-in-pull")
     @cooldown(1, 60, BucketType.user)
     async def vc_allinpull(self, ctx):
         """

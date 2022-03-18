@@ -7,6 +7,8 @@ CONNECTION_STRING_SISWA = f"mongodb+srv://runs:{SERVER_PASSWORD}@botgabutcluster
 siswa_con = MongoClient(CONNECTION_STRING_SISWA)
 CONNECTION_STRING_SERVERS = f"mongodb+srv://runs:{SERVER_PASSWORD}@botgabutcluster.14awb.mongodb.net/servers?retryWrites=true&w=majority"
 servers_con = MongoClient(CONNECTION_STRING_SERVERS)
+CONNECTION_STRING_OTHERS = f"mongodb+srv://runs:{SERVER_PASSWORD}@botgabutcluster.14awb.mongodb.net/others?retryWrites=true&w=majority"
+others_con = MongoClient(CONNECTION_STRING_OTHERS)
 version = 'v2.3.8'
 
 guild_list = [i['server_id'] for i in servers_con['servers']['server'].find()]
