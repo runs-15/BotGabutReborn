@@ -266,7 +266,7 @@ class Games(Cog):
         player = {ctx.author.id : None, member.id : None}
         winner = None
         
-        class MyView(discord.ui.View):
+        class MyView(discord.ui.View(timeout=60)):
             @discord.ui.select(
                 placeholder="Pick your side. You CAN'T change this later",
                 min_values=1,
@@ -323,7 +323,7 @@ class Games(Cog):
                     await interaction.response.send_message(f"not eligible", ephemeral=True)
           
         try:
-            view = MyView(timeout = 60)
+            view = MyView()
             msg = await ctx.interaction.response.send_message(f"Deadly RPS between {ctx.author.mention} v.s. {member.mention}", view=view)
         except asyncio.TimeoutError:
             msg = await ctx.interaction.response.edit_message('Timeout!')
