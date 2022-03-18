@@ -217,8 +217,11 @@ class Games(Cog):
             taken_by = [temp['taken_by']]
             word = ''
         
-        for i in answer.split(' '):
-            word += " ".join(random.sample(i, len(i)))
+        if ' ' in answer:
+            for i in answer.split(' '):
+                word += " ".join(random.sample(i, len(i)))
+                
+        print(word)
         timeout = 5 + len(word) * 3
         exp_multiplier = 60 + len(word) * 10
 
