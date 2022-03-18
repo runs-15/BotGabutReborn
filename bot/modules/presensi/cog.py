@@ -354,51 +354,45 @@ class Presensi(Cog):
             msg = await ctx.send(f"""```{kirim2}``````{kirim3}```\n```OTHER DATA``````{rank_kirim if rank_kirim != '' else 'no data found'}``````{pengawasan if pengawasan != '' else 'no data found'}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
             tm_start = time.time()
             while time.time() < (tm_start + 7500) and int(time.time()) % 30 == 0:
-                try:
-                    if xi.equals(self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)[1]) == False:
+                if xi.equals(self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)[1]) == False:
+                    kop, xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)
+                        
+                    kirim = ''
+                    kop.columns = ['key', 'value']
+                    for index, row in kop.iterrows():
+                        if row['key'] != 'Kelas':
+                            kirim += "{:<32}{}\n".format(row['key'], row['value'])
+                        
+                    kirim2 = ''
+                    for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
                         try:
-                            kop, xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)
-                            
-                            kirim = ''
-                            kop.columns = ['key', 'value']
-                            for index, row in kop.iterrows():
-                                if row['key'] != 'Kelas':
-                                    kirim += "{:<32}{}\n".format(row['key'], row['value'])
-                            
-                            kirim2 = ''
-                            for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
-                                try:
-                                    ranking = xi.index[xi['Nama']==i][0] + 1
-                                    kirim2 += "{:<32}: {:<5}   {:<4}   {}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, round(xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0], 2))
-                                except Exception as e:
-                                    print(e)
-                                    pass
-                            
-                            kirim3 = xi['Nilai'].describe()
-                            
-                            pengawasan = ''
-                            dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
-                            for key, value in dalam_pengawasan.items():
-                                try:
-                                    ranking2 = xi.index[xi['Nama'] == key][0] + 1
-                                    pengawasan += "{:<32}: {:<5}   {:<4}   {}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking2, value)
-                                except Exception as e:
-                                    print(e)
-                                    pass
-                            rank_kirim = ''
-                            for i in range(5):
-                                try:
-                                    nama = xi.iloc[i]['Nama']
-                                    rank_kirim += "RANK {:<2} ({}) : {}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
-                                except Exception as e:
-                                    print(e)
-                                    pass
-                                
-                            await msg.edit(f"""```{kirim2}``````{kirim3}```\n```OTHER DATA``````{rank_kirim if rank_kirim != '' else 'no data found'}``````{pengawasan if pengawasan != '' else 'no data found'}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
+                            ranking = xi.index[xi['Nama']==i][0] + 1
+                            kirim2 += "{:<32}: {:<5}   {:<4}   {}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, round(xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0], 2))
                         except Exception as e:
                             print(e)
-                except:
-                    pass
+                            pass
+                    
+                    kirim3 = xi['Nilai'].describe()
+                    
+                    pengawasan = ''
+                    dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
+                    for key, value in dalam_pengawasan.items():
+                        try:
+                            ranking2 = xi.index[xi['Nama'] == key][0] + 1
+                            pengawasan += "{:<32}: {:<5}   {:<4}   {}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking2, value)
+                        except Exception as e:
+                            print(e)
+                            pass
+                    rank_kirim = ''
+                    for i in range(5):
+                        try:
+                            nama = xi.iloc[i]['Nama']
+                            rank_kirim += "RANK {:<2} ({}) : {}\n".format(i + 1, xi.query(f'Nama == "{nama}"')['Nilai'].values[0], nama)
+                        except Exception as e:
+                            print(e)
+                            pass
+                        
+                    await msg.edit(f"""```{kirim2}``````{kirim3}```\n```OTHER DATA``````{rank_kirim if rank_kirim != '' else 'no data found'}``````{pengawasan if pengawasan != '' else 'no data found'}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
             await msg.delete()
         else:
             await ctx.send('Not permitted')
