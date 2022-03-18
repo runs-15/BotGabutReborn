@@ -270,11 +270,10 @@ class Games(Cog):
         
         if a_exp > b_exp:
             taruhan = b_exp
-        elif a_exp == b_exp:
-            taruhan = a_exp
         else:
             taruhan = a_exp
-            
+        
+        print(taruhan, a_exp, b_exp)
         
         class MyView(discord.ui.View):
             @discord.ui.select(
