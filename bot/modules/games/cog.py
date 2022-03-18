@@ -204,7 +204,7 @@ class Games(Cog):
         """
         randomizer = random.randint(0, 54554)
         temp = db.others_con['others']['eng_dict'].find({'index' : randomizer})[0]
-        word = answer =  temp['word'].lower()
+        answer = temp['word'].lower()
         clue = temp['meaning']
         taken_by = [temp['taken_by']]
         word = ''
@@ -212,7 +212,7 @@ class Games(Cog):
         while ctx.author.id in taken_by or len(answer) < 3:
             randomizer = random.randint(0, 54554)
             temp = db.others_con['others']['eng_dict'].find({'index' : randomizer})[0]
-            answer =  temp['word'].lower()
+            answer = temp['word'].lower()
             clue = temp['meaning']
             taken_by = [temp['taken_by']]
             word = ''
@@ -223,7 +223,7 @@ class Games(Cog):
                 lst.append("".join(random.sample(i, len(i))))
             word = " ".join(random.sample(lst, len(lst)))
         else:
-            word = "".join(random.sample(word, len(word)))
+            word = "".join(random.sample(answer, len(answer)))
 
         timeout = 5 + len(word) * 3
         exp_multiplier = 60 + len(word) * 10
