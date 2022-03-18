@@ -314,27 +314,23 @@ class Presensi(Cog):
 
             kop, xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)
             
-            kirim = ''
+            kirim = 'no data found'
             kop.columns = ['key', 'value']
             for index, row in kop.iterrows():
                 if row['key'] != 'Kelas':
                     kirim += "{:<32}{}\n".format(row['key'], row['value'])
             
-            kirim2 = ''
+            kirim2 = 'no data found'
             for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
                 try:
                     ranking = xi.index[xi['Nama']==i][0] + 1
                     kirim2 += "{:<32}: {:<5}   {:<4}   {}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, round(xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0], 2))
-                except Exception as e:
-                    print(e)
-                    try:
-                        kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0])
-                    except:
-                        pass
+                except:
+                    pass
             
             kirim3 = xi['Nilai'].describe()
             
-            pengawasan = ''
+            pengawasan = 'no data found'
             dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
             for key, value in dalam_pengawasan.items():
                 try:
@@ -343,7 +339,7 @@ class Presensi(Cog):
                 except:
                         pass
             
-            rank_kirim = ''
+            rank_kirim = 'no data found'
             for i in range(5):
                 try:
                     nama = xi.iloc[i]['Nama']
@@ -360,27 +356,23 @@ class Presensi(Cog):
                         try:
                             kop, xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)
                             
-                            kirim = ''
+                            kirim = 'no data found'
                             kop.columns = ['key', 'value']
                             for index, row in kop.iterrows():
                                 if row['key'] != 'Kelas':
                                     kirim += "{:<32}{}\n".format(row['key'], row['value'])
                             
-                            kirim2 = ''
+                            kirim2 = 'no data found'
                             for i in ['GAMMA NASIM', 'MUHAMMAD RAFIF HANIFA', 'MUHAMMAD RODHIYAN RIJALUL WAHID', 'RAMA ANDHIKA PRATAMA', 'HARUN', 'MUSA GANI RAHMAN', 'EVANDHIKA AGNA MAULANA', 'IRFAN SURYA RAMADHAN', 'MUHAMMAD DZAKY ASRAF', 'RAYHAN ERSA NOVARDHANA', 'HIKMAT SEJATI', 'TAZAKKA ARIFIN NUTRIATMA', 'LANANG BASWARA SAKHI', 'DZAKI SENTANU NURAGUSTA', 'RIZQI ILHAM MAULANA', 'ALVINENDRA TRIAJI WIBOWO']:
                                 try:
                                     ranking = xi.index[xi['Nama']==i][0] + 1
                                     kirim2 += "{:<32}: {:<5}   {:<4}   {}\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0], ranking, round(xi.query(f'Nama == "{i}"')['Rerata_kelas'].values[0], 2))
-                                except Exception as e:
-                                    print(e)
-                                    try:
-                                        kirim2 += "{:<32}: {:<5} / 100\n".format(i, xi.query(f'Nama == "{i}"')['Nilai'].values[0])
-                                    except:
-                                        pass
+                                except:
+                                    pass
                             
                             kirim3 = xi['Nilai'].describe()
                             
-                            pengawasan = ''
+                            pengawasan = 'no data found'
                             dalam_pengawasan = {'AHWAN NUR PRATAMA' : 'MIPA 1, KT', 'NUR FARHAN YAFI SETIADI' : 'MIPA 2', 'YUDHA DWI ANGGARA' : 'MIPA 3', 'DELONIX MUNAWWARAH' : 'MIPA 5', 'RIZAL FAUZAN ROSYADI' : 'MIPA 5', 'MUADZ MAHDI HANIF' : 'MIPA 6, KT', 'MUHAMMAD EMILUL FATA' : 'MIPA 7, KT', 'ARIFA KARTINI' : 'MIPA 8', 'SANGGAM EGA HIZKIA NAIBAHO' : 'IPS'}
                             for key, value in dalam_pengawasan.items():
                                 try:
@@ -388,7 +380,7 @@ class Presensi(Cog):
                                     pengawasan += "{:<32}: {:<5}   {:<4}   {}\n".format(key, xi.query(f'Nama == "{key}"')['Nilai'].values[0], ranking2, value)
                                 except:
                                     pass
-                            rank_kirim = ''
+                            rank_kirim = 'no data found'
                             for i in range(5):
                                 try:
                                     nama = xi.iloc[i]['Nama']
