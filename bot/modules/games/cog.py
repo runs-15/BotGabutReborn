@@ -294,7 +294,8 @@ class Games(Cog):
                         
                 else:
                     await interaction.response.send_message(f"not eligible", ephemeral=True)
-                    
+                
+                print(player)
                 if player[ctx.author.id] != None and player[member.id] != None:
                     if player[ctx.author.id] == 'Rock' and player[member.id] == 'Paper':
                         winner = member.id
@@ -317,10 +318,10 @@ class Games(Cog):
                     else:
                         winner = None
                     
-                if winner != None:
-                    await interaction.response.send_message(f"The RPS winner is {winner.mention}!")
-                else:
-                    await interaction.response.send_message(f"The RPS ended in a draw.")
+                    if winner != None:
+                        await interaction.response.send_message(f"The RPS winner is {winner.mention}!")
+                    else:
+                        await interaction.response.send_message(f"The RPS ended in a draw.")
           
         try:
             view = MyView()
