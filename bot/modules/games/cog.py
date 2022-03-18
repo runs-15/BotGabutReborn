@@ -264,7 +264,6 @@ class Games(Cog):
     @cooldown(1, 300, BucketType.user)
     async def deadly_rps(self, ctx, member : discord.Member):
         player = {ctx.author.id : None, member.id : None}
-        winner = None
         
         class MyView(discord.ui.View):
             @discord.ui.select(
@@ -289,13 +288,14 @@ class Games(Cog):
                 # Add the role and send a response to the uesr ephemerally (hidden to other users).
                 if user.id in player.keys() and player[user.id] == None:
                     # Give the user the role if they don't already have it.
-                    player[user.id] == select.values[0]
+                    player[user.id] = select.values[0]
                     await interaction.response.send_message(f"You selected {select.values[0]}", ephemeral=True)
                         
                 else:
                     await interaction.response.send_message(f"not eligible", ephemeral=True)
                 
                 print(player)
+                winner = None
                 if player[ctx.author.id] != None and player[member.id] != None:
                     if player[ctx.author.id] == 'Rock' and player[member.id] == 'Paper':
                         winner = member.id
@@ -318,10 +318,10 @@ class Games(Cog):
                     else:
                         winner = None
                     
-                    if winner != None:
-                        await interaction.response.send_message(f"The RPS winner is {winner.mention}!")
-                    else:
-                        await interaction.response.send_message(f"The RPS ended in a draw.")
+                if winner != None:
+                    await interaction.response.send_message(f"The RPS winner is {winner.mention}!")
+                else:
+                    await interaction.response.send_message(f"The RPS ended in a draw.")
           
         try:
             view = MyView()
