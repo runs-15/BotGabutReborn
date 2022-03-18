@@ -10,6 +10,14 @@ import numpy as np
 class Games(Cog):
     def __init__(self, bot):
         self.bot = bot
+        
+    def number_format(self, num):
+        num = float('{:.3g}'.format(num))
+        magnitude = 0
+        while abs(num) >= 1000:
+            magnitude += 1
+            num /= 1000.0
+        return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T', 'P'][magnitude])
 
     @command(name='quiz.basic-math')
     @cooldown(1, 60, BucketType.user)
@@ -334,16 +342,16 @@ class Games(Cog):
                     else:
                         winner = None
                     
-                if winner != None:
-                    db.add_exp(winner.id, taruhan)
-                    db.add_exp(loser.id, -taruhan)
-                    await interaction.channel.send(f"The RPS winner is {winner.mention}! Got a total of {taruhan} exp")
-                else:
-                    await interaction.channel.send(f"The RPS ended in a draw.")
+                    if winner != None:
+                        db.add_exp(winner.id, taruhan)
+                        db.add_exp(loser.id, -taruhan)
+                        await interaction.channel.send(f"The RPS winner is {winner.mention}! Got a total of `{self.number_format(taruhan)}` exp")
+                    else:
+                        await interaction.channel.send(f"The RPS ended in a draw.")
           
         try:
             view = MyView()
-            msg = await ctx.interaction.response.send_message(f"Deadly RPS between {ctx.author.mention} v.s. {member.mention} \n**`{taruhan}` exp will be given to the winner**. The bid consist of:\n> {ctx.author.mention} with `{round(taruhan / a_exp * 100, 2)}%` of exp `[{a_exp} exp]`\n> {member.mention} with `{round(taruhan / b_exp * 100)}%` of exp `[{b_exp} exp]`", view=view)
+            msg = await ctx.interaction.response.send_message(f"Deadly RPS between {ctx.author.mention} v.s. {member.mention} \n**`{self.number_format(taruhan)}` exp will be given to the winner**. The bid consist of:\n> {ctx.author.mention} with `{round(taruhan / a_exp * 100, 2)}%` of exp\n> {member.mention} with `{round(taruhan / b_exp * 100)}%` of exp", view=view)
         except asyncio.TimeoutError:
             msg = await ctx.interaction.response.edit_message('Timeout!')
             await msg.delete()
