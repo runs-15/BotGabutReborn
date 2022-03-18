@@ -20,13 +20,18 @@ class Games(Cog):
         timeout = 5 + len(word) * 3
         exp_multiplier = 60 + len(word) * 5
         
-        soal = await ctx.send(embed=Embed(title='Arrange the word!', description = f'Jumbled word: ```{word}```Clue: ```{clue}```Answer timeout: ```{timeout}```'))
+        soal_embed = Embed(title = 'Arrange the word!')
+        soal_embed.add_field(name='Jumbled word', value=f'```{word}```', inline=True)
+        soal_embed.add_field(name='Clue', value=f'```{clue}```', inline=True)
+        soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+        soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+        soal = await ctx.send(embed=soal_embed)
 
         def is_correct(m):
             return m.author == ctx.author
 
         try:
-            guess = await self.wait_for("message", check=is_correct, timeout=timeout)
+            guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
         except asyncio.TimeoutError:
             return await soal.edit(embed=Embed(title='Time Up!', description=f'Your xp is decreased by **`{exp_multiplier}`**'))
 
