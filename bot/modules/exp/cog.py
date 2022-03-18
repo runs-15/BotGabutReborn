@@ -69,15 +69,11 @@ class Exp(Cog):
         for channel in channel_object:
             checker.append(channel.members)
             members = channel.members
-            if len(members) == 1:
-                for member in members:
-                    del self.user[member.id]
-            else:
-                for member in members:
-                    if member.id not in self.user and not member.bot:
-                        self.user[member.id] = {}
-                        self.user[member.id]["time"] = int(time.time())
-                        self.user[member.id]["channel"] = channel.id
+            for member in members:
+                if member.id not in self.user and not member.bot and len(members) != 1:
+                    self.user[member.id] = {}
+                    self.user[member.id]["time"] = int(time.time())
+                    self.user[member.id]["channel"] = channel.id
         if len(checker) == 0:
             self.user = {}
         if len(self.user) != 0 and len(self.user) != self.temp_join:
@@ -382,7 +378,7 @@ class Exp(Cog):
     async def on_voice_state_update(self, member, before, after):
         try:
             if member.guild.id == 836835374696628244 and not member.bot:
-                if before.channel == None and after.channel != None and after.afk != True:
+                if before.channel == None and after.channel != None and after.afk != True and len(after.channel.members) != 1:
                     self.user[member.id] = {}
                     self.user[member.id]["time"] = int(time.time())
                     self.user[member.id]["channel"] = after.channel.id
