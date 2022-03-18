@@ -337,9 +337,9 @@ class Games(Cog):
                 if winner != None:
                     db.add_exp(winner.id, taruhan)
                     db.add_exp(loser.id, -taruhan)
-                    await interaction.response.send_message(f"The RPS winner is {winner.mention}! Got a total of {taruhan} exp")
+                    await interaction.channel.send(f"The RPS winner is {winner.mention}! Got a total of {taruhan} exp")
                 else:
-                    await interaction.response.send_message(f"The RPS ended in a draw.")
+                    await interaction.channel.send(f"The RPS ended in a draw.")
           
         try:
             view = MyView()
