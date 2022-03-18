@@ -344,7 +344,7 @@ class Games(Cog):
           
         try:
             view = MyView()
-            msg = await ctx.interaction.response.send_message(embed = Embed(title=f"Deadly RPS between {ctx.author.mention} v.s. {member.mention}", description=f"{taruhan} exp will be given to the winner. The bid consist of:\n> `{ctx.author.mention} with {taruhan / a_exp * 100}%` of exp `[{a_exp} exp]`\n> {member.mention} with `{taruhan / b_exp * 100}%` of exp `[{b_exp} exp]`"), view=view)
+            msg = await ctx.interaction.response.send_message(f"Deadly RPS between {ctx.author.mention} v.s. {member.mention} \n**`{taruhan}` exp will be given to the winner**. The bid consist of:\n> `{ctx.author.mention} with {taruhan / a_exp * 100}%` of exp `[{a_exp} exp]`\n> {member.mention} with `{taruhan / b_exp * 100}%` of exp `[{b_exp} exp]`", view=view)
         except asyncio.TimeoutError:
             msg = await ctx.interaction.response.edit_message('Timeout!')
             await msg.delete()
