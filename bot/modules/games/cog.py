@@ -277,7 +277,7 @@ class Games(Cog):
                     discord.SelectOption(emoji = '✂', label="Scissors", value = 'Scissors'),
                 ],
             )
-            async def callback(self, interaction: discord.Interaction):
+            async def callback(self, select, interaction: discord.Interaction):
                 user = interaction.user
                 # Get the role this button is for (stored in the custom ID).
 
@@ -289,8 +289,8 @@ class Games(Cog):
                 # Add the role and send a response to the uesr ephemerally (hidden to other users).
                 if user.id in player.keys() and player[user.id] == None:
                     # Give the user the role if they don't already have it.
-                    player[user.id] == self.values[0]
-                    await interaction.response.send_message(f"You selected {self.values[0]}", ephemeral=True)
+                    player[user.id] == select.values[0]
+                    await interaction.response.send_message(f"You selected {select.values[0]}", ephemeral=True)
                     
                     if player[ctx.author.id] != None and player[member.id] != None:
                         if player[ctx.author.id] == 'Rock' and player[member.id] == 'Paper':
