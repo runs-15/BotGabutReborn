@@ -2,7 +2,6 @@ from discord import Member
 from discord import Embed
 from discord.ext.commands import Cog, command, slash_command, cooldown, BucketType
 import random, discord, db, datetime, asyncio
-from scipy.fftpack import idct
 from discord.utils import get
 from discord.ui import InputText, Modal
                 
