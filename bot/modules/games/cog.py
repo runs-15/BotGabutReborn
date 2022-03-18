@@ -1,4 +1,5 @@
-from discord import Member
+from logging.config import stopListening
+from discord import Member, StoreChannel
 from discord import Embed
 from discord.ext.commands import Cog, command, slash_command, cooldown, BucketType
 import random, discord, db, datetime, asyncio
@@ -262,30 +263,71 @@ class Games(Cog):
     @slash_command(name="deadly-rps", guild_ids=db.guild_list, description='Rock-Paper-Scissors with your friend with exp as bid')
     @cooldown(1, 300, BucketType.user)
     async def deadly_rps(self, ctx, member : discord.Member):
-        player = {}
+        player = {ctx.author.id : None, member.id : None}
+        winner = None
         
         class MyView(discord.ui.View):
             @discord.ui.select(
-                placeholder="Pick your side. Remember: you cannot change this later",
+                placeholder="Pick your side. You CAN'T change this later",
                 min_values=1,
                 max_values=1,
                 options=[
-                    discord.SelectOption(emoji = '🗿', label="Rock"),
-                    discord.SelectOption(emoji = '📄', label="Paper"),
-                    discord.SelectOption(emoji = '✂', label="Scissors"),
+                    discord.SelectOption(emoji = '🗿', label="Rock", value = 'Rock'),
+                    discord.SelectOption(emoji = '📄', label="Paper", value = 'Paper'),
+                    discord.SelectOption(emoji = '✂', label="Scissors", value = 'Scissors'),
                 ],
             )
             async def callback(self, interaction: discord.Interaction):
-                if ctx.author.id not in player.keys():
-                    player[ctx.author.id] = self.values[0]
-                    await interaction.response.send_message(f"You selected {self.values[0]}.", ephemeral=True)
-                if member.id not in player.keys():
-                    player[member.id] = self.values[0]
-                    await interaction.response.send_message(f"You selected {self.values[0]}.", ephemeral=True)
-                await interaction.response.send_message(f"not eligible", ephemeral=True)
+                user = interaction.user
+                # Get the role this button is for (stored in the custom ID).
 
-        view = MyView()
-        await ctx.interaction.response.send_message(f"deadly rps between {ctx.author.mention} v.s. {member.mention}", view=view)
+                if user.id not in player.keys():
+                    # If the specified role does not exist, return nothing.
+                    # Error handling could be done here.
+                    return
+
+                # Add the role and send a response to the uesr ephemerally (hidden to other users).
+                if user.id in player.keys() and player[user.id] == None:
+                    # Give the user the role if they don't already have it.
+                    player[user.id] == self.values[0]
+                    await interaction.response.send_message(f"You selected {self.values[0]}", ephemeral=True)
+                    
+                    if player[ctx.author.id] != None and player[member.id] != None:
+                        if player[ctx.author.id] == 'Rock' and player[member.id] == 'Paper':
+                            winner = member.id
+                        
+                        elif player[ctx.author.id] == 'Rock' and player[member.id] == 'Scissors':
+                            winner = ctx.author.id
+                        
+                        elif player[ctx.author.id] == 'Paper' and player[member.id] == 'Rock':
+                            winner = ctx.author.id
+                        
+                        elif player[ctx.author.id] == 'Paper' and player[member.id] == 'Scissors':
+                            winner = member.id
+                        
+                        elif player[ctx.author.id] == 'Scissors' and player[member.id] == 'Rock':
+                            winner = member.id
+                        
+                        elif player[ctx.author.id] == 'Scissors' and player[member.id] == 'Paper':
+                            winner = ctx.author.id
+                        
+                        else:
+                            winner = None
+                    
+                        if winner != None:
+                            await interaction.response.send_message(f"The RPS winner is {winner.mention}!")
+                        else:
+                            await interaction.response.send_message(f"The RPS ended in a draw.")
+                        
+                else:
+                    await interaction.response.send_message(f"not eligible", ephemeral=True)
+          
+        try:
+            view = MyView(timeout = 60)
+            msg = await ctx.interaction.response.send_message(f"Deadly RPS between {ctx.author.mention} v.s. {member.mention}", view=view)
+        except asyncio.TimeoutError:
+            msg = await ctx.interaction.response.edit_message('Timeout!')
+            await msg.delete()
     
 def setup(bot):
     bot.add_cog(Games(bot))
