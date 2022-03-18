@@ -259,5 +259,33 @@ class Games(Cog):
             
         await ctx.message.delete()
             
+    @slash_command(name="deadly-rps", guild_ids=db.guild_list, description='Rock-Paper-Scissors with your friend with exp as bid')
+    @cooldown(1, 300, BucketType.user)
+    async def deadly_rps(self, ctx, member : discord.Member):
+        player = {}
+        
+        class MyView(discord.ui.View):
+            @discord.ui.select(
+                placeholder="Pick your side. Remember: you cannot change this later",
+                min_values=1,
+                max_values=1,
+                options=[
+                    discord.SelectOption(emoji = '🗿', label="Rock"),
+                    discord.SelectOption(emoji = '📄', label="Paper"),
+                    discord.SelectOption(emoji = '✂', label="Scissors"),
+                ],
+            )
+            async def callback(self, interaction: discord.Interaction):
+                if ctx.author.id not in player.keys():
+                    player[ctx.author.id] = self.values[0]
+                    await interaction.response.send_message(f"You selected {self.values[0]}.", ephemeral=True)
+                if member.id not in player.keys():
+                    player[member.id] = self.values[0]
+                    await interaction.response.send_message(f"You selected {self.values[0]}.", ephemeral=True)
+                await interaction.response.send_message(f"not eligible", ephemeral=True)
+
+        view = MyView()
+        await ctx.interaction.response.send_message(f"deadly rps between {ctx.author.mention} v.s. {member.mention}", view=view)
+    
 def setup(bot):
     bot.add_cog(Games(bot))
