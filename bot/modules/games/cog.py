@@ -33,7 +33,7 @@ class Games(Cog):
         for i in range(randomizer):
             math_sentence += f'{operand[i]} {operator[i]} '
             
-        math_sentence += operand[randomizer]
+        math_sentence += str(operand[randomizer])
             
         timeout = 5 + (len(operator) * 3) + (sum(len(str(x)) for x in operand) * 2)
         exp_multiplier = 30 + (len(operator) * 10) + (sum(len(str(x)) for x in operand) * 5)
@@ -45,7 +45,7 @@ class Games(Cog):
         soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
         soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
         soal_embed.add_field(name='Clue', value=f'```The right answer has {len(str(answer))} digits```', inline=True)
-        soal = await ctx.send(embed=soal_embed)
+        soal = await ctx.reply(embed=soal_embed)
 
         def is_correct(m):
             return m.author == ctx.author and m.content.isdigit()
@@ -54,18 +54,20 @@ class Games(Cog):
             guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
         except asyncio.TimeoutError:
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            return await soal.edit(embed=Embed(title='Time Up!', description=f'Your exp was decreased by **`{exp_multiplier}`**'))
+            return await soal.edit(embed=Embed(title='Time Up!', description=f'Your exp was decreased by **`{exp_multiplier}`**'), delete_after=60)
 
         if guess.content == answer:
             db.add_exp(ctx.author.id, exp_multiplier)
             
-            await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'))
+            await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'), delete_after=60)
             await guess.delete()
             
         else:
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{exp_multiplier}`**'))
+            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{exp_multiplier}`**'), delete_after=60)
             await guess.delete()
+            
+        await ctx.message.delete()
             
     @command(name='quiz.jumbled-word')
     @cooldown(1, 60, BucketType.user)
@@ -116,20 +118,22 @@ class Games(Cog):
             guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
         except asyncio.TimeoutError:
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            return await soal.edit(embed=Embed(title='Time Up!', description=f'Your exp was decreased by **`{exp_multiplier}`**'))
+            return await soal.edit(embed=Embed(title='Time Up!', description=f'Your exp was decreased by **`{exp_multiplier}`**'), delete_after=60)
 
         if answer in guess.content:
             db.add_exp(ctx.author.id, exp_multiplier)
             taken_by.append(ctx.author.id)
             
             db.others_con['others']['eng_dict'].update_one({'index' : randomizer}, {"$set": {'taken_by': taken_by}})
-            await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'))
+            await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'), delete_after=60)
             await guess.delete()
             
         else:
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{exp_multiplier}`**'))
+            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{exp_multiplier}`**'), delete_after=60)
             await guess.delete()
+            
+        await ctx.message.delete()
             
 def setup(bot):
     bot.add_cog(Games(bot))
