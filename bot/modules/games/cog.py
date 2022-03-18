@@ -291,36 +291,44 @@ class Games(Cog):
                     # Give the user the role if they don't already have it.
                     player[user.id] == select.values[0]
                     await interaction.response.send_message(f"You selected {select.values[0]}", ephemeral=True)
-                    
-                    if player[ctx.author.id] != None and player[member.id] != None:
-                        if player[ctx.author.id] == 'Rock' and player[member.id] == 'Paper':
-                            winner = member.id
-                        
-                        elif player[ctx.author.id] == 'Rock' and player[member.id] == 'Scissors':
-                            winner = ctx.author.id
-                        
-                        elif player[ctx.author.id] == 'Paper' and player[member.id] == 'Rock':
-                            winner = ctx.author.id
-                        
-                        elif player[ctx.author.id] == 'Paper' and player[member.id] == 'Scissors':
-                            winner = member.id
-                        
-                        elif player[ctx.author.id] == 'Scissors' and player[member.id] == 'Rock':
-                            winner = member.id
-                        
-                        elif player[ctx.author.id] == 'Scissors' and player[member.id] == 'Paper':
-                            winner = ctx.author.id
-                        
-                        else:
-                            winner = None
-                    
-                        if winner != None:
-                            await interaction.response.send_message(f"The RPS winner is {winner.mention}!")
-                        else:
-                            await interaction.response.send_message(f"The RPS ended in a draw.")
                         
                 else:
                     await interaction.response.send_message(f"not eligible", ephemeral=True)
+                    
+                while True:
+                    if player[ctx.author.id] != None and player[member.id] != None:
+                        if player[ctx.author.id] == 'Rock' and player[member.id] == 'Paper':
+                            winner = member.id
+                            break
+                        
+                        elif player[ctx.author.id] == 'Rock' and player[member.id] == 'Scissors':
+                            winner = ctx.author.id
+                            break
+                        
+                        elif player[ctx.author.id] == 'Paper' and player[member.id] == 'Rock':
+                            winner = ctx.author.id
+                            break
+                        
+                        elif player[ctx.author.id] == 'Paper' and player[member.id] == 'Scissors':
+                            winner = member.id
+                            break
+                        
+                        elif player[ctx.author.id] == 'Scissors' and player[member.id] == 'Rock':
+                            winner = member.id
+                            break
+                        
+                        elif player[ctx.author.id] == 'Scissors' and player[member.id] == 'Paper':
+                            winner = ctx.author.id
+                            break
+                        
+                        else:
+                            winner = None
+                            break
+                    
+                if winner != None:
+                    await interaction.response.send_message(f"The RPS winner is {winner.mention}!")
+                else:
+                    await interaction.response.send_message(f"The RPS ended in a draw.")
           
         try:
             view = MyView()
