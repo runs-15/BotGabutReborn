@@ -748,7 +748,7 @@ class Exp(Cog):
         >    **`str`** → gacha result
 
         **Example:**
-        > ```<prefix>vc.gacha```
+        > ```<prefix>u.free-pull```
         """
         current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_level']
         voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_exp']
@@ -869,7 +869,7 @@ class Exp(Cog):
         >    **`str`** → gacha result
 
         **Example:**
-        > ```<prefix>vc.single-pull```
+        > ```<prefix>u.single-pull```
         """
         current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_level']
         voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_exp']
@@ -1011,7 +1011,7 @@ class Exp(Cog):
         >    **`str`** → gacha result
 
         **Example:**
-        > ```<prefix>vc.unlimited-pull 5```
+        > ```<prefix>u.unlimited-pull 5```
         """
         
         times = int(times)
@@ -1173,7 +1173,7 @@ class Exp(Cog):
         >    **`str`** → gacha result
 
         **Example:**
-        > ```<prefix>vc.all-in-pull```
+        > ```<prefix>u.all-in-pull```
         """
         current_level = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_level']
         voice_time = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_exp']

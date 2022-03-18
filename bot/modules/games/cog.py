@@ -12,13 +12,25 @@ class Games(Cog):
     @command(name='quiz.jumbled-word')
     @cooldown(1, 60, BucketType.user)
     async def jumbled_word(self, ctx):
+        """
+        > Takes a shuffled word from english dictionary. Your task is to correctly rearrange them. Rewards `60 + (word length * 10)` exp if win and minus half of the rewards if lost. Time for answer is `5 + (word length * 3)` seconds.
+
+        **Params:**
+        >    takes no parameter
+
+        **Returns:**
+        >    **`embed`** → jumbled word and clues
+
+        **Example:**
+        > ```<prefix>quiz.jumbled-word```
+        """
         randomizer = random.randint(0, 54554)
         temp = db.others_con['others']['eng_dict'].find({'index' : randomizer})[0]
         word = answer =  temp['word'].lower()
         clue = temp['meaning']
         taken_by = [temp['taken_by']]
         
-        while ctx.author.id in taken_by:
+        while ctx.author.id in taken_by or len(word) < 3:
             randomizer = random.randint(0, 54554)
             temp = db.others_con['others']['eng_dict'].find({'index' : randomizer})[0]
             word = answer =  temp['word'].lower()
@@ -51,10 +63,12 @@ class Games(Cog):
             
             db.others_con['others']['eng_dict'].update_one({'index' : randomizer}, {"$set": {'taken_by': taken_by}})
             await soal.edit(embed=Embed(title='You got that!', description=f'Your exp increased by **`{exp_multiplier}`**'))
+            await guess.delete()
             
         else:
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
             await soal.edit(embed=Embed(title='Oops!', description=f'Your exp decreased by **`{exp_multiplier}`**'))
+            await guess.delete()
             
 
     # @slash_command(name="modaltest", guild_ids=db.guild_list)
