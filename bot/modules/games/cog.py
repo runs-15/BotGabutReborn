@@ -266,10 +266,13 @@ class Games(Cog):
         player = {ctx.author.id : None, member.id : None}
         a_exp = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_exp']
         b_exp = db.servers_con['servers']['social_credit'].find({'discord_id' : member.id})[0]['u_exp']
+        taruhan = 0
         
         if a_exp > b_exp:
             taruhan = b_exp
         elif a_exp == b_exp:
+            taruhan = a_exp
+        else:
             taruhan = a_exp
             
         
