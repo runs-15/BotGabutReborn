@@ -220,6 +220,8 @@ class Games(Cog):
         if ' ' in answer:
             for i in answer.split(' '):
                 word += " ".join(random.sample(i, len(i)))
+        else:
+            word = " ".join(random.sample(answer, len(answer)))
 
         timeout = 5 + len(word) * 3
         exp_multiplier = 60 + len(word) * 10
@@ -229,7 +231,7 @@ class Games(Cog):
         soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
         soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
         soal_embed.add_field(name='Clue', value=f'```{clue}```', inline=True)
-        soal = await ctx.send(embed=soal_embed)
+        soal = await ctx.reply(embed=soal_embed)
 
         def is_correct(m):
             return m.author == ctx.author
