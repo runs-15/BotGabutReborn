@@ -87,7 +87,7 @@ class Games(Cog):
         randomizer = random.randint(1, 6)
         math_sentence = ''
         operand = np.random.choice([x for x in range(10, 100)], randomizer + 1)
-        operator = np.random.choice(['+', '-', '*'], randomizer, p=[0.4, 0.4, 0.2])
+        operator = np.random.choice(['+', '-', '*'], randomizer, p=[0.35, 0.35, 0.3])
         
         for i in range(randomizer):
             math_sentence += f'{operand[i]} {operator[i]} '
@@ -146,7 +146,7 @@ class Games(Cog):
         randomizer = random.randint(1, 6)
         math_sentence = ''
         operand = np.random.choice([x for x in range(100, 1000)], randomizer + 1)
-        operator = np.random.choice(['+', '-', '*'], randomizer, p=[0.4, 0.4, 0.2])
+        operator = np.random.choice(['+', '-', '*'], randomizer, p=[0.3, 0.3, 0.4])
         
         for i in range(randomizer):
             math_sentence += f'{operand[i]} {operator[i]} '
