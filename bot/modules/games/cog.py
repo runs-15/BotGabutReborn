@@ -266,7 +266,7 @@ class Games(Cog):
         player = {ctx.author.id : None, member.id : None}
         winner = None
         
-        class MyView(self, discord.ui.View):
+        class MyView(discord.ui.View):
             @discord.ui.select(
                 placeholder="Pick your side. You CAN'T change this later",
                 min_values=1,
