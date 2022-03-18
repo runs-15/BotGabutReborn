@@ -32,9 +32,10 @@ class Games(Cog):
 
         if answer in guess.content:
             await soal.edit(embed=Embed(title='You got that!', description=f'Your xp is increased by **`{exp_multiplier}`**'))
+            db.add_exp(ctx.author.id, exp_multiplier)
         else:
             soal.edit(embed=Embed(title='Oops!', description=f'Your xp is decreased by **`{exp_multiplier}`**'))
-        
+
     # @slash_command(name="modaltest", guild_ids=db.guild_list)
     # async def modal_slash(self, ctx):
     #     """Shows an example of a modal dialog being invoked from a slash command."""
