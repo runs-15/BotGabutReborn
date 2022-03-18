@@ -12,9 +12,18 @@ class Games(Cog):
     @command(name='quiz.jumbled-word')
     @cooldown(1, 60, BucketType.user)
     async def jumbled_word(self, ctx):
-        temp = db.others_con['others']['eng_dict'].find({'index' : random.randint(0, 54554)})[0]
+        randomizer = random.randint(0, 54554)
+        temp = db.others_con['others']['eng_dict'].find({'index' : randomizer})[0]
         word = answer =  temp['word'].lower()
         clue = temp['meaning']
+        taken_by = [temp['taken_by']]
+        
+        while ctx.author.id in taken_by:
+            randomizer = random.randint(0, 54554)
+            temp = db.others_con['others']['eng_dict'].find({'index' : randomizer})[0]
+            word = answer =  temp['word'].lower()
+            clue = temp['meaning']
+            taken_by = [temp['taken_by']]
         
         word = "".join(random.sample(word, len(word)))
         timeout = 5 + len(word) * 3
@@ -33,13 +42,20 @@ class Games(Cog):
         try:
             guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
         except asyncio.TimeoutError:
+            db.add_exp(ctx.author.id, -1/2*exp_multiplier)
             return await soal.edit(embed=Embed(title='Time Up!', description=f'Your exp decreased by **`{exp_multiplier}`**'))
 
         if answer in guess.content:
-            await soal.edit(embed=Embed(title='You got that!', description=f'Your exp increased by **`{exp_multiplier}`**'))
             db.add_exp(ctx.author.id, exp_multiplier)
+            taken_by.append(ctx.author.id)
+            
+            db.others_con['others']['eng_dict'].update_one({'index' : randomizer}, {"$set": {'taken_by': taken_by}})
+            await soal.edit(embed=Embed(title='You got that!', description=f'Your exp increased by **`{exp_multiplier}`**'))
+            
         else:
+            db.add_exp(ctx.author.id, -1/2*exp_multiplier)
             await soal.edit(embed=Embed(title='Oops!', description=f'Your exp decreased by **`{exp_multiplier}`**'))
+            
 
     # @slash_command(name="modaltest", guild_ids=db.guild_list)
     # async def modal_slash(self, ctx):
