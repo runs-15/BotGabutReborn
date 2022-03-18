@@ -388,9 +388,15 @@ class Exp(Cog):
                     self.user[member.id]["channel"] = after.channel.id
                 if after.channel == None and before.channel != None:
                     await self.voice_submit()
-                    del self.user[member.id]
+                    try:
+                        del self.user[member.id]
+                    except:
+                        pass
             if after.afk == True and member.id in self.user:
-                del self.user[member.id]
+                try:
+                    del self.user[member.id]
+                except:
+                    pass
         except Exception as e:
             print(e)
 

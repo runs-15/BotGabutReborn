@@ -13,7 +13,7 @@ class Games(Cog):
     @cooldown(1, 60, BucketType.user)
     async def jumbled_word(self, ctx):
         """
-        > Takes a shuffled word from an English dictionary. Your task is to rearrange the word correctly. Rewards `60 + (word length * 10)` exp if win and minus half of the rewards if lost. Time for answer is `5 + (word length * 3)` seconds.
+        > Takes a shuffled word from an English dictionary. Your task is to rearrange the word correctly. Rewards `60 + (word length * 10)` exp if win and minus half of the rewards if lost. You should answer within `5 + (word length * 3)` seconds.
 
         **Params:**
         >    takes no parameter
