@@ -217,9 +217,9 @@ class Games(Cog):
             taken_by = [temp['taken_by']]
             word = ''
         
-        if ' ' in word:
+        if ' ' in answer:
             lst = []
-            for i in word.split(' '):
+            for i in answer.split(' '):
                 lst.append("".join(random.sample(i, len(i))))
             word = " ".join(random.sample(lst, len(lst)))
         else:
