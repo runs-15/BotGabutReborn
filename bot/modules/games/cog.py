@@ -18,13 +18,13 @@ class Games(Cog):
         
         word = "".join(random.sample(word, len(word)))
         timeout = 5 + len(word) * 3
-        exp_multiplier = 60 + len(word) * 5
+        exp_multiplier = 60 + len(word) * 10
         
         soal_embed = Embed(title = 'Arrange the word!')
         soal_embed.add_field(name='Jumbled word', value=f'```{word}```', inline=True)
-        soal_embed.add_field(name='Clue', value=f'```{clue}```', inline=True)
         soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
         soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+        soal_embed.add_field(name='Clue', value=f'```{clue}```', inline=True)
         soal = await ctx.send(embed=soal_embed)
 
         def is_correct(m):
@@ -33,13 +33,13 @@ class Games(Cog):
         try:
             guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
         except asyncio.TimeoutError:
-            return await soal.edit(embed=Embed(title='Time Up!', description=f'Your xp is decreased by **`{exp_multiplier}`**'))
+            return await soal.edit(embed=Embed(title='Time Up!', description=f'Your exp decreased by **`{exp_multiplier}`**'))
 
         if answer in guess.content:
-            await soal.edit(embed=Embed(title='You got that!', description=f'Your xp is increased by **`{exp_multiplier}`**'))
+            await soal.edit(embed=Embed(title='You got that!', description=f'Your exp increased by **`{exp_multiplier}`**'))
             db.add_exp(ctx.author.id, exp_multiplier)
         else:
-            soal.edit(embed=Embed(title='Oops!', description=f'Your xp is decreased by **`{exp_multiplier}`**'))
+            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp decreased by **`{exp_multiplier}`**'))
 
     # @slash_command(name="modaltest", guild_ids=db.guild_list)
     # async def modal_slash(self, ctx):
