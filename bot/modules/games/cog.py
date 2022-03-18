@@ -209,6 +209,8 @@ class Games(Cog):
         taken_by = [temp['taken_by']]
         word = ''
         
+        print(answer)
+        
         while ctx.author.id in taken_by or len(word) < 3:
             randomizer = random.randint(0, 54554)
             temp = db.others_con['others']['eng_dict'].find({'index' : randomizer})[0]
@@ -216,6 +218,7 @@ class Games(Cog):
             clue = temp['meaning']
             taken_by = [temp['taken_by']]
             word = ''
+            print(answer)
         
         if ' ' in answer:
             for i in answer.split(' '):
