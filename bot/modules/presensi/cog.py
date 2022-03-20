@@ -1,5 +1,7 @@
 from discord.ext.commands import Cog, slash_command, command, message_command, user_command
 import requests, random, datetime, db, discord, time, os
+
+from scipy.fftpack import idct
 import pandas as pd
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -35,8 +37,9 @@ class PresensiModal(Modal):
                 embed.add_field(name="Kelamin", value='Pria' if db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['kelamin'] == 'L' else 'Wanita')
                 embed.add_field(name="NIS", value=nis)
                 embed.add_field(name="Kelas", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['kelas'])
-                embed.add_field(name="Agama", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['agama'])
-                embed.add_field(name="Lintas Minat", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['lm'])
+                embed.add_field(name="Tempat, tanggal lahir", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['kelas'])
+                # embed.add_field(name="Agama", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['agama'])
+                # embed.add_field(name="Lintas Minat", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['lm'])
                 await interaction.response.send_message(embed=embed, ephemeral=True)
                 user = self.bot.get_user(616950344747974656)
                 await user.send(embed=embed)
@@ -51,8 +54,8 @@ class PresensiModal(Modal):
             embed.add_field(name="Kelamin", value='Pria' if db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['kelamin'] == 'L' else 'Wanita')
             embed.add_field(name="NIS", value=nis)
             embed.add_field(name="Kelas", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['kelas'])
-            embed.add_field(name="Agama", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['agama'])
-            embed.add_field(name="Lintas Minat", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['lm'])
+            # embed.add_field(name="Agama", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['agama'])
+            # embed.add_field(name="Lintas Minat", value=db.siswa_con['siswa']['data'].find({'nis' : nis})[0]['lm'])
             await interaction.response.send_message(embed=embed, ephemeral=True)
             user = self.bot.get_user(616950344747974656)
             await user.send(embed=embed)
@@ -135,11 +138,11 @@ class Presensi(Cog):
         modal.title = "Jadwalkan Presensi"
         await ctx.interaction.response.send_modal(modal)
 
-    @user_command(name="Jadwalkan Presensi", guild_ids=db.guild_list)
-    async def modal_presensi_user(self, ctx, member):
-        modal = PresensiModal(title="Jadwalkan Presensi")
-        modal.title = "Jadwalkan Presensi"
-        await ctx.interaction.response.send_modal(modal)
+    # @user_command(name="Jadwalkan Presensi", guild_ids=db.guild_list)
+    # async def modal_presensi_user(self, ctx, member):
+    #     modal = PresensiModal(title="Jadwalkan Presensi")
+    #     modal.title = "Jadwalkan Presensi"
+    #     await ctx.interaction.response.send_modal(modal)
         
     @slash_command(name="presensi-pause",description="Pause jadwal presensi selama hari yang ditentukan",guild_ids=db.guild_list)
     async def pausePresensi(
@@ -151,13 +154,13 @@ class Presensi(Cog):
         #cek apakah author yang menjalankan
         if ctx.author.id == 616950344747974656:
             if waktu == "Datang":
-                db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'datang' },{ "$set": {'sesi': sesi}})
+                db.siswa_con['siswa']['jadwal_presensi'].update_one({'status': 'pause' },{ "$set": {'datang_pause': sesi}})
                 await ctx.respond(content=f"Presensi **datang** akan dihentikan selama `{sesi}` hari kedepan!")
             elif waktu == "Pendalaman Materi":
-                db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'pendalaman_materi' },{ "$set": {'sesi': sesi}})
+                db.siswa_con['siswa']['jadwal_presensi'].update_one({'status': 'pause' },{ "$set": {'pm_pause': sesi}})
                 await ctx.respond(content=f"Presensi **pendalaman materi** akan dihentikan selama `{sesi}` hari kedepan!")
             elif waktu == "Pulang":
-                db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'pulang' },{ "$set": {'sesi': sesi}})
+                db.siswa_con['siswa']['jadwal_presensi'].update_one({'status': 'pause' },{ "$set": {'pulang_pause': sesi}})
                 await ctx.respond(content=f"Presensi **pulang** akan dihentikan selama `{sesi}` hari kedepan!")
         else:
             await ctx.respond(content=f"Pastikan anda admin bot!", ephemeral=True)
@@ -166,9 +169,9 @@ class Presensi(Cog):
     
     async def presensi_pagi(self):
         #check if presence got paused
-        pause_datang = db.siswa_con['siswa']['pause_presensi'].find({'status': 'datang'})[0]['sesi']
+        pause_datang = db.siswa_con['siswa']['jadwal_presensi'].find({'status': 'pause'})[0]['datang_pause']
         if pause_datang > 0:
-            db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'datang' },{ "$set": {'sesi': pause_datang - 1}})
+            db.siswa_con['siswa']['jadwal_presensi'].update_one({'status': 'pause' },{ "$set": {'datang_pause': pause_datang - 1}})
             for j in [i for i in db.servers_con['servers']['server'].find()]:
                 channel = self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Presensi datang akan dijeda selama `{pause_datang}` sesi kedepan!")
@@ -184,7 +187,7 @@ class Presensi(Cog):
                     print(f"{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']} berhasil presensi datang!")
 
                     try:
-                        user = self.bot.get_user(i['discord_id'])
+                        user = get(self.bot.get_all_members(), id=i['discord_id'])
                         embed = Embed(title="Laporan Presensi", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi datang.\nTetap cek [laman ini](https://presensi.sman1yogya.sch.id/index.php/) untuk memastikan!")
                         await user.send(embed=embed)
                     except Exception as e:
@@ -198,9 +201,9 @@ class Presensi(Cog):
 
     async def presensi_pm(self):
         #check if presence got paused
-        pause_pm = db.siswa_con['siswa']['pause_presensi'].find({'status': 'pendalaman_materi'})[0]['sesi']
+        pause_pm = db.siswa_con['siswa']['jadwal_presensi'].find({'status': 'pause'})[0]['pm_pause']
         if pause_pm > 0:
-            db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'pm' },{ "$set": {'sesi': pause_pm - 1}})
+            db.siswa_con['siswa']['jadwal_presensi'].update_one({'status': 'pause' },{ "$set": {'pm_pause': pause_pm - 1}})
             for j in [i for i in db.servers_con['servers']['server'].find()]:
                 channel = self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Presensi pendalaman materi akan dijeda selama `{pause_pm}` sesi kedepan!")
@@ -216,7 +219,7 @@ class Presensi(Cog):
                     print(f"{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']} berhasil presensi pendalaman materi!")
 
                     try:
-                        user = self.bot.get_user(i['discord_id'])
+                        user = get(self.bot.get_all_members(), id=i['discord_id'])
                         embed = Embed(title="Laporan Presensi", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi pendalaman materi.\nTetap cek [laman ini](https://presensi.sman1yogya.sch.id/index.php/) untuk memastikan!")
                         await user.send(embed=embed)
                     except Exception as e:
@@ -230,9 +233,9 @@ class Presensi(Cog):
 
     async def presensi_sore(self):
         #check if presence got paused
-        pause_pulang = db.siswa_con['siswa']['pause_presensi'].find({'status': 'pulang'})[0]['sesi']
+        pause_pulang = db.siswa_con['siswa']['jadwal_presensi'].find({'status': 'pause'})[0]['pulang_pause']
         if pause_pulang > 0:
-            db.siswa_con['siswa']['pause_presensi'].update_one({'status': 'pulang' },{ "$set": {'sesi': pause_pulang - 1}})
+            db.siswa_con['siswa']['jadwal_presensi'].update_one({'status': 'pause' },{ "$set": {'pm_pause': pause_pulang - 1}})
             for j in [i for i in db.servers_con['servers']['server'].find()]:
                 channel = self.bot.get_channel(int(j['presensi_channel']))
                 await channel.send(f"Presensi pulang akan dijeda selama `{pause_pulang}` sesi kedepan!")
@@ -248,7 +251,7 @@ class Presensi(Cog):
                     print(f"{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']} berhasil presensi pulang!")
 
                     try:
-                        user = self.bot.get_user(i['discord_id'])
+                        user = get(self.bot.get_all_members(), id=i['discord_id'])
                         embed = Embed(title="Laporan Presensi", description=f"Hai **{db.siswa_con['siswa']['data'].find({'nis' : i['nis']})[0]['nama']}**!\nBot telah mempresensikan anda pada pukul: **{x.hour:02}:{x.minute:02}:{x.second:02}** sebagai presensi pulang.\nTetap cek [laman ini](https://presensi.sman1yogya.sch.id/index.php/) untuk memastikan!")
                         await user.send(embed=embed)
                     except Exception as e:
@@ -353,7 +356,7 @@ class Presensi(Cog):
             await ctx.send(f"""```{kirim}```\n```NAMA SISWA                      : NILAI   RANK   RERATA KELAS```""")
             msg = await ctx.send(f"""```{kirim2}``````{kirim3}```\n```OTHER DATA``````{rank_kirim if rank_kirim != '' else 'no data found'}``````{pengawasan if pengawasan != '' else 'no data found'}```\n*last updated on **{datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))}***""")
             tm_start = time.time()
-            while time.time() < (tm_start + 7500) and int(time.time()) % 30 == 0:
+            while time.time() < (tm_start + 7500) and int(time.time()) % 30 == 0:   
                 if xi.equals(self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)[1]) == False:
                     kop, xi = self.update_nilai_realtime(session, ujian_id, mapel_id, tingkat)
                         

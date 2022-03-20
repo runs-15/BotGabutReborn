@@ -1,3 +1,4 @@
+from distutils.util import check_environ
 from logging.config import stopListening
 from discord import Member, StoreChannel
 from discord import Embed
@@ -13,177 +14,85 @@ class Games(Cog):
 
     @command(name='quiz.basic-math')
     @cooldown(1, 60, BucketType.user)
-    async def basic_math(self, ctx):
+    async def basic_math(self, ctx, level = 1):
         """
-        > Shows a simple mathematic sentence. Your task is to answer correctly. Rewards `30 + (operator * 10) + (length each operand * 10)` exp if win and minus half of the rewards if lost. You should answer within `5 + (operator * 3) + (length each operand * 2)` seconds.
+        > Shows a simple mathematic sentence. Your task is to answer correctly. Rewards `level * (30 + (operator * 10) + (length each operand * 10))` exp if win and minus half of the rewards if lost. You should answer within `5 + (operator * 3) + (length each operand * 2)` seconds. Answer decimal with round 2 numbers behind dot.
 
         **Params:**
-        >    takes no parameter
+        >    **`level`** → question level
 
         **Returns:**
         >    **`embed`** → math question
 
         **Example:**
-        > ```<prefix>quiz.basic-math```
+        > ```<prefix>quiz.basic-math 3```
         """
-        randomizer = random.randint(1, 6)
+        det = {
+            1 : [[1, 6], [1,  10],      [0.4, 0.4, 0.2, 0]],
+            2 : [[2, 6], [10, 100],     [0.4, 0.4, 0.2, 0]],
+            3 : [[3, 7], [100, 500],    [0.3, 0.4, 0.2, 0.1]],
+            4 : [[4, 7], [100, 500],    [0.3, 0.3, 0.2, 0.2]],
+            5 : [[5, 8], [100,  1000],  [0.25, 0.25, 0.25, 0.25]]
+        }
+        
+        chc = det[level][0]
+        
+        randomizer = random.randint(chc[0][0], chc[0][1])
         math_sentence = ''
-        operand = np.random.choice([x for x in range(1, 10)], randomizer + 1)
-        operator = np.random.choice(['+', '-', '*'], randomizer, p=[0.4, 0.4, 0.2])
+        operand = np.random.choice([x for x in range(chc[1][0], chc[1][1])], randomizer + 1)
+        operator = np.random.choice(['+', '-', '*', '/'], randomizer, p=chc[2])
         
         for i in range(randomizer):
             math_sentence += f'{operand[i]} {operator[i]} '
             
         math_sentence += str(operand[randomizer])
             
-        timeout = 5 + (len(operator) * 3) + (sum(len(str(x)) for x in operand) * 2)
-        exp_multiplier = 30 + (len(operator) * 10) + (sum(len(str(x)) for x in operand) * 10)
+        timeout = level * (5 + (len(operator) * 3) + (sum(len(str(x)) for x in operand) * 2))
+        exp_multiplier = level * (30 + (len(operator) * 10) + (sum(len(str(x)) for x in operand) * 10))
         
-        answer = eval(math_sentence)
+        answer = round(eval(math_sentence), 2)
 
-        soal_embed = Embed(title = 'Answer this question!')
-        soal_embed.add_field(name='Math sentence', value=f'```{math_sentence}```', inline=True)
-        soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+        soal_embed = Embed(title = 'Solve this question!')
+        soal_embed.add_field(name='Math sentence', value=f'```{math_sentence}```', inline=False)
+        soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=False)
         soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
-        soal_embed.add_field(name='Clue', value=f'```The right answer has {len(str(answer))} digits```', inline=True)
+        soal_embed.add_field(name='Clue', value=f"```The correct answer is {'positive' if answer >= 0 else 'negative'} with {len(str(answer).replace('-', ''))} digits```", inline=False)
         soal = await ctx.reply(embed=soal_embed)
 
         def is_correct(m):
-            return m.author == ctx.author and m.content.isdigit()
+            return m.author == ctx.author
 
         try:
             guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
         except asyncio.TimeoutError:
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            return await soal.edit(embed=Embed(title='Time Up!', description=f'Your exp was decreased by **`{-1/2 * exp_multiplier}`**'), delete_after=60)
+            
+            soal_embed = Embed(title = 'Question Summary')
+            soal_embed.add_field(name='Math sentence', value=f'```{math_sentence}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=False)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal_embed.add_field(name='Correct Answer', value=f"```{answer}```", inline=False)
+            await soal.edit(embed=soal_embed)
+            
+            return await ctx.reply(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
 
-        if int(guess.content) == int(answer) or float(guess.content) == float(answer):
+        if str(guess.content) == str(answer):
             db.add_exp(ctx.author.id, exp_multiplier)
             
-            await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'), delete_after=60)
+            await ctx.reply(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'))
             await guess.delete()
             
         else:
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{-1/2 * exp_multiplier}`**'), delete_after=60)
-            await guess.delete()
             
-        await ctx.message.delete()
-        
-    @command(name='quiz.intermediate-math')
-    @cooldown(1, 60, BucketType.user)
-    async def intermediate_math(self, ctx):
-        """
-        > Shows a simple mathematic sentence. Your task is to answer correctly. Rewards `30 + (operator * 60) + (length each operand * 20)` exp if win and minus half of the rewards if lost. You should answer within `10 + (operator * 5) + (length each operand * 3)` seconds.
-
-        **Params:**
-        >    takes no parameter
-
-        **Returns:**
-        >    **`embed`** → math question
-
-        **Example:**
-        > ```<prefix>quiz.intermediate-math```
-        """
-        randomizer = random.randint(1, 6)
-        math_sentence = ''
-        operand = np.random.choice([x for x in range(10, 100)], randomizer + 1)
-        operator = np.random.choice(['+', '-', '*'], randomizer, p=[0.35, 0.35, 0.3])
-        
-        for i in range(randomizer):
-            math_sentence += f'{operand[i]} {operator[i]} '
+            soal_embed = Embed(title = 'Question Summary')
+            soal_embed.add_field(name='Math sentence', value=f'```{math_sentence}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=False)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal_embed.add_field(name='Correct Answer', value=f"```{answer}```", inline=False)
+            await soal.edit(embed=soal_embed)
             
-        math_sentence += str(operand[randomizer])
-            
-        timeout = 10 + (len(operator) * 5) + (sum(len(str(x)) for x in operand) * 3)
-        exp_multiplier = 30 + (len(operator) * 10) + (sum(len(str(x)) for x in operand) * 5)
-        
-        answer = eval(math_sentence)
-
-        soal_embed = Embed(title = 'Answer this question!')
-        soal_embed.add_field(name='Math sentence', value=f'```{math_sentence}```', inline=True)
-        soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
-        soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
-        soal_embed.add_field(name='Clue', value=f'```The right answer has {len(str(answer))} digits```', inline=True)
-        soal = await ctx.reply(embed=soal_embed)
-
-        def is_correct(m):
-            return m.author == ctx.author and m.content.isdigit()
-
-        try:
-            guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
-        except asyncio.TimeoutError:
-            db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            return await soal.edit(embed=Embed(title='Time Up!', description=f'Your exp was decreased by **`{-1/2 * exp_multiplier}`**'), delete_after=60)
-
-        if int(guess.content) == int(answer) or float(guess.content) == float(answer):
-            db.add_exp(ctx.author.id, exp_multiplier)
-            
-            await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'), delete_after=60)
-            await guess.delete()
-            
-        else:
-            db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{-1/2 * exp_multiplier}`**'), delete_after=60)
-            await guess.delete()
-            
-        await ctx.message.delete()
-    
-    @command(name='quiz.complex-math')
-    @cooldown(1, 60, BucketType.user)
-    async def complex_math(self, ctx):
-        """
-        > Shows a simple mathematic sentence. Your task is to answer correctly. Rewards `30 + (operator * 120) + (length each operand * 30)` exp if win and minus half of the rewards if lost. You should answer within `15 + (operator * 7) + (length each operand * 5)` seconds.
-
-        **Params:**
-        >    takes no parameter
-
-        **Returns:**
-        >    **`embed`** → math question
-
-        **Example:**
-        > ```<prefix>quiz.basic-math```
-        """
-        randomizer = random.randint(1, 6)
-        math_sentence = ''
-        operand = np.random.choice([x for x in range(100, 1000)], randomizer + 1)
-        operator = np.random.choice(['+', '-', '*'], randomizer, p=[0.3, 0.3, 0.4])
-        
-        for i in range(randomizer):
-            math_sentence += f'{operand[i]} {operator[i]} '
-            
-        math_sentence += str(operand[randomizer])
-            
-        timeout = 15 + (len(operator) * 7) + (sum(len(str(x)) for x in operand) * 5)
-        exp_multiplier = 30 + (len(operator) * 120) + (sum(len(str(x)) for x in operand) * 30)
-        
-        answer = eval(math_sentence)
-
-        soal_embed = Embed(title = 'Answer this question!')
-        soal_embed.add_field(name='Math sentence', value=f'```{math_sentence}```', inline=True)
-        soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
-        soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
-        soal_embed.add_field(name='Clue', value=f'```The right answer has {len(str(answer))} digits```', inline=True)
-        soal = await ctx.reply(embed=soal_embed)
-
-        def is_correct(m):
-            return m.author == ctx.author and m.content.isdigit()
-
-        try:
-            guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
-        except asyncio.TimeoutError:
-            db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            return await soal.edit(embed=Embed(title='Time Up!', description=f'Your exp was decreased by **`{-1/2 * exp_multiplier}`**'), delete_after=60)
-
-        if int(guess.content) == int(answer) or float(guess.content) == float(answer):
-            db.add_exp(ctx.author.id, exp_multiplier)
-            
-            await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'), delete_after=60)
-            await guess.delete()
-            
-        else:
-            db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{-1/2 * exp_multiplier}`**'), delete_after=60)
+            await ctx.reply(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
             await guess.delete()
             
         await ctx.message.delete()
@@ -207,7 +116,7 @@ class Games(Cog):
         temp = db.others_con['others']['eng_dict'].find({'index' : randomizer})[0]
         answer = temp['word'].lower()
         clue = temp['meaning']
-        taken_by = [temp['taken_by']]
+        taken_by = list(temp['taken_by'])
         word = ''
         
         while ctx.author.id in taken_by or len(answer) < 3:
@@ -243,24 +152,24 @@ class Games(Cog):
             guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
         except asyncio.TimeoutError:
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            return await soal.edit(embed=Embed(title='Time Up!', description=f'Your exp was decreased by **`{-1/2 * exp_multiplier}`**'), delete_after=60)
+            return await soal.edit(embed=Embed(title='Time Up!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
 
         if answer in guess.content:
             db.add_exp(ctx.author.id, exp_multiplier)
             taken_by.append(ctx.author.id)
             
             db.others_con['others']['eng_dict'].update_one({'index' : randomizer}, {"$set": {'taken_by': taken_by}})
-            await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'), delete_after=60)
+            await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'))
             await guess.delete()
             
         else:
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{-1/2 * exp_multiplier}`**'), delete_after=60)
+            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
             await guess.delete()
             
         await ctx.message.delete()
             
-    @slash_command(name="deadly-rps", guild_ids=db.guild_list, description='Rock-Paper-Scissors with your friend with exp as bid')
+    @slash_command(name="deadly-rps", guild_ids=db.guild_list, description='Rock-Paper-Scissors with your friend with 100% lowest exp as bid')
     @cooldown(1, 300, BucketType.user)
     async def deadly_rps(self, ctx, member : discord.Member):
         player = {ctx.author.id : None, member.id : None}
@@ -288,11 +197,10 @@ class Games(Cog):
             )
             async def callback(self, select, interaction: discord.Interaction):
                 user = interaction.user
-                # Get the role this button is for (stored in the custom ID).
+                # Get the rb ole this button is for (stored in the custom ID).
 
                 if user.id not in player.keys():
-                    # If the specified role does not exist, return nothing.
-                    # Error handling could be done here.
+                    await interaction.response.send_message(f"not eligible", ephemeral=True)
                     return
 
                 # Add the role and send a response to the uesr ephemerally (hidden to other users).
@@ -302,7 +210,7 @@ class Games(Cog):
                     await interaction.response.send_message(f"You selected {select.values[0]}", ephemeral=True)
                         
                 else:
-                    await interaction.response.send_message(f"not eligible", ephemeral=True)
+                    await interaction.response.send_message(f"not allowed to change.", ephemeral=True)
                 
                 print(player)
                 winner = None
@@ -336,10 +244,10 @@ class Games(Cog):
                     
                     if winner != None:
                         db.add_exp(winner.id, taruhan)
-                        db.add_exp(loser.id, (taruhan  -1))
-                        await interaction.channel.send(f"The RPS winner is {winner.mention}! Got a total of `{db.number_format(taruhan)}` exp")
+                        db.add_exp(loser.id, -taruhan)
+                        await interaction.channel.send(f"[{ctx.author.mention} with {player[ctx.author.id]} against {member.mention} with **{player[member.id]}**]\nThe RPS winner is {winner.mention}! Got a total of `{db.number_format(taruhan)}` exp")
                     else:
-                        await interaction.channel.send(f"The RPS ended in a draw.")
+                        await interaction.channel.send(f"[{ctx.author.mention} with {player[ctx.author.id]} against {member.mention} with **{player[member.id]}**]\nThe RPS ended in a draw.")
           
         try:
             view = MyView()
