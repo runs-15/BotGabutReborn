@@ -19,7 +19,7 @@ class Games(Cog):
         > Shows a simple mathematic sentence. Your task is to answer correctly. Rewards `level * (30 + (operator * 10) + (length each operand * 10))` exp if win and minus half of the rewards if lost. You should answer within `5 + (operator * 3) + (length each operand * 2)` seconds. Answer decimal with round 2 numbers behind dot.
 
         **Params:**
-        >    **`level`** → question level
+        >    **`level`** → question level, default to {`1`} max {`5`}
 
         **Returns:**
         >    **`embed`** → math question
@@ -27,6 +27,9 @@ class Games(Cog):
         **Example:**
         > ```<prefix>quiz.basic-math 3```
         """
+        if level < 1 or level > 5:
+            raise Exception('level exceeds range 1 and 5')
+        
         det = {
             1 : [[1, 6], [1,  10],      [0.4, 0.4, 0.2, 0]],
             2 : [[2, 6], [10, 100],     [0.4, 0.4, 0.2, 0]],
@@ -35,7 +38,7 @@ class Games(Cog):
             5 : [[5, 8], [100,  1000],  [0.25, 0.25, 0.25, 0.25]]
         }
         
-        chc = det[level][0]
+        chc = det[int(level)][0]
         
         randomizer = random.randint(chc[0][0], chc[0][1])
         math_sentence = ''
