@@ -58,9 +58,10 @@ class Games(Cog):
 
         soal_embed = Embed(title = 'Solve this question!')
         soal_embed.add_field(name='Math sentence', value=f'```{math_sentence}```', inline=False)
-        soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=False)
+        soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
         soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
         soal_embed.add_field(name='Clue', value=f"```The correct answer is {'positive' if answer >= 0 else 'negative'} with {len(str(answer).replace('-', ''))} digits```", inline=False)
+        soal_embed.add_field(name='Reminder', value=f"```If your answer contains division (/), always put dot, and round two numbers\nExample  : 12.345 -> 12.35\nExample  : 12     --> 12.00```", inline=False)
         soal = await ctx.reply(embed=soal_embed)
 
         def is_correct(m):
@@ -73,14 +74,14 @@ class Games(Cog):
             
             soal_embed = Embed(title = 'Question Summary')
             soal_embed.add_field(name='Math sentence', value=f'```{math_sentence}```', inline=False)
-            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
             soal_embed.add_field(name='Correct Answer', value=f"```{answer}```", inline=False)
             await soal.edit(embed=soal_embed)
             
             return await ctx.reply(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
 
-        if str(guess.content) == str(answer):
+        if str(guess.content) == str(answer) or float(guess.content) == float(answer):
             db.add_exp(ctx.author.id, exp_multiplier)
             
             await ctx.reply(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'))
@@ -91,7 +92,7 @@ class Games(Cog):
             
             soal_embed = Embed(title = 'Question Summary')
             soal_embed.add_field(name='Math sentence', value=f'```{math_sentence}```', inline=False)
-            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
             soal_embed.add_field(name='Correct Answer', value=f"```{answer}```", inline=False)
             await soal.edit(embed=soal_embed)
@@ -173,9 +174,14 @@ class Games(Cog):
             
         await ctx.message.delete()
             
-    @user_command(name="deadly-rps", guild_ids=db.guild_list, description='Rock-Paper-Scissors with your friend with 100% lowest exp as bid')
+    @user_command(name="Deadly RPS", guild_ids=db.guild_list, description='Rock-Paper-Scissors with your friend with 100% lowest exp as bid')
     @cooldown(1, 300, BucketType.user)
     async def deadly_rps(self, ctx, member):
+        
+        if ctx.author.id == member.id:
+            ctx.command.reset_cooldown(ctx)
+            raise Exception('same player')
+        
         player = {ctx.author.id : None, member.id : None}
         a_exp = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_exp']
         b_exp = db.servers_con['servers']['social_credit'].find({'discord_id' : member.id})[0]['u_exp']
