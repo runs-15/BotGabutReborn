@@ -101,10 +101,10 @@ class Games(Cog):
             await ctx.reply(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
             
     @command(name='quiz.jumbled-word')
-    @cooldown(1, 60, BucketType.user)
+    @cooldown(1, 30, BucketType.user)
     async def jumbled_word(self, ctx):
         """
-        > Takes a shuffled word from an English dictionary. Your task is to rearrange the word correctly. Rewards `60 + (word length * 10)` exp if win and minus half of the rewards if lost. You should answer within `5 + (word length * 3)` seconds.
+        > Takes a shuffled word from an English dictionary. Your task is to rearrange the word correctly. Rewards `60 + (word length * 30)` exp if win and minus half of the rewards if lost. You should answer within `5 + (word length * 3)` seconds.
 
         **Params:**
         >    takes no parameter
@@ -139,7 +139,7 @@ class Games(Cog):
             word = "".join(random.sample(answer, len(answer)))
 
         timeout = 5 + len(word) * 3
-        exp_multiplier = 60 + len(word) * 10
+        exp_multiplier = 60 + len(word) * 30
 
         soal_embed = Embed(title = 'Arrange the word!')
         soal_embed.add_field(name='Jumbled word', value=f'```{word}```', inline=False)
