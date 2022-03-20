@@ -259,7 +259,6 @@ class Games(Cog):
         city = temp['name']
         taken_by = [temp['taken_by']]
         choice = [temp['country']]
-        random_2 = []
         
         while ctx.author.id in taken_by:
             randomizer = random.randint(0, 23018)
@@ -269,13 +268,11 @@ class Games(Cog):
             taken_by = [temp['taken_by']]
         
         for i in range(4):
-            randomizer_2 = random.randint(0, 23018)
-            while randomizer_2 == randomizer or randomizer in random_2:
-                randomizer_2 = random.randint(0, 23018)
-                
-            random_2.append(randomizer_2)
+            countries = db.others_con['others']['cities_dict'].find({'index' : random.randint(0, 23018)})[0]['country']
+            while countries == answer or countries in choice:
+                countries = db.others_con['others']['cities_dict'].find({'index' : random.randint(0, 23018)})[0]['country']
             
-            choice.append(db.others_con['others']['cities_dict'].find({'index' : randomizer_2})[0]['country'])
+            choice.append(countries)
 
         timeout = 60
         exp_multiplier = 240
@@ -305,15 +302,20 @@ class Games(Cog):
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
             return await soal.edit(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**.\nThe correct answer is **{answer}**'))
 
-        if choices[guess.content.lower()] == answer:
-            db.add_exp(ctx.author.id, exp_multiplier)
-            taken_by.append(ctx.author.id)
-            
-            db.others_con['others']['eng_dict'].update_one({'index' : randomizer}, {"$set": {'taken_by': taken_by}})
-            await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'))
-            await guess.delete()
-            
-        else:
+        try:
+            if choices[guess.content.lower()] == answer:
+                db.add_exp(ctx.author.id, exp_multiplier)
+                taken_by.append(ctx.author.id)
+                
+                db.others_con['others']['eng_dict'].update_one({'index' : randomizer}, {"$set": {'taken_by': taken_by}})
+                await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'))
+                await guess.delete()
+                
+            else:
+                db.add_exp(ctx.author.id, -1/2*exp_multiplier)
+                await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**\nThe correct answer is **{answer}**'))
+        except Exception as e:
+            print(e)
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
             await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**\nThe correct answer is **{answer}**'))
             
