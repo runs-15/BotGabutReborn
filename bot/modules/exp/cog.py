@@ -1225,6 +1225,10 @@ class Exp(Cog):
     @user_command(name="Tip", guild_ids=db.guild_list)
     @cooldown(3, 86400, BucketType.user)
     async def deadly_rps(self, ctx, member):
+        if ctx.interaction.user.id == member.id:
+            await ctx.interaction.response.send_message(f"You can't tip yourself", ephemeral = True)
+            return
+        
         db.add_exp(member.id, 60)
         await ctx.interaction.response.send_message(f'{ctx.interaction.user.mention} tipped {member.mention}. Well Played!')
             
