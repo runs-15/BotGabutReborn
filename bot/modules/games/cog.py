@@ -1,6 +1,6 @@
 from distutils.util import check_environ
 from logging.config import stopListening
-from discord import Member, StoreChannel
+from discord import Member, StoreChannel, user_command
 from discord import Embed
 from discord.ext.commands import Cog, command, slash_command, cooldown, BucketType
 import random, discord, db, datetime, asyncio
@@ -169,9 +169,9 @@ class Games(Cog):
             
         await ctx.message.delete()
             
-    @slash_command(name="deadly-rps", guild_ids=db.guild_list, description='Rock-Paper-Scissors with your friend with 100% lowest exp as bid')
+    @user_command(name="deadly-rps", guild_ids=db.guild_list, description='Rock-Paper-Scissors with your friend with 100% lowest exp as bid')
     @cooldown(1, 300, BucketType.user)
-    async def deadly_rps(self, ctx, member : discord.Member):
+    async def deadly_rps(self, ctx, member):
         player = {ctx.author.id : None, member.id : None}
         a_exp = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_exp']
         b_exp = db.servers_con['servers']['social_credit'].find({'discord_id' : member.id})[0]['u_exp']

@@ -1,7 +1,5 @@
 from discord.ext.commands import Cog, slash_command, command, message_command, user_command
 import requests, random, datetime, db, discord, time, os
-
-from scipy.fftpack import idct
 import pandas as pd
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
