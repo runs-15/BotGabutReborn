@@ -47,7 +47,7 @@ class Games(Cog):
         operator = np.random.choice(['+', '-', '*', '/'], randomizer, p=chc[2])
         
         for i in range(randomizer):
-            math_sentence += f'{operand[i]} {operator[i]} '
+            math_sentence += f'{operand[i]}⠀{operator[i]}⠀' # ⠀ as blank character to prevent copy - paste
             
         math_sentence += str(operand[randomizer])
             
