@@ -7,6 +7,55 @@ import random, discord, db, datetime, asyncio
 from discord.utils import get
 from discord.ui import InputText, Modal
 import numpy as np
+
+# def soal_pilgan():
+#     data = {}
+#     randomizer = random.randint(0, 54554)
+#     temp = db.others_con['others']['eng_dict'].find({'index' : randomizer})[0]
+#     answer = temp['word'].lower()
+#     clue = temp['meaning']
+#     data['soal'] = 
+
+# class PilganButton(discord.ui.Button):
+#     def __init__(self, pilihan):
+#         """
+#         A button for one role. `custom_id` is needed for persistent views.
+#         """
+#         super().__init__(
+#             label=pilihan,
+#             style=discord.enums.ButtonStyle.secondary,
+#             custom_id=str(f'{pilihan}_id'),
+#         )
+
+#     async def callback(self, interaction: discord.Interaction):
+#         """This function will be called any time a user clicks on this button.
+#         Parameters
+#         ----------
+#         interaction : discord.Interaction
+#             The interaction object that was created when a user clicks on a button.
+#         """
+#         # Figure out who clicked the button.
+#         user = interaction.user
+#         # Get the role this button is for (stored in the custom ID).
+#         role = interaction.guild.get_role(int(self.custom_id))
+
+#         if role is None:
+#             # If the specified role does not exist, return nothing.
+#             # Error handling could be done here.
+#             return
+
+#         # Add the role and send a response to the uesr ephemerally (hidden to other users).
+#         if role not in user.roles:
+#             # Give the user the role if they don't already have it.
+#             await user.add_roles(role)
+#             await interaction.response.send_message(f"🎉 You have been given the role {role.mention}", ephemeral=True)
+#         else:
+#             # Else, Take the role from the user
+#             await user.remove_roles(role)
+#             await interaction.response.send_message(
+#                 f"❌ The {role.mention} role has been taken from you", ephemeral=True
+#             )
+
                 
 class Games(Cog):
     def __init__(self, bot):
@@ -104,7 +153,7 @@ class Games(Cog):
     @cooldown(1, 30, BucketType.user)
     async def jumbled_word(self, ctx, language = 'eng'):
         """
-        > Takes a shuffled word from an English dictionary. Your task is to rearrange the word correctly. Rewards `60 + (word length * 30)` exp if win and minus half of the rewards if lost. You should answer within `5 + (word length * 3)` seconds.
+        > Takes a shuffled word from a dictionary. Your task is to rearrange the word correctly. Rewards `60 + (word length * 30)` exp if win and minus half of the rewards if lost. You should answer within `5 + (word length * 3)` seconds.
 
         **Params:**
         >    **`language`** → dictionary language, default to `{eng}` another option `{ina}`
@@ -178,6 +227,85 @@ class Games(Cog):
             return await soal.edit(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**.\nThe correct answer is **{answer}**'))
 
         if answer in guess.content:
+            db.add_exp(ctx.author.id, exp_multiplier)
+            taken_by.append(ctx.author.id)
+            
+            db.others_con['others']['eng_dict'].update_one({'index' : randomizer}, {"$set": {'taken_by': taken_by}})
+            await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'))
+            await guess.delete()
+            
+        else:
+            db.add_exp(ctx.author.id, -1/2*exp_multiplier)
+            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**\nThe correct answer is **{answer}**'))
+    
+    @command(name='quiz.world-cities')
+    @cooldown(1, 30, BucketType.user)
+    async def jumbled_word(self, ctx):
+        """
+        > Takes a random city around the world. Your task is to locate country correctly. Rewards `240` exp if win and minus half of the rewards if lost. You should answer within `60` seconds.
+
+        **Params:**
+        >    no params required
+
+        **Returns:**
+        >    **`embed`** → question and choices
+
+        **Example:**
+        > ```<prefix>quiz.world-cities```
+        """
+        randomizer = random.randint(0, 23019)
+        temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
+        answer = temp['country']
+        city = temp['name']
+        taken_by = [temp['taken_by']]
+        choice = [temp['country']]
+        random_2 = []
+        
+        while ctx.author.id in taken_by:
+            randomizer = random.randint(0, 23019)
+            temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
+            answer = temp['country']
+            city = temp['name']
+            taken_by = [temp['taken_by']]
+        
+        for i in range(4):
+            randomizer_2 = random.randint(0, 23019)
+            while randomizer_2 == randomizer or randomizer in random_2:
+                randomizer_2 = random.randint(0, 23019)
+                
+            random_2.append(randomizer_2)
+            
+            choice.append(db.others_con['others']['cities_dict'].find({'index' : randomizer_2})[0]['country'])
+
+        timeout = 60
+        exp_multiplier = 240
+        urutan = random.sample('abcde', 5)
+        choices = {}
+        choice_value = ''
+        for i, j in enumerate(urutan):
+            choices[j] = choice[i]
+    
+        for i in sorted (choices) :
+            choice_value += f'   {i}. {choices[i]}\n'
+            
+
+        soal_embed = Embed(title = 'Answer this question!')
+        soal_embed.add_field(name='Question', value=f'```In which country, {city} located?```', inline=False)
+        soal_embed.add_field(name='Choice', value=f'```{choice_value}```', inline=False)
+        soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+        soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+        soal = await ctx.reply(embed=soal_embed)
+
+        def is_correct(m):
+            return m.author == ctx.author
+
+        try:
+            guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
+        except asyncio.TimeoutError:
+            db.add_exp(ctx.author.id, -1/2*exp_multiplier)
+            return await soal.edit(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**.\nThe correct answer is **{answer}**'))
+
+        if choices[guess.content.lower()] == answer:
             db.add_exp(ctx.author.id, exp_multiplier)
             taken_by.append(ctx.author.id)
             
