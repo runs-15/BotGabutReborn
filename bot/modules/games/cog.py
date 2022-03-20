@@ -147,8 +147,16 @@ class Games(Cog):
             for i in answer.split(' '):
                 lst.append("".join(random.sample(i, len(i))))
             word = " ".join(random.sample(lst, len(lst)))
+            while word == answer:
+                if ' ' in answer:
+                    lst = []
+                    for i in answer.split(' '):
+                        lst.append("".join(random.sample(i, len(i))))
+                    word = " ".join(random.sample(lst, len(lst)))
         else:
             word = "".join(random.sample(answer, len(answer)))
+            while word == answer:
+                word = "".join(random.sample(answer, len(answer)))
 
         timeout = 5 + len(word) * 3
         exp_multiplier = 60 + len(word) * 30
