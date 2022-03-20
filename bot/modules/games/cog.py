@@ -100,8 +100,6 @@ class Games(Cog):
             
             await ctx.reply(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
             
-        await ctx.message.delete()
-            
     @command(name='quiz.jumbled-word')
     @cooldown(1, 60, BucketType.user)
     async def jumbled_word(self, ctx):
