@@ -142,10 +142,10 @@ class Games(Cog):
         exp_multiplier = 60 + len(word) * 10
 
         soal_embed = Embed(title = 'Arrange the word!')
-        soal_embed.add_field(name='Jumbled word', value=f'```{word}```', inline=True)
+        soal_embed.add_field(name='Jumbled word', value=f'```{word}```', inline=False)
         soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
         soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
-        soal_embed.add_field(name='Clue', value=f'```{clue}```', inline=True)
+        soal_embed.add_field(name='Clue', value=f'```{clue}```', inline=False)
         soal = await ctx.reply(embed=soal_embed)
 
         def is_correct(m):
@@ -155,7 +155,7 @@ class Games(Cog):
             guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
         except asyncio.TimeoutError:
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            return await soal.edit(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**.\nThe correct answer was **{answer}**'))
+            return await soal.edit(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**.\nThe correct answer is **{answer}**'))
 
         if answer in guess.content:
             db.add_exp(ctx.author.id, exp_multiplier)
@@ -167,8 +167,7 @@ class Games(Cog):
             
         else:
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**\nThe correct answer was **{answer}**'))
-            await guess.delete()
+            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**\nThe correct answer is **{answer}**'))
             
     @user_command(name="Deadly RPS", guild_ids=db.guild_list, description='Rock-Paper-Scissors with your friend with 100% lowest exp as bid')
     @cooldown(1, 300, BucketType.user)
