@@ -16,7 +16,7 @@ class Games(Cog):
     @cooldown(1, 60, BucketType.user)
     async def basic_math(self, ctx, level = 1):
         """
-        > Shows a simple mathematic sentence. Your task is to answer correctly. Rewards `level * (30 + (operator * 10) + (length each operand * 10))` exp if win and minus half of the rewards if lost. You should answer within `5 + (operator * 3) + (length each operand * 2)` seconds. Answer decimal with round 2 numbers behind dot.
+        > Shows a simple mathematic sentence. Your task is to answer correctly. Rewards `level * (30 + (operator * 10) + (length each operand * 10))` exp if win and minus half of the rewards if lost. You should answer within `level / 2 * (5 + (operator * 3) + (length each operand * 2))` seconds. Answer decimal with round 2 numbers behind dot.
 
         **Params:**
         >    **`level`** → question level, default to {`1`} max {`5`}
@@ -51,7 +51,7 @@ class Games(Cog):
             
         math_sentence += str(operand[randomizer])
             
-        timeout = level * (5 + (len(operator) * 3) + (sum(len(str(x)) for x in operand) * 2))
+        timeout = level * (5 + (len(operator) * 3) + (sum(len(str(x)) for x in operand) * 2)) / 2
         exp_multiplier = level * (30 + (len(operator) * 10) + (sum(len(str(x)) for x in operand) * 10))
         
         answer = round(eval(math_sentence), 2)
@@ -61,7 +61,7 @@ class Games(Cog):
         soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
         soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
         soal_embed.add_field(name='Clue', value=f"```The correct answer is {'positive' if answer >= 0 else 'negative'} with {len(str(answer).replace('-', ''))} digits```", inline=False)
-        soal_embed.add_field(name='Reminder', value=f"```If your answer contains division (/), always put dot, and round two numbers\nExample  : 12.345 -> 12.35\nExample  : 12     --> 12.00```", inline=False)
+        soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\nExample  : 12     → 12.00```", inline=False)
         soal = await ctx.reply(embed=soal_embed)
 
         def is_correct(m):
