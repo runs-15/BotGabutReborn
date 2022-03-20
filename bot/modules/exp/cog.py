@@ -3,7 +3,7 @@ import discord, time, math, db, traceback
 import pandas as pd
 from asyncio import sleep
 from discord.ext import tasks
-from discord.ext.commands import Cog, command, slash_command, cooldown, BucketType
+from discord.ext.commands import Cog, command, slash_command, cooldown, BucketType, user_command
 from discord import Embed, Status, File
 from datetime import datetime
 from PIL import Image, ImageDraw
@@ -1221,6 +1221,12 @@ class Exp(Cog):
                 
         db.servers_con['servers']['social_credit'].update_one({'discord_id' : ctx.author.id}, {"$set": {'u_exp': voice_time}})
         await ctx.reply(f'{txt} {level_txt if level_txt != None else "```no level increment or decrement```"}')
+        
+    @user_command(name="Tip", guild_ids=db.guild_list)
+    @cooldown(3, 86400, BucketType.user)
+    async def deadly_rps(self, ctx, member):
+        db.add_exp(member.id, 60)
+        await ctx.interaction.response.send_message(f'{ctx.interaction.user.mention} tipped {member.mention}. Well Played!')
             
 def setup(bot):
     bot.add_cog(Exp(bot))
