@@ -38,7 +38,7 @@ class Games(Cog):
             5 : [[5, 8], [100,  1000],  [0.25, 0.25, 0.25, 0.25]]
         }
         
-        chc = det[int(level)][0]
+        chc = det[int(level)]
         
         randomizer = random.randint(chc[0][0], chc[0][1])
         math_sentence = ''
