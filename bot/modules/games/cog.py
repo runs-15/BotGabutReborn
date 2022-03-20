@@ -51,8 +51,8 @@ class Games(Cog):
             
         math_sentence += str(operand[randomizer])
             
-        timeout = level * (5 + (len(operator) * 3) + (sum(len(str(x)) for x in operand) * 2)) / 2
-        exp_multiplier = level * (30 + (len(operator) * 10) + (sum(len(str(x)) for x in operand) * 10))
+        timeout = level * (5 + (len(operator) * 3) + (sum(len(str(x)) for x in operand) * 2))
+        exp_multiplier = level * (30 + (len(operator) * 10) + (sum(len(str(x)) for x in operand) * 5))
         
         answer = round(eval(math_sentence), 2)
 
@@ -60,8 +60,7 @@ class Games(Cog):
         soal_embed.add_field(name='Math sentence', value=f'```{math_sentence}```', inline=False)
         soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
         soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
-        soal_embed.add_field(name='Clue', value=f"```The correct answer is {'positive' if answer >= 0 else 'negative'} with {len(str(answer).replace('-', ''))} digits```", inline=False)
-        soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\nExample  : 12     → 12.00```", inline=False)
+        soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
         soal = await ctx.reply(embed=soal_embed)
 
         def is_correct(m):
