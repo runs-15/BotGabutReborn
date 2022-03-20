@@ -19,7 +19,7 @@ class Games(Cog):
         > Shows a simple mathematic sentence. Your task is to answer correctly. Rewards `level * (30 + (operator * 10) + (length each operand * 10))` exp if win and minus half of the rewards if lost. You should answer within `level / 2 * (5 + (operator * 3) + (length each operand * 2))` seconds. Answer decimal with round 2 numbers behind dot.
 
         **Params:**
-        >    **`level`** → question level, default to {`1`} max {`5`}
+        >    **`level`** → question level, default to `{1}` max `{5}`
 
         **Returns:**
         >    **`embed`** → math question
@@ -102,31 +102,43 @@ class Games(Cog):
             
     @command(name='quiz.jumbled-word')
     @cooldown(1, 30, BucketType.user)
-    async def jumbled_word(self, ctx):
+    async def jumbled_word(self, ctx, language = 'eng'):
         """
         > Takes a shuffled word from an English dictionary. Your task is to rearrange the word correctly. Rewards `60 + (word length * 30)` exp if win and minus half of the rewards if lost. You should answer within `5 + (word length * 3)` seconds.
 
         **Params:**
-        >    takes no parameter
+        >    **`language`** → dictionary language, default to `{eng}` another option `{ina}`
 
         **Returns:**
         >    **`embed`** → jumbled word and clues
 
         **Example:**
-        > ```<prefix>quiz.jumbled-word```
+        > ```<prefix>quiz.jumbled-word ina```
         """
-        randomizer = random.randint(0, 54554)
-        temp = db.others_con['others']['eng_dict'].find({'index' : randomizer})[0]
-        answer = temp['word'].lower()
-        clue = temp['meaning']
-        taken_by = [temp['taken_by']]
-        word = ''
-        
-        while ctx.author.id in taken_by or len(answer) < 3:
+        if language == 'eng':
             randomizer = random.randint(0, 54554)
             temp = db.others_con['others']['eng_dict'].find({'index' : randomizer})[0]
             answer = temp['word'].lower()
             clue = temp['meaning']
+        elif language == 'ina':
+            randomizer = random.randint(1, 35970)
+            temp = db.others_con['others']['ina_dict'].find({'_id' : randomizer})[0]
+            answer = temp['katakunci'].lower()
+            clue = temp['artikata']
+        taken_by = [temp['taken_by']]
+        word = ''
+        
+        while ctx.author.id in taken_by or len(answer) < 3:
+            if language == 'eng':
+                randomizer = random.randint(0, 54554)
+                temp = db.others_con['others']['eng_dict'].find({'index' : randomizer})[0]
+                answer = temp['word'].lower()
+                clue = temp['meaning']
+            elif language == 'ina':
+                randomizer = random.randint(1, 35970)
+                temp = db.others_con['others']['ina_dict'].find({'_id' : randomizer})[0]
+                answer = temp['katakunci'].lower()
+                clue = temp['artikata']
             taken_by = [temp['taken_by']]
             word = ''
         
@@ -254,9 +266,9 @@ class Games(Cog):
                     if winner != None:
                         db.add_exp(winner.id, taruhan)
                         db.add_exp(loser.id, -taruhan)
-                        await interaction.channel.send(f"[{ctx.author.mention} with {player[ctx.author.id]} against {member.mention} with **{player[member.id]}**]\nThe RPS winner is {winner.mention}! Got a total of `{db.number_format(taruhan)}` exp")
+                        await interaction.channel.send(f"[{ctx.author.mention} with **{player[ctx.author.id]}** against {member.mention} with **{player[member.id]}**]\nThe RPS winner is {winner.mention}! Got a total of `{db.number_format(taruhan)}` exp")
                     else:
-                        await interaction.channel.send(f"[{ctx.author.mention} with {player[ctx.author.id]} against {member.mention} with **{player[member.id]}**]\nThe RPS ended in a draw.")
+                        await interaction.channel.send(f"[{ctx.author.mention} with **{player[ctx.author.id]}** against {member.mention} with **{player[member.id]}**]\nThe RPS ended in a draw.")
           
         try:
             view = MyView()
