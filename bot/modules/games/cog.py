@@ -240,7 +240,7 @@ class Games(Cog):
     
     @command(name='quiz.world-cities')
     @cooldown(1, 30, BucketType.user)
-    async def jumbled_word(self, ctx):
+    async def world_cities(self, ctx):
         """
         > Takes a random city around the world. Your task is to locate country correctly. Rewards `240` exp if win and minus half of the rewards if lost. You should answer within `60` seconds.
 
