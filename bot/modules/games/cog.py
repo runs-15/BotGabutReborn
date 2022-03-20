@@ -253,7 +253,7 @@ class Games(Cog):
         **Example:**
         > ```<prefix>quiz.world-cities```
         """
-        randomizer = random.randint(0, 23019)
+        randomizer = random.randint(0, 23018)
         temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
         answer = temp['country']
         city = temp['name']
@@ -262,16 +262,16 @@ class Games(Cog):
         random_2 = []
         
         while ctx.author.id in taken_by:
-            randomizer = random.randint(0, 23019)
+            randomizer = random.randint(0, 23018)
             temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
             answer = temp['country']
             city = temp['name']
             taken_by = [temp['taken_by']]
         
         for i in range(4):
-            randomizer_2 = random.randint(0, 23019)
+            randomizer_2 = random.randint(0, 23018)
             while randomizer_2 == randomizer or randomizer in random_2:
-                randomizer_2 = random.randint(0, 23019)
+                randomizer_2 = random.randint(0, 23018)
                 
             random_2.append(randomizer_2)
             
