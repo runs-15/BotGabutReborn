@@ -43,18 +43,21 @@ class Games(Cog):
         
         randomizer = random.randint(chc[0][0], chc[0][1])
         math_sentence = ''
+        math_sentence_true = ''
         operand = np.random.choice([x for x in range(chc[1][0], chc[1][1])], randomizer + 1)
         operator = np.random.choice(['+', '-', '*', '/'], randomizer, p=chc[2])
         
         for i in range(randomizer):
-            math_sentence += f'{operand[i]}⠀{operator[i]}⠀' # ⠀ as blank character to prevent copy - paste
-            
+            math_sentence_true += f'{operand[i]} {operator[i]} '
+            math_sentence += f'{operand[i]}⠀{operator[i]}⠀' # inserting U+2800 as invisible character to prevent copy - paste
+        
+        math_sentence_true += str(operand[randomizer])
         math_sentence += str(operand[randomizer])
             
         timeout = level * (5 + (len(operator) * 3) + (sum(len(str(x)) for x in operand) * 2))
         exp_multiplier = level * (30 + (len(operator) * 10) + (sum(len(str(x)) for x in operand) * 5))
         
-        answer = round(eval(math_sentence), 2)
+        answer = round(eval(math_sentence_true), 2)
 
         soal_embed = Embed(title = 'Solve this question!')
         soal_embed.add_field(name='Math sentence', value=f'```{math_sentence}```', inline=False)
