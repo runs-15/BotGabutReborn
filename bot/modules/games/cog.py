@@ -155,7 +155,7 @@ class Games(Cog):
             guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
         except asyncio.TimeoutError:
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            return await soal.edit(embed=Embed(title='Time Up!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
+            return await soal.edit(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**.\nThe correct answer was **{answer}**'))
 
         if answer in guess.content:
             db.add_exp(ctx.author.id, exp_multiplier)
@@ -167,10 +167,8 @@ class Games(Cog):
             
         else:
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
+            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**\nThe correct answer was **{answer}**'))
             await guess.delete()
-            
-        await ctx.message.delete()
             
     @user_command(name="Deadly RPS", guild_ids=db.guild_list, description='Rock-Paper-Scissors with your friend with 100% lowest exp as bid')
     @cooldown(1, 300, BucketType.user)
