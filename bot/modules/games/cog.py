@@ -28,7 +28,8 @@ class Games(Cog):
         > ```<prefix>quiz.basic-math 3```
         """
         if level < 1 or level > 5:
-            raise Exception('level exceeds range 1 and 5')
+            ctx.command.reset_cooldown(ctx)
+            raise Exception('level should not exceeds range between 1 and 5')
         
         det = {
             1 : [[1, 6], [1,  10],      [0.4, 0.4, 0.2, 0]],
@@ -119,7 +120,7 @@ class Games(Cog):
         temp = db.others_con['others']['eng_dict'].find({'index' : randomizer})[0]
         answer = temp['word'].lower()
         clue = temp['meaning']
-        taken_by = list(temp['taken_by'])
+        taken_by = [temp['taken_by']]
         word = ''
         
         while ctx.author.id in taken_by or len(answer) < 3:
@@ -179,6 +180,10 @@ class Games(Cog):
         a_exp = db.servers_con['servers']['social_credit'].find({'discord_id' : ctx.author.id})[0]['u_exp']
         b_exp = db.servers_con['servers']['social_credit'].find({'discord_id' : member.id})[0]['u_exp']
         taruhan = 0
+        
+        if a_exp <= 0 or b_exp <= 0:
+            ctx.command.reset_cooldown(ctx)
+            raise Exception('one of the player has 0 or minus exp')
         
         if a_exp > b_exp:
             taruhan = b_exp
