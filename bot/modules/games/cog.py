@@ -481,25 +481,25 @@ class Games(Cog):
             start_time = time.time()
             guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
         except asyncio.TimeoutError:
-            db.add_exp(ctx.author.id, -1/2*(exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))
+            db.add_exp(ctx.author.id, int(-1/2*(exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))))
             return await soal.edit(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{1/2 * (exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**.\nThe correct answer is **{answer}**'))
 
         try:
             if choices[guess.content.lower()] == answer:
-                db.add_exp(ctx.author.id, exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))
+                db.add_exp(ctx.author.id, int(exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))
                 #  taken_by.append(ctx.author.id)
                 
                 #db.others_con['others']['eng_dict'].update_one({'index' : randomizer}, {"$set": {'taken_by': taken_by}})
-                await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{(exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**'))
+                await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{int((exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))}`**'))
                 await guess.delete()
                 
             else:
-                db.add_exp(ctx.author.id, -1/2*exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))
-                await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * (exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**\nThe correct answer is **{answer}**'))
+                db.add_exp(ctx.author.id, int(-1/2*exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))
+                await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{int(1/2 * (exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))}`**\nThe correct answer is **{answer}**'))
         except Exception as e:
             print(e)
-            db.add_exp(ctx.author.id, -1/2*exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))
-            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * (exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**\nThe correct answer is **{answer}**'))
+            db.add_exp(ctx.author.id, int(-1/2*exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))
+            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{int(1/2 * (exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))}`**\nThe correct answer is **{answer}**'))
             
     @user_command(name="Deadly RPS", guild_ids=db.guild_list, description='Rock-Paper-Scissors with your friend with 100% lowest exp as bid')
     @cooldown(1, 300, BucketType.user)
