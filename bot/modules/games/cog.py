@@ -487,7 +487,7 @@ class Games(Cog):
         try:
             if choices[guess.content.lower()] == answer:
                 db.add_exp(ctx.author.id, exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))
-                taken_by.append(ctx.author.id)
+                #  taken_by.append(ctx.author.id)
                 
                 #db.others_con['others']['eng_dict'].update_one({'index' : randomizer}, {"$set": {'taken_by': taken_by}})
                 await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{(exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**'))
