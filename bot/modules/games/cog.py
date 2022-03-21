@@ -266,15 +266,15 @@ class Games(Cog):
             temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
             answer = temp['country']
             city = temp['name']
-            taken_by = [temp['taken_by'][determiner]]
+            # taken_by = [temp['taken_by'][determiner]]
             choice = [temp['country']]
             
-            while ctx.author.id in taken_by:
-                randomizer = random.randint(0, 23018)
-                temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
-                answer = temp['country']
-                city = temp['name']
-                taken_by = [temp['taken_by'][determiner]]
+            # while ctx.author.id in taken_by:
+            #     randomizer = random.randint(0, 23018)
+            #     temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
+            #     answer = temp['country']
+            #     city = temp['name']
+            #     # taken_by = [temp['taken_by'][determiner]]
             
             for i in range(4):
                 countries = db.others_con['others']['cities_dict'].find({'index' : random.randint(0, 23018)})[0]['country']
@@ -307,15 +307,15 @@ class Games(Cog):
             temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
             answer = temp['country']
             subcountry = temp['subcountry']
-            taken_by = [temp['taken_by'][determiner]]
+            # taken_by = [temp['taken_by'][determiner]]
             choice = [temp['country']]
             
-            while ctx.author.id in taken_by:
-                randomizer = random.randint(0, 23018)
-                temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
-                answer = temp['country']
-                subcountry = temp['subcountry']
-                taken_by = [temp['taken_by'][determiner]]
+            # while ctx.author.id in taken_by:
+            #     randomizer = random.randint(0, 23018)
+            #     temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
+            #     answer = temp['country']
+            #     subcountry = temp['subcountry']
+            #     # taken_by = [temp['taken_by'][determiner]]
             
             for i in range(4):
                 countries = db.others_con['others']['cities_dict'].find({'index' : random.randint(0, 23018)})[0]['country']
@@ -348,17 +348,17 @@ class Games(Cog):
             temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
             answer = temp['name']
             country = temp['country']
-            taken_by = [temp['taken_by'][determiner]]
+            # taken_by = [temp['taken_by'][determiner]]
             same_country = [x['name'] for x in db.others_con['others']['cities_dict'].find({'country' : country})]
             choice = [temp['name']]
             
-            while ctx.author.id in taken_by:
-                randomizer = random.randint(0, 23018)
-                temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
-                answer = temp['name']
-                country = temp['country']
-                taken_by = [temp['taken_by'][determiner]]
-                same_country = [x['name'] for x in db.others_con['others']['cities_dict'].find({'country' : country})]
+            # while ctx.author.id in taken_by:
+            #     randomizer = random.randint(0, 23018)
+            #     temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
+            #     answer = temp['name']
+            #     country = temp['country']
+            #     # taken_by = [temp['taken_by'][determiner]]
+            #     same_country = [x['name'] for x in db.others_con['others']['cities_dict'].find({'country' : country})]
             
             for i in range(4):
                 cities = db.others_con['others']['cities_dict'].find({'index' : random.randint(0, 23018)})[0]['name']
@@ -392,18 +392,18 @@ class Games(Cog):
             answer = temp['name']
             subcountry = temp['subcountry']
             country = temp['country']
-            taken_by = [temp['taken_by'][determiner]]
+            # taken_by = [temp['taken_by'][determiner]]
             same_subcountry = [x['name'] for x in db.others_con['others']['cities_dict'].find({'subcountry' : subcountry})]
             choice = [temp['name']]
             
-            while ctx.author.id in taken_by:
-                randomizer = random.randint(0, 23018)
-                temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
-                answer = temp['name']
-                country = temp['country']
-                subcountry = temp['subcountry']
-                taken_by = [temp['taken_by'][determiner]]
-                same_subcountry = [x['name'] for x in db.others_con['others']['cities_dict'].find({'subcountry' : subcountry})]
+            # while ctx.author.id in taken_by:
+            #     randomizer = random.randint(0, 23018)
+            #     temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
+            #     answer = temp['name']
+            #     country = temp['country']
+            #     subcountry = temp['subcountry']
+            #     # taken_by = [temp['taken_by'][determiner]]
+            #     same_subcountry = [x['name'] for x in db.others_con['others']['cities_dict'].find({'subcountry' : subcountry})]
             
             for i in range(4):
                 cities = db.others_con['others']['cities_dict'].find({'index' : random.randint(0, 23018)})[0]['name']
@@ -440,7 +440,8 @@ class Games(Cog):
             #taken_by = [temp['taken_by'][determiner]]
             choice = [temp['Dial']]
             
-            while ctx.author.id in taken_by or currency == None:
+            # while ctx.author.id in taken_by or currency == None:
+            while currency == None:
                 randomizer = random.randint(0, 23018)
                 temp = db.others_con['others']['countries_dict'].find({'index' : randomizer})[0]
                 answer = temp['Dial']
