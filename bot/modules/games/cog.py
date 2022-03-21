@@ -478,8 +478,8 @@ class Games(Cog):
             return m.author == ctx.author
 
         try:
-            guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
             start_time = time.time()
+            guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
         except asyncio.TimeoutError:
             db.add_exp(ctx.author.id, -1/2*(exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))
             return await soal.edit(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{1/2 * (exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**.\nThe correct answer is **{answer}**'))
