@@ -1,9 +1,10 @@
 from distutils.util import check_environ
+from locale import currency
 from logging.config import stopListening
 from discord import Member, StoreChannel, user_command
 from discord import Embed
 from discord.ext.commands import Cog, command, slash_command, cooldown, BucketType
-import random, discord, db, datetime, asyncio
+import random, discord, db, datetime, asyncio, time
 from discord.utils import get
 from discord.ui import InputText, Modal
 import numpy as np
@@ -238,11 +239,11 @@ class Games(Cog):
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
             await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**\nThe correct answer is **{answer}**'))
     
-    @command(name='quiz.world-cities')
+    @command(name='quiz.world-nations')
     @cooldown(1, 30, BucketType.user)
-    async def world_cities(self, ctx):
+    async def world_nation(self, ctx):
         """
-        > Takes a random city around the world. Your task is to locate country correctly. Rewards `240` exp if win and minus half of the rewards if lost. You should answer within `60` seconds.
+        > Takes a random questions about nations around the world. Your task is to answer correctly. Rewards `240 * (1 + 1 / time elapsed)` exp if win and minus half of the rewards if lost. You should answer within `60` seconds.
 
         **Params:**
         >    no params required
@@ -253,71 +254,251 @@ class Games(Cog):
         **Example:**
         > ```<prefix>quiz.world-cities```
         """
-        randomizer = random.randint(0, 23018)
-        temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
-        answer = temp['country']
-        city = temp['name']
-        taken_by = [temp['taken_by']]
-        choice = [temp['country']]
+        timeout = 60
+        exp_multiplier = 240
         
-        while ctx.author.id in taken_by:
+        kategori = [0, 1, 2, 3, 4]
+        determiner = np.random.choice(kategori, 1)
+        
+        # soal mencari negara dari nama kota
+        if determiner == 0:
             randomizer = random.randint(0, 23018)
             temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
             answer = temp['country']
             city = temp['name']
-            taken_by = [temp['taken_by']]
-        
-        for i in range(4):
-            countries = db.others_con['others']['cities_dict'].find({'index' : random.randint(0, 23018)})[0]['country']
-            while countries == answer or countries in choice:
+            taken_by = [temp['taken_by'][determiner]]
+            choice = [temp['country']]
+            
+            while ctx.author.id in taken_by:
+                randomizer = random.randint(0, 23018)
+                temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
+                answer = temp['country']
+                city = temp['name']
+                taken_by = [temp['taken_by'][determiner]]
+            
+            for i in range(4):
                 countries = db.others_con['others']['cities_dict'].find({'index' : random.randint(0, 23018)})[0]['country']
+                while countries == answer or countries in choice:
+                    countries = db.others_con['others']['cities_dict'].find({'index' : random.randint(0, 23018)})[0]['country']
+                
+                choice.append(countries)
+
             
-            choice.append(countries)
+            urutan = random.sample('abcde', 5)
+            choices = {}
+            choice_value = ''
+            for i, j in enumerate(urutan):
+                choices[j] = choice[i]
+        
+            for i in sorted (choices) :
+                choice_value += f'   {i}. {choices[i]}\n'
+                
 
-        timeout = 60
-        exp_multiplier = 240
-        urutan = random.sample('abcde', 5)
-        choices = {}
-        choice_value = ''
-        for i, j in enumerate(urutan):
-            choices[j] = choice[i]
-    
-        for i in sorted (choices) :
-            choice_value += f'   {i}. {choices[i]}\n'
+            soal_embed = Embed(title = 'Answer this question!')
+            soal_embed.add_field(name='Question', value=f'```In which country, {city} located?```', inline=False)
+            soal_embed.add_field(name='Choice', value=f'```{choice_value}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal = await ctx.reply(embed=soal_embed)
+        
+        # soal mencari negara dari nama provinsi     
+        elif determiner == 1:
+            randomizer = random.randint(0, 23018)
+            temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
+            answer = temp['country']
+            subcountry = temp['subcountry']
+            taken_by = [temp['taken_by'][determiner]]
+            choice = [temp['country']]
             
+            while ctx.author.id in taken_by:
+                randomizer = random.randint(0, 23018)
+                temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
+                answer = temp['country']
+                subcountry = temp['subcountry']
+                taken_by = [temp['taken_by'][determiner]]
+            
+            for i in range(4):
+                countries = db.others_con['others']['cities_dict'].find({'index' : random.randint(0, 23018)})[0]['country']
+                while countries == answer or countries in choice:
+                    countries = db.others_con['others']['cities_dict'].find({'index' : random.randint(0, 23018)})[0]['country']
+                
+                choice.append(countries)
 
-        soal_embed = Embed(title = 'Answer this question!')
-        soal_embed.add_field(name='Question', value=f'```In which country, {city} located?```', inline=False)
-        soal_embed.add_field(name='Choice', value=f'```{choice_value}```', inline=False)
-        soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
-        soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
-        soal = await ctx.reply(embed=soal_embed)
+            
+            urutan = random.sample('abcde', 5)
+            choices = {}
+            choice_value = ''
+            for i, j in enumerate(urutan):
+                choices[j] = choice[i]
+        
+            for i in sorted (choices) :
+                choice_value += f'   {i}. {choices[i]}\n'
+                
 
+            soal_embed = Embed(title = 'Answer this question!')
+            soal_embed.add_field(name='Question', value=f'```In which country, subcountry {subcountry} located?```', inline=False)
+            soal_embed.add_field(name='Choice', value=f'```{choice_value}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal = await ctx.reply(embed=soal_embed)
+        
+        # soal mencari kota dari nama negara  
+        elif determiner == 2:
+            randomizer = random.randint(0, 23018)
+            temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
+            answer = temp['name']
+            country = temp['country']
+            taken_by = [temp['taken_by'][determiner]]
+            same_country = [x['name'] for x in db.others_con['others']['cities_dict'].find({'country' : country})]
+            choice = [temp['name']]
+            
+            while ctx.author.id in taken_by:
+                randomizer = random.randint(0, 23018)
+                temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
+                answer = temp['name']
+                country = temp['country']
+                taken_by = [temp['taken_by'][determiner]]
+                same_country = [x['name'] for x in db.others_con['others']['cities_dict'].find({'country' : country})]
+            
+            for i in range(4):
+                cities = db.others_con['others']['cities_dict'].find({'index' : random.randint(0, 23018)})[0]['name']
+                while cities == answer or cities in choice or cities in same_country:
+                    cities = db.others_con['others']['cities_dict'].find({'index' : random.randint(0, 23018)})[0]['name']
+                
+                choice.append(cities)
+
+            
+            urutan = random.sample('abcde', 5)
+            choices = {}
+            choice_value = ''
+            for i, j in enumerate(urutan):
+                choices[j] = choice[i]
+        
+            for i in sorted (choices) :
+                choice_value += f'   {i}. {choices[i]}\n'
+                
+
+            soal_embed = Embed(title = 'Answer this question!')
+            soal_embed.add_field(name='Question', value=f'```{country} has a city named...```', inline=False)
+            soal_embed.add_field(name='Choice', value=f'```{choice_value}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal = await ctx.reply(embed=soal_embed)
+
+        # soal mencari kota dari nama provinsi
+        elif determiner == 3:
+            randomizer = random.randint(0, 23018)
+            temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
+            answer = temp['name']
+            subcountry = temp['subcountry']
+            country = temp['country']
+            taken_by = [temp['taken_by'][determiner]]
+            same_subcountry = [x['name'] for x in db.others_con['others']['cities_dict'].find({'subcountry' : subcountry})]
+            choice = [temp['name']]
+            
+            while ctx.author.id in taken_by:
+                randomizer = random.randint(0, 23018)
+                temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
+                answer = temp['name']
+                country = temp['country']
+                subcountry = temp['subcountry']
+                taken_by = [temp['taken_by'][determiner]]
+                same_subcountry = [x['name'] for x in db.others_con['others']['cities_dict'].find({'subcountry' : subcountry})]
+            
+            for i in range(4):
+                cities = db.others_con['others']['cities_dict'].find({'index' : random.randint(0, 23018)})[0]['name']
+                while cities == answer or cities in choice or cities in same_subcountry:
+                    cities = db.others_con['others']['cities_dict'].find({'index' : random.randint(0, 23018)})[0]['name']
+                
+                choice.append(cities)
+
+            
+            urutan = random.sample('abcde', 5)
+            choices = {}
+            choice_value = ''
+            for i, j in enumerate(urutan):
+                choices[j] = choice[i]
+        
+            for i in sorted (choices) :
+                choice_value += f'   {i}. {choices[i]}\n'
+                
+
+            soal_embed = Embed(title = 'Answer this question!')
+            soal_embed.add_field(name='Question', value=f'```{subcountry} subcountry in {country}, has a city named...```', inline=False)
+            soal_embed.add_field(name='Choice', value=f'```{choice_value}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal = await ctx.reply(embed=soal_embed)
+            
+        # soal mencari dial number dari mata uang    
+        elif determiner == 4:
+            randomizer = random.randint(0, 249)
+            temp = db.others_con['others']['countries_dict'].find({'index' : randomizer})[0]
+            answer = temp['Dial']
+            currency = temp['ISO4217-currency_alphabetic_code']
+            same_currency = [x['Dial'] for x in db.others_con['others']['countries_dict'].find({'ISO4217-currency_alphabetic_code' : currency})]
+            #taken_by = [temp['taken_by'][determiner]]
+            choice = [temp['Dial']]
+            
+            while ctx.author.id in taken_by or currency == None:
+                randomizer = random.randint(0, 23018)
+                temp = db.others_con['others']['countries_dict'].find({'index' : randomizer})[0]
+                answer = temp['Dial']
+                currency = temp['ISO4217-currency_alphabetic_code']
+                same_currency = [x['Dial'] for x in db.others_con['others']['countries_dict'].find({'ISO4217-currency_alphabetic_code' : currency})]
+                #taken_by = [temp['taken_by'][determiner]]
+            
+            for i in range(4):
+                dials = db.others_con['others']['countries_dict'].find({'index' : random.randint(0, 249)})[0]['Dial']
+                while dials == answer or dials in choice or dials in same_currency:
+                    dials = db.others_con['others']['countries_dict'].find({'index' : random.randint(0, 249)})[0]['Dial']
+                
+                choice.append(dials)
+
+            
+            urutan = random.sample('abcde', 5)
+            choices = {}
+            choice_value = ''
+            for i, j in enumerate(urutan):
+                choices[j] = choice[i]
+        
+            for i in sorted (choices) :
+                choice_value += f'   {i}. {choices[i]}\n'
+                
+
+            soal_embed = Embed(title = 'Answer this question!')
+            soal_embed.add_field(name='Question', value=f'```Country which using {currency} as currency, has dial number ...```', inline=False)
+            soal_embed.add_field(name='Choice', value=f'```{choice_value}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal = await ctx.reply(embed=soal_embed)
+            
         def is_correct(m):
             return m.author == ctx.author
 
         try:
             guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
+            start_time = time.time()
         except asyncio.TimeoutError:
-            db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            return await soal.edit(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**.\nThe correct answer is **{answer}**'))
+            db.add_exp(ctx.author.id, -1/2*(exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))
+            return await soal.edit(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{1/2 * (exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**.\nThe correct answer is **{answer}**'))
 
         try:
             if choices[guess.content.lower()] == answer:
-                db.add_exp(ctx.author.id, exp_multiplier)
+                db.add_exp(ctx.author.id, exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))
                 taken_by.append(ctx.author.id)
                 
-                db.others_con['others']['eng_dict'].update_one({'index' : randomizer}, {"$set": {'taken_by': taken_by}})
-                await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'))
+                #db.others_con['others']['eng_dict'].update_one({'index' : randomizer}, {"$set": {'taken_by': taken_by}})
+                await soal.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{(exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**'))
                 await guess.delete()
                 
             else:
-                db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-                await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**\nThe correct answer is **{answer}**'))
+                db.add_exp(ctx.author.id, -1/2*exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))
+                await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * (exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**\nThe correct answer is **{answer}**'))
         except Exception as e:
             print(e)
-            db.add_exp(ctx.author.id, -1/2*exp_multiplier)
-            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**\nThe correct answer is **{answer}**'))
+            db.add_exp(ctx.author.id, -1/2*exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))
+            await soal.edit(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * (exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**\nThe correct answer is **{answer}**'))
             
     @user_command(name="Deadly RPS", guild_ids=db.guild_list, description='Rock-Paper-Scissors with your friend with 100% lowest exp as bid')
     @cooldown(1, 300, BucketType.user)
