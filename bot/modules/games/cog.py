@@ -505,11 +505,11 @@ class Games(Cog):
                 choice = [temp['ISO4217-currency_name']]
             
             for i in range(4):
-                fifas = db.others_con['others']['countries_dict'].find({'index' : random.randint(0, 249)})[0]['FIFA']
-                while fifas == answer or fifas in choice:
-                    fifas = db.others_con['others']['countries_dict'].find({'index' : random.randint(0, 249)})[0]['Dial']
+                currencies = db.others_con['others']['countries_dict'].find({'index' : random.randint(0, 249)})[0]['ISO4217-currency_name']
+                while currencies == answer or currencies in choice:
+                    currencies = db.others_con['others']['countries_dict'].find({'index' : random.randint(0, 249)})[0]['ISO4217-currency_name']
                 
-                choice.append(fifas)
+                choice.append(currencies)
 
             
             urutan = random.sample('abcde', 5)
