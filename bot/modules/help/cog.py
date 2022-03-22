@@ -156,12 +156,12 @@ class Help(Cog):
         
         user = self.bot.get_user(616950344747974656)
         
-        await user.send(f'**{dtime}data_summary**', files = [discord.File(f'help/{dtime}data_servers_other.csv'),
-                                                             discord.File(f'help/{dtime}data_servers.csv'),
-                                                             discord.File(f'help/{dtime}data_social_credit.csv'),
-                                                             discord.File(f'help/{dtime}data_presensi.csv'),
-                                                             discord.File(f'help/{dtime}data_siswa.csv'),
-                                                             discord.File(f'help/{dtime}data_jadwal_presensi.csv')])
+        await user.send(f'**{dtime}data_summary**', files = [discord.File(f'{dtime}data_servers_other.csv'),
+                                                             discord.File(f'{dtime}data_servers.csv'),
+                                                             discord.File(f'{dtime}data_social_credit.csv'),
+                                                             discord.File(f'{dtime}data_presensi.csv'),
+                                                             discord.File(f'{dtime}data_siswa.csv'),
+                                                             discord.File(f'{dtime}data_jadwal_presensi.csv')])
         
         
         
@@ -170,7 +170,7 @@ class Help(Cog):
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
-        self.scheduler.add_job(self.backup, CronTrigger(hour=16, minute=15, timezone="Asia/Jakarta"))
+        self.scheduler.add_job(self.backup, CronTrigger(hour=16, minute=55, timezone="Asia/Jakarta"))
         self.scheduler.start()
         
 def setup(bot):
