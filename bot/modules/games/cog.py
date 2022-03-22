@@ -280,7 +280,7 @@ class Games(Cog):
             db.add_exp(ctx.author.id, exp_multiplier)
             
             await ctx.reply(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'))
-            
+            await guess.delete()
         else:
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
             
