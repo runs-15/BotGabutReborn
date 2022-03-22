@@ -258,8 +258,7 @@ class Games(Cog):
         exp_multiplier = 240
         
         kategori = ['0', '1', '2', '3', '4', '5']
-        determiner = np.random.choice(kategori, 1)
-        print(determiner)
+        determiner = np.random.choice(kategori, 1)[0]
         
         # soal mencari negara dari nama kota
         if determiner == '0':
@@ -268,7 +267,6 @@ class Games(Cog):
             temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
             answer = temp['country']
             city = temp['name']
-            print(temp['taken_by'][determiner])
             taken_by = temp['taken_by'][determiner]
             choice = [temp['country']]
             
@@ -277,7 +275,6 @@ class Games(Cog):
                 temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
                 answer = temp['country']
                 city = temp['name']
-                print(temp['taken_by'][determiner])
                 taken_by = temp['taken_by'][determiner]
                 choice = [temp['country']]
             
@@ -313,7 +310,6 @@ class Games(Cog):
             temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
             answer = temp['country']
             subcountry = temp['subcountry']
-            print(temp['taken_by'][determiner])
             taken_by = temp['taken_by'][determiner]
             choice = [temp['country']]
             
@@ -322,7 +318,6 @@ class Games(Cog):
                 temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
                 answer = temp['country']
                 subcountry = temp['subcountry']
-                print(temp['taken_by'][determiner])
                 taken_by = temp['taken_by'][determiner]
                 choice = [temp['country']]
             
@@ -358,7 +353,6 @@ class Games(Cog):
             temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
             answer = temp['name']
             country = temp['country']
-            print(temp['taken_by'][determiner])
             taken_by = temp['taken_by'][determiner]
             same_country = [x['name'] for x in db.others_con['others']['cities_dict'].find({'country' : country})]
             choice = [temp['name']]
@@ -368,7 +362,6 @@ class Games(Cog):
                 temp = db.others_con['others']['cities_dict'].find({'index' : randomizer})[0]
                 answer = temp['name']
                 country = temp['country']
-                print(temp['taken_by'][determiner])
                 taken_by = temp['taken_by'][determiner]
                 same_country = [x['name'] for x in db.others_con['others']['cities_dict'].find({'country' : country})]
                 choice = [temp['name']]
@@ -407,7 +400,6 @@ class Games(Cog):
             answer = temp['name']
             subcountry = temp['subcountry']
             country = temp['country']
-            print(temp['taken_by'][determiner])
             taken_by = temp['taken_by'][determiner]
             same_subcountry = [x['name'] for x in db.others_con['others']['cities_dict'].find({'subcountry' : subcountry})]
             choice = [temp['name']]
@@ -418,7 +410,6 @@ class Games(Cog):
                 answer = temp['name']
                 country = temp['country']
                 subcountry = temp['subcountry']
-                print(temp['taken_by'][determiner])
                 taken_by = temp['taken_by'][determiner]
                 same_subcountry = [x['name'] for x in db.others_con['others']['cities_dict'].find({'subcountry' : subcountry})]
                 choice = [temp['name']]
@@ -456,7 +447,6 @@ class Games(Cog):
             answer = temp['Dial']
             currency = temp['ISO4217-currency_name']
             same_currency = [x['Dial'] for x in db.others_con['others']['countries_dict'].find({'ISO4217-currency_name' : currency})]
-            print(temp['taken_by'][determiner])
             taken_by = temp['taken_by'][determiner]
             choice = [temp['Dial']]
             
@@ -467,7 +457,6 @@ class Games(Cog):
                 answer = temp['Dial']
                 currency = temp['ISO4217-currency_name']
                 same_currency = [x['Dial'] for x in db.others_con['others']['countries_dict'].find({'ISO4217-currency_name' : currency})]
-                print(temp['taken_by'][determiner])
                 taken_by = temp['taken_by'][determiner]
                 choice = [temp['Dial']]
             
@@ -503,7 +492,6 @@ class Games(Cog):
             temp = db.others_con['others']['countries_dict'].find({'index' : randomizer})[0]
             answer = temp['ISO4217-currency_name']
             fifa = temp['FIFA']
-            print(temp['taken_by'][determiner])
             taken_by = temp['taken_by'][determiner]
             choice = [temp['ISO4217-currency_name']]
             
@@ -513,7 +501,6 @@ class Games(Cog):
                 temp = db.others_con['others']['countries_dict'].find({'index' : randomizer})[0]
                 answer = temp['ISO4217-currency_name']
                 fifa = temp['FIFA']
-                print(temp['taken_by'][determiner])
                 taken_by = temp['taken_by'][determiner]
                 choice = [temp['ISO4217-currency_name']]
             
