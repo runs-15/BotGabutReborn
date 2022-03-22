@@ -244,7 +244,7 @@ class Games(Cog):
             
             soal = f"Berapa banyak kata baru yang berbeda yang dapat disusun dari huruf-huruf penyusun kata \"{kata}\"?"
             
-            timeout = 30 + (peserta) * 5
+            timeout = 30 + (len(kata)) * 5
             exp_multiplier = 360
             
             pembagi = 1
