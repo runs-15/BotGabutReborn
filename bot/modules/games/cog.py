@@ -495,7 +495,7 @@ class Games(Cog):
             taken_by = temp['taken_by'][determiner]
             choice = [temp['ISO4217-currency_name']]
             
-            while ctx.author.id in taken_by or currency == None:
+            while ctx.author.id in taken_by or answer == None or fifa == None:
             # while currency == None:
                 randomizer = random.randint(0, 249)
                 temp = db.others_con['others']['countries_dict'].find({'index' : randomizer})[0]
