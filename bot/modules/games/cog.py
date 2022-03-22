@@ -57,6 +57,11 @@ import numpy as np
 #                 f"❌ The {role.mention} role has been taken from you", ephemeral=True
 #             )
 
+def faktorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * faktorial(n - 1)
                 
 class Games(Cog):
     def __init__(self, bot):
@@ -150,6 +155,144 @@ class Games(Cog):
             
             await ctx.reply(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
             
+    @command(name='quiz.intermediate-math')
+    @cooldown(1, 60, BucketType.user)
+    async def basic_math(self, ctx):
+        """
+        > Shows a intermediate math question. Your task is to answer correctly. Rewards `level * (30 + (operator * 10) + (length each operand * 10))` exp if win and minus half of the rewards if lost. You should answer within `level / 2 * (5 + (operator * 3) + (length each operand * 2))` seconds. Answer decimal with round 2 numbers behind dot.
+
+        **Params:**
+        >    no params required
+
+        **Returns:**
+        >    **`embed`** → math question
+
+        **Example:**
+        > ```<prefix>quiz.intermediate-math```
+        """
+        
+        # det = {
+        #     0 : 'kombinasi',
+        #     1 : 'permutasi',
+        #     2 : 'permutasi-siklis',
+        #     3 : 'permutasi-berulang'
+        # }
+        
+        determiner = np.random.choice([0, 1, 2, 3], 1, p = [0.2, 0.2, 0.2, 0.4])[0]
+        
+        if determiner == 0:
+            peserta = random.randint(5, 15)
+            dipilih = random.randint(2, 4)
+            list_char = list(map(chr, range(97, 97 + peserta)))
+            soal = f"Terdapat {peserta} peserta dalam sebuah {np.random.choice(['perkemahan', 'pertunjukan', 'kompetisi'], 1)[0]}\
+                    (sebut saja {', '.join([x.upper() for x in list_char])}). Panitia meminta {dipilih} dari keseluruhan peserta\
+                    untuk menjadi perwakilan menyambut juri. Berapakah banyak susunan penyambutan berbeda yang mungkin dari {dipilih} peserta tersebut?"
+            
+            timeout = 30 + (peserta + dipilih) * 5
+            exp_multiplier = 360
+            
+            answer = faktorial(peserta) / faktorial(peserta - dipilih) * faktorial(dipilih)
+
+            soal_embed = Embed(title = 'Solve this question!')
+            soal_embed.add_field(name='Question', value=f'```{soal}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
+            soal = await ctx.reply(embed=soal_embed)
+            
+        if determiner == 1:
+            peserta = random.randint(7, 15)
+            juara = np.random.choice([3, 5, 7], 1)[0]
+            list_char = list(map(chr, range(97, 97 + peserta)))
+            soal = f"Akan dipilih {juara} juara terbaik dari {peserta} peserta dalam sebuah {np.random.choice(['kompetisi', 'perlombaan', 'olimpiade'], 1)[0]}.\
+                    Berapakah banyak kemungkinan juara berbeda yang mungkin dari {peserta} peserta tersebut?"
+            
+            timeout = 30 + (peserta + juara) * 5
+            exp_multiplier = 360
+            
+            answer = faktorial(peserta) / faktorial(peserta - dipilih)
+
+            soal_embed = Embed(title = 'Solve this question!')
+            soal_embed.add_field(name='Question', value=f'```{soal}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
+            soal = await ctx.reply(embed=soal_embed)
+            
+        if determiner == 2:
+            peserta = random.randint(4, 10)
+            list_char = list(map(chr, range(97, 97 + peserta)))
+            soal = f"Terdapat {peserta} orang dalam ruangan rapat meja bundar.\
+                    Dengan diharapkannya komunikasi yang baik, panitia menghendaki adanya pengacakan susunan tempat duduk.\
+                    Berapa banyakkah kemungkinan posisi duduk yang dapat dibentuk?"
+            
+            timeout = 30 + (peserta) * 5
+            exp_multiplier = 360
+            
+            answer = faktorial(peserta - 1)
+
+            soal_embed = Embed(title = 'Solve this question!')
+            soal_embed.add_field(name='Question', value=f'```{soal}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
+            soal = await ctx.reply(embed=soal_embed)
+            
+        if determiner == 3:
+            kata = db.others_con['others']['ina_dict'].find({'_id' : random.randint(1, 35970)})[0]['katakunci'].upper()
+            counter = {i : kata.count(i) for i in set(kata)}
+            
+            soal = f"Berapa banyak kata baru yang berbeda yang dapat disusun dari huruf-huruf penyusun kata \"{kata}\"?"
+            
+            timeout = 30 + (peserta) * 5
+            exp_multiplier = 360
+            
+            pembagi = 1
+            for i in counter.values():
+                pembagi *= faktorial(i)
+            answer = faktorial(len(kata)) / pembagi
+
+            soal_embed = Embed(title = 'Solve this question!')
+            soal_embed.add_field(name='Question', value=f'```{soal}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
+            soal = await ctx.reply(embed=soal_embed)
+
+        def is_correct(m):
+            return m.author == ctx.author
+
+        try:
+            guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
+        except asyncio.TimeoutError:
+            db.add_exp(ctx.author.id, -1/2*exp_multiplier)
+            
+            soal_embed = Embed(title = 'Question Summary')
+            soal_embed.add_field(name='Math sentence', value=f'```{soal}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal_embed.add_field(name='Correct Answer', value=f"```{answer}```", inline=False)
+            await soal.edit(embed=soal_embed)
+            
+            return await ctx.reply(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
+
+        if str(guess.content) == str(answer) or float(guess.content) == float(answer):
+            db.add_exp(ctx.author.id, exp_multiplier)
+            
+            await ctx.reply(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'))
+            
+        else:
+            db.add_exp(ctx.author.id, -1/2*exp_multiplier)
+            
+            soal_embed = Embed(title = 'Question Summary')
+            soal_embed.add_field(name='Math sentence', value=f'```{soal}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal_embed.add_field(name='Correct Answer', value=f"```{answer}```", inline=False)
+            await soal.edit(embed=soal_embed)
+            
+            await ctx.reply(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
+        
     @command(name='quiz.jumbled-word')
     @cooldown(1, 30, BucketType.user)
     async def jumbled_word(self, ctx, language = 'eng'):
