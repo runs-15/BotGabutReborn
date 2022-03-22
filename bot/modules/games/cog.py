@@ -297,7 +297,7 @@ class Games(Cog):
                 
 
             soal_embed = Embed(title = 'Answer this question!')
-            soal_embed.add_field(name='Question', value=f'```In which country, {city} located?```', inline=False)
+            soal_embed.add_field(name='Question', value=f'```In which country is {city} located?```', inline=False)
             soal_embed.add_field(name='Choice', value=f'```{choice_value}```', inline=False)
             soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
@@ -340,7 +340,7 @@ class Games(Cog):
                 
 
             soal_embed = Embed(title = 'Answer this question!')
-            soal_embed.add_field(name='Question', value=f'```In which country, subcountry {subcountry} located?```', inline=False)
+            soal_embed.add_field(name='Question', value=f'```In which country is subcountry {subcountry} located?```', inline=False)
             soal_embed.add_field(name='Choice', value=f'```{choice_value}```', inline=False)
             soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
@@ -462,7 +462,7 @@ class Games(Cog):
             
             for i in range(4):
                 dials = db.others_con['others']['countries_dict'].find({'index' : random.randint(0, 249)})[0]['Dial']
-                while dials == answer or dials in choice or dials in same_currency:
+                while dials == answer or dials in choice or dials in same_currency or dials == 'undefined':
                     dials = db.others_con['others']['countries_dict'].find({'index' : random.randint(0, 249)})[0]['Dial']
                 
                 choice.append(dials)
@@ -506,7 +506,7 @@ class Games(Cog):
             
             for i in range(4):
                 currencies = db.others_con['others']['countries_dict'].find({'index' : random.randint(0, 249)})[0]['ISO4217-currency_name']
-                while currencies == answer or currencies in choice:
+                while currencies == answer or currencies in choice or currency == 'undefined':
                     currencies = db.others_con['others']['countries_dict'].find({'index' : random.randint(0, 249)})[0]['ISO4217-currency_name']
                 
                 choice.append(currencies)
@@ -523,7 +523,7 @@ class Games(Cog):
                 
 
             soal_embed = Embed(title = 'Answer this question!')
-            soal_embed.add_field(name='Question', value=f'```Country which using {fifa} as FIFA code, has currency name ...```', inline=False)
+            soal_embed.add_field(name='Question', value=f'```Country which using {fifa} as FIFA code, using ... as currency```', inline=False)
             soal_embed.add_field(name='Choice', value=f'```{choice_value}```', inline=False)
             soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
