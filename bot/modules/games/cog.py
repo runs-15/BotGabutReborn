@@ -435,8 +435,8 @@ class Games(Cog):
             randomizer = random.randint(0, 249)
             temp = db.others_con['others']['countries_dict'].find({'index' : randomizer})[0]
             answer = temp['Dial']
-            currency = temp['ISO4217-currency_alphabetic_code']
-            same_currency = [x['Dial'] for x in db.others_con['others']['countries_dict'].find({'ISO4217-currency_alphabetic_code' : currency})]
+            currency = temp['ISO4217-currency_name']
+            same_currency = [x['Dial'] for x in db.others_con['others']['countries_dict'].find({'ISO4217-currency_name' : currency})]
             #taken_by = [temp['taken_by'][determiner]]
             choice = [temp['Dial']]
             
@@ -445,8 +445,8 @@ class Games(Cog):
                 randomizer = random.randint(0, 23018)
                 temp = db.others_con['others']['countries_dict'].find({'index' : randomizer})[0]
                 answer = temp['Dial']
-                currency = temp['ISO4217-currency_alphabetic_code']
-                same_currency = [x['Dial'] for x in db.others_con['others']['countries_dict'].find({'ISO4217-currency_alphabetic_code' : currency})]
+                currency = temp['ISO4217-currency_name']
+                same_currency = [x['Dial'] for x in db.others_con['others']['countries_dict'].find({'ISO4217-currency_name' : currency})]
                 #taken_by = [temp['taken_by'][determiner]]
             
             for i in range(4):
@@ -468,7 +468,7 @@ class Games(Cog):
                 
 
             soal_embed = Embed(title = 'Answer this question!')
-            soal_embed.add_field(name='Question', value=f'```Country which using {currency} as currency, has dial number ...```', inline=False)
+            soal_embed.add_field(name='Question', value=f'```Country which using {currency} as currency, has dial code ...```', inline=False)
             soal_embed.add_field(name='Choice', value=f'```{choice_value}```', inline=False)
             soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
