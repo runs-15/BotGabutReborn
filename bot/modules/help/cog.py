@@ -127,8 +127,8 @@ class Help(Cog):
 
             
     async def backup(self):
-        s = time.strftime("%x-%X-%Y")
-        dtime = f'[{s}]_backup_'
+        s = time.strftime("[%m-%d-%Y %H-%M-%S]")
+        dtime = f'{s}_backup_'
         
         data_serversother = pd.DataFrame(db.servers_con['servers']['others'].find())
         os.makedirs(os.path.dirname(f'{dtime}data_servers_other.csv'), exist_ok=True)
@@ -170,7 +170,7 @@ class Help(Cog):
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
-        self.scheduler.add_job(self.backup, CronTrigger(hour=16, minute=55, timezone="Asia/Jakarta"))
+        self.scheduler.add_job(self.backup, CronTrigger(hour=4, minute=0, timezone="Asia/Jakarta"))
         self.scheduler.start()
         
 def setup(bot):
