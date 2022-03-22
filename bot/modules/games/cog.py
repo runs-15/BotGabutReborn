@@ -157,7 +157,7 @@ class Games(Cog):
             
     @command(name='quiz.intermediate-math')
     @cooldown(1, 60, BucketType.user)
-    async def basic_math(self, ctx):
+    async def intermediate_math(self, ctx):
         """
         > Shows a intermediate math question. Your task is to answer correctly. Rewards `level * (30 + (operator * 10) + (length each operand * 10))` exp if win and minus half of the rewards if lost. You should answer within `level / 2 * (5 + (operator * 3) + (length each operand * 2))` seconds. Answer decimal with round 2 numbers behind dot.
 
