@@ -188,7 +188,7 @@ class Games(Cog):
                     (sebut saja {', '.join([x.upper() for x in list_char])}). Panitia meminta {dipilih} dari keseluruhan peserta\
                     untuk menjadi perwakilan menyambut juri. Berapakah banyak susunan penyambutan berbeda yang mungkin dari {dipilih} peserta tersebut?"
             
-            timeout = 30 + (peserta + dipilih) * 5
+            timeout = 30 + (peserta + dipilih) * 10
             exp_multiplier = 360
             
             answer = faktorial(peserta) / faktorial(peserta - dipilih) * faktorial(dipilih)
@@ -207,7 +207,7 @@ class Games(Cog):
             soal = f"Akan dipilih {juara} juara terbaik dari {peserta} peserta dalam sebuah {np.random.choice(['kompetisi', 'perlombaan', 'olimpiade'], 1)[0]}.\
                     Berapakah banyak kemungkinan juara berbeda yang mungkin dari {peserta} peserta tersebut?"
             
-            timeout = 30 + (peserta + juara) * 5
+            timeout = 30 + (peserta + juara) * 10
             exp_multiplier = 360
             
             answer = faktorial(peserta) / faktorial(peserta - dipilih)
@@ -226,7 +226,7 @@ class Games(Cog):
                     Dengan diharapkannya komunikasi yang baik, panitia menghendaki adanya pengacakan susunan tempat duduk.\
                     Berapa banyakkah kemungkinan posisi duduk yang dapat dibentuk?"
             
-            timeout = 30 + (peserta) * 5
+            timeout = 30 + (peserta) * 15
             exp_multiplier = 360
             
             answer = faktorial(peserta - 1)
@@ -244,7 +244,7 @@ class Games(Cog):
             
             soal = f"Berapa banyak kata baru yang berbeda yang dapat disusun dari huruf-huruf penyusun kata \"{kata}\"?"
             
-            timeout = 30 + (len(kata)) * 5
+            timeout = 30 + (len(kata)) * 15
             exp_multiplier = 360
             
             pembagi = 1
