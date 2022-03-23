@@ -198,7 +198,7 @@ class Games(Cog):
             soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
             soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
-            soal = await ctx.reply(embed=soal_embed)
+            soal_e = await ctx.reply(embed=soal_embed)
             
         if determiner == 1:
             peserta = random.randint(7, 15)
@@ -217,7 +217,7 @@ class Games(Cog):
             soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
             soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
-            soal = await ctx.reply(embed=soal_embed)
+            soal_e = await ctx.reply(embed=soal_embed)
             
         if determiner == 2:
             peserta = random.randint(4, 10)
@@ -236,7 +236,7 @@ class Games(Cog):
             soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
             soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
-            soal = await ctx.reply(embed=soal_embed)
+            soal_e = await ctx.reply(embed=soal_embed)
             
         if determiner == 3:
             kata = db.others_con['others']['ina_dict'].find({'_id' : random.randint(1, 35970)})[0]['katakunci'].upper()
@@ -257,7 +257,7 @@ class Games(Cog):
             soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
             soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
-            soal = await ctx.reply(embed=soal_embed)
+            soal_e = await ctx.reply(embed=soal_embed)
 
         def is_correct(m):
             return m.author == ctx.author
@@ -272,7 +272,7 @@ class Games(Cog):
             soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
             soal_embed.add_field(name='Correct Answer', value=f"```{answer}```", inline=False)
-            await soal.edit(embed=soal_embed)
+            await soal_e.edit(embed=soal_embed)
             
             return await ctx.reply(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
 
@@ -289,7 +289,7 @@ class Games(Cog):
             soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
             soal_embed.add_field(name='Correct Answer', value=f"```{answer}```", inline=False)
-            await soal.edit(embed=soal_embed)
+            await soal_e.edit(embed=soal_embed)
             
             await ctx.reply(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
         
