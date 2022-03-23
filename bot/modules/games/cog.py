@@ -184,9 +184,7 @@ class Games(Cog):
             peserta = random.randint(5, 15)
             dipilih = random.randint(2, 4)
             list_char = list(map(chr, range(97, 97 + peserta)))
-            soal = f"Terdapat {peserta} peserta dalam sebuah {np.random.choice(['perkemahan', 'pertunjukan', 'kompetisi'], 1)[0]}\
-                    (sebut saja {', '.join([x.upper() for x in list_char])}). Panitia meminta {dipilih} dari keseluruhan peserta\
-                    untuk menjadi perwakilan menyambut juri. Berapakah banyak susunan penyambutan berbeda yang mungkin dari {dipilih} peserta tersebut?"
+            soal = f"Terdapat {peserta} peserta dalam sebuah {np.random.choice(['perkemahan', 'pertunjukan', 'kompetisi'], 1)[0]} (sebut saja {', '.join([x.upper() for x in list_char])}). Panitia meminta {dipilih} dari keseluruhan peserta untuk menjadi perwakilan menyambut juri. Berapakah banyak susunan penyambutan berbeda yang mungkin dari {dipilih} peserta tersebut?"
             
             timeout = 30 + (peserta + dipilih) * 10
             exp_multiplier = 360
@@ -222,9 +220,7 @@ class Games(Cog):
         if determiner == 2:
             peserta = random.randint(4, 10)
             list_char = list(map(chr, range(97, 97 + peserta)))
-            soal = f"Terdapat {peserta} orang dalam ruangan rapat meja bundar.\
-                    Dengan diharapkannya komunikasi yang baik, panitia menghendaki adanya pengacakan susunan tempat duduk.\
-                    Berapa banyakkah kemungkinan posisi duduk yang dapat dibentuk?"
+            soal = f"Terdapat {peserta} orang dalam ruangan rapat meja bundar. Dengan diharapkannya komunikasi yang baik, panitia menghendaki adanya pengacakan susunan tempat duduk. Berapa banyakkah kemungkinan posisi duduk yang dapat dibentuk?"
             
             timeout = 30 + (peserta) * 15
             exp_multiplier = 360
@@ -268,9 +264,6 @@ class Games(Cog):
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
             
             soal_embed = Embed(title = 'Question Summary')
-            soal_embed.add_field(name='Math sentence', value=f'```{soal}```', inline=False)
-            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
-            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
             soal_embed.add_field(name='Correct Answer', value=f"```{answer}```", inline=False)
             await soal_e.edit(embed=soal_embed)
             
@@ -285,9 +278,6 @@ class Games(Cog):
             db.add_exp(ctx.author.id, -1/2*exp_multiplier)
             
             soal_embed = Embed(title = 'Question Summary')
-            soal_embed.add_field(name='Math sentence', value=f'```{soal}```', inline=False)
-            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
-            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
             soal_embed.add_field(name='Correct Answer', value=f"```{answer}```", inline=False)
             await soal_e.edit(embed=soal_embed)
             
