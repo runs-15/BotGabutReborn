@@ -178,21 +178,32 @@ class Games(Cog):
         #     3 : 'permutasi-berulang'
         # }
         
-        determiner = np.random.choice([0, 1, 2, 3], 1, p = [0.2, 0.2, 0.2, 0.4])[0]
+        determiner = np.random.choice([0, 1, 2, 3], 1, p = [0.22, 0.23, 0.25, 0.3])[0]
         
         if determiner == 0:
             peserta = random.randint(5, 15)
             dipilih = random.randint(2, 4)
             list_char = list(map(chr, range(97, 97 + peserta)))
-            soal = f"Terdapat {peserta} peserta dalam sebuah {np.random.choice(['perkemahan', 'pertunjukan', 'kompetisi'], 1)[0]} (sebut saja {', '.join([x.upper() for x in list_char])}). Panitia meminta {dipilih} dari keseluruhan peserta untuk menjadi perwakilan menyambut juri. Berapakah banyak susunan penyambutan berbeda yang mungkin dari {dipilih} peserta tersebut?"
+            
+            random_char = list(map(chr, range(97, 122)))[random.randint(0, 26)].upper()
+            jenis = random.randint(5, 9)
+            total_jenis = random.randint(jenis + 2, jenis + 5)
+            wajib = random.randint(jenis - (jenis - 1), jenis - (jenis - 4))
+            
+            soal = [(f"Terdapat {peserta} peserta dalam sebuah {np.random.choice(['perkemahan', 'pertunjukan', 'kompetisi'], 1)[0]} (sebut saja {', '.join([x.upper() for x in list_char])}). Panitia meminta {dipilih} dari keseluruhan peserta untuk menjadi perwakilan menyambut juri. Berapakah banyak susunan penyambutan berbeda yang mungkin dari {dipilih} peserta tersebut?", faktorial(peserta) / faktorial(peserta - dipilih) * faktorial(dipilih)),
+                    (f"{random_char} diminta untuk membeli {jenis} jenis sayuran dari pedagang yang menjual {total_jenis} jenis sayuran. Jika {wajib} jenis diantaranya harus dibeli, berapa banyak kombinasi {jenis} sayuran yang mungkin dibeli {random_char}?", faktorial(total_jenis - (jenis - wajib)) / faktorial(jenis - wajib)),
+                    (f"{random_char} diminta untuk mengerjakan {jenis} soal dari {total_jenis} soal yang tersedia. Apabila soal nomor 1 - {wajib} wajib dikerjakan, berapakah banyak cara {random_char} mengerjakan soal?", faktorial(total_jenis - (jenis - wajib)) / faktorial(jenis - wajib)),
+                    (f"{random_char} diminta untuk mengunjungi {jenis} zona pengungsian dari {total_jenis} zona yang ada. Bila {random_char} diwajibkan mengunjungi {wajib} zona, berapa banyak kombinasi {jenis} zona yang mungkin dikunjungi {random_char}?", faktorial(total_jenis - (jenis - wajib)) / faktorial(jenis - wajib))]
+            
+            soal = random.choice(soal)
             
             timeout = 30 + (peserta + dipilih) * 10
             exp_multiplier = 360
             
-            answer = faktorial(peserta) / faktorial(peserta - dipilih) * faktorial(dipilih)
+            answer = soal[1]
 
             soal_embed = Embed(title = 'Solve this question!')
-            soal_embed.add_field(name='Question', value=f'```{soal}```', inline=False)
+            soal_embed.add_field(name='Question', value=f'```{soal[0]}```', inline=False)
             soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
             soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
@@ -202,16 +213,25 @@ class Games(Cog):
             peserta = random.randint(7, 15)
             juara = np.random.choice([3, 5, 7], 1)[0]
             list_char = list(map(chr, range(97, 97 + peserta)))
-            soal = f"Akan dipilih {juara} juara terbaik dari {peserta} peserta dalam sebuah {np.random.choice(['kompetisi', 'perlombaan', 'olimpiade'], 1)[0]}.\
-                    Berapakah banyak kemungkinan juara berbeda yang mungkin dari {peserta} peserta tersebut?"
+            
+            random_char = list(map(chr, range(97, 122)))[random.randint(0, 26)].upper()
+            jenis = random.randint(5, 9)
+            total_jenis = random.randint(jenis + 2, jenis + 5)
+            wajib = random.randint(jenis - (jenis - 1), jenis - (jenis - 4))
+            
+            soal = [(f"Akan dipilih {juara} juara terbaik dari {peserta} peserta dalam sebuah {np.random.choice(['kompetisi', 'perlombaan', 'olimpiade'], 1)[0]}. Berapakah banyak kemungkinan juara berbeda yang mungkin dari {peserta} peserta tersebut?", faktorial(peserta) / faktorial(peserta - dipilih)),
+                    (f"Terdapat beberapa baris dalam buku tamu. Berapakah banyak kemungkinan yang tersedia hingga buku tamu tersebut terisi {jenis} baris?", faktorial(jenis)),
+                    (f"Ketua sebuah event ingin menunjuk {jenis} dari {total_jenis} anggota yang masing-masingnya bertanggung jawab selama {jenis} hari event itu berjalan. Berapakah banyak kemungkinan penunjukan anggota tersebut", faktorial(total_jenis) / faktorial(total_jenis - jenis))]
+            
+            soal = random.choice(soal)
             
             timeout = 30 + (peserta + juara) * 10
             exp_multiplier = 360
             
-            answer = faktorial(peserta) / faktorial(peserta - dipilih)
+            answer = soal[1]
 
             soal_embed = Embed(title = 'Solve this question!')
-            soal_embed.add_field(name='Question', value=f'```{soal}```', inline=False)
+            soal_embed.add_field(name='Question', value=f'```{soal[0]}```', inline=False)
             soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
             soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
@@ -220,15 +240,24 @@ class Games(Cog):
         if determiner == 2:
             peserta = random.randint(4, 10)
             list_char = list(map(chr, range(97, 97 + peserta)))
-            soal = f"Terdapat {peserta} orang dalam ruangan rapat meja bundar. Dengan diharapkannya komunikasi yang baik, panitia menghendaki adanya pengacakan susunan tempat duduk. Berapa banyakkah kemungkinan posisi duduk yang dapat dibentuk?"
+            
+            random_char = list(map(chr, range(97, 122)))[random.randint(0, 26)].upper()
+            jenis = random.randint(5, 9)
+            total_jenis = random.randint(jenis + 2, jenis + 5)
+            wajib = random.randint(jenis - (jenis - 1), jenis - (jenis - 4))
+            
+            soal = [(f"Terdapat {peserta} orang dalam ruangan rapat meja bundar. Mengharapkan adanya komunikasi yang baik, panitia menghendaki adanya pengacakan susunan tempat duduk. Berapa banyakkah kemungkinan posisi duduk yang dapat dibentuk?", faktorial(peserta - 1)),
+                    (f"{random_char} memiliki {jenis} buah pernik yang akan disusun menjadi sebuah {np.random.choice(['kalung', 'gelang'], 1)[0]}. Banyak cara {random_char} untuk merangkainya adalah?", faktorial(jenis - 1))]
+            
+            soal = random.choice(soal)
             
             timeout = 30 + (peserta) * 15
             exp_multiplier = 360
             
-            answer = faktorial(peserta - 1)
+            answer = soal[1]
 
             soal_embed = Embed(title = 'Solve this question!')
-            soal_embed.add_field(name='Question', value=f'```{soal}```', inline=False)
+            soal_embed.add_field(name='Question', value=f'```{soal[0]}```', inline=False)
             soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
             soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
