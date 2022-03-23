@@ -156,7 +156,7 @@ class Games(Cog):
             await ctx.reply(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
             
     @command(name='quiz.intermediate-math')
-    @cooldown(1, 60, BucketType.user)
+    @cooldown(1, 240, BucketType.user)
     async def intermediate_math(self, ctx):
         """
         > Shows a intermediate math question. Your task is to answer correctly. Rewards `level * (30 + (operator * 10) + (length each operand * 10))` exp if win and minus half of the rewards if lost. You should answer within `level / 2 * (5 + (operator * 3) + (length each operand * 2))` seconds. Answer decimal with round 2 numbers behind dot.
