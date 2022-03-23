@@ -219,7 +219,7 @@ class Games(Cog):
             total_jenis = random.randint(jenis + 2, jenis + 5)
             wajib = random.randint(jenis - (jenis - 1), jenis - (jenis - 4))
             
-            soal = [(f"Akan dipilih {juara} juara terbaik dari {peserta} peserta dalam sebuah {np.random.choice(['kompetisi', 'perlombaan', 'olimpiade'], 1)[0]}. Berapakah banyak kemungkinan juara berbeda yang mungkin dari {peserta} peserta tersebut?", faktorial(peserta) / faktorial(peserta - dipilih)),
+            soal = [(f"Akan dipilih {juara} juara terbaik dari {peserta} peserta dalam sebuah {np.random.choice(['kompetisi', 'perlombaan', 'olimpiade'], 1)[0]}. Berapakah banyak kemungkinan juara berbeda yang mungkin dari {peserta} peserta tersebut?", faktorial(peserta) / faktorial(peserta - juara)),
                     (f"Terdapat beberapa baris dalam buku tamu. Berapakah banyak kemungkinan yang tersedia hingga buku tamu tersebut terisi {jenis} baris?", faktorial(jenis)),
                     (f"Ketua sebuah event ingin menunjuk {jenis} dari {total_jenis} anggota yang masing-masingnya bertanggung jawab selama {jenis} hari event itu berjalan. Berapakah banyak kemungkinan penunjukan anggota tersebut", faktorial(total_jenis) / faktorial(total_jenis - jenis))]
             
