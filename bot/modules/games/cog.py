@@ -185,7 +185,7 @@ class Games(Cog):
             dipilih = random.randint(2, 4)
             list_char = list(map(chr, range(97, 97 + peserta)))
             
-            random_char = list(map(chr, range(97, 122)))[random.randint(0, 26)].upper()
+            random_char = list(map(chr, range(97, 122)))[random.randint(0, 24)].upper()
             jenis = random.randint(5, 9)
             total_jenis = random.randint(jenis + 2, jenis + 5)
             wajib = random.randint(jenis - (jenis - 1), jenis - (jenis - 4))
@@ -214,7 +214,7 @@ class Games(Cog):
             juara = np.random.choice([3, 5, 7], 1)[0]
             list_char = list(map(chr, range(97, 97 + peserta)))
             
-            random_char = list(map(chr, range(97, 122)))[random.randint(0, 26)].upper()
+            random_char = list(map(chr, range(97, 122)))[random.randint(0, 24)].upper()
             jenis = random.randint(5, 9)
             total_jenis = random.randint(jenis + 2, jenis + 5)
             wajib = random.randint(jenis - (jenis - 1), jenis - (jenis - 4))
@@ -241,7 +241,7 @@ class Games(Cog):
             peserta = random.randint(4, 10)
             list_char = list(map(chr, range(97, 97 + peserta)))
             
-            random_char = list(map(chr, range(97, 122)))[random.randint(0, 26)].upper()
+            random_char = list(map(chr, range(97, 122)))[random.randint(0, 24)].upper()
             jenis = random.randint(5, 9)
             total_jenis = random.randint(jenis + 2, jenis + 5)
             wajib = random.randint(jenis - (jenis - 1), jenis - (jenis - 4))
