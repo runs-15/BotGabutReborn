@@ -159,7 +159,7 @@ class Games(Cog):
     @cooldown(1, 240, BucketType.user)
     async def intermediate_math(self, ctx):
         """
-        > Shows a intermediate math question. Your task is to answer correctly. Rewards `level * (30 + (operator * 10) + (length each operand * 10))` exp if win and minus half of the rewards if lost. You should answer within `level / 2 * (5 + (operator * 3) + (length each operand * 2))` seconds. Answer decimal with round 2 numbers behind dot.
+        > Shows a intermediate math question. Your task is to answer correctly. Rewards `360 * (1 + 1 / time elapsed)` exp if win and minus half of the rewards if lost. You should answer within `level / 2 * (5 + (operator * 3) + (length each operand * 2))` seconds. Answer decimal with round 2 numbers behind dot.
 
         **Params:**
         >    no params required
@@ -226,7 +226,7 @@ class Games(Cog):
             soal = random.choice(soal)
             
             timeout = 30 + (peserta + juara) * 10
-            exp_multiplier = 360
+            exp_multiplier = 480
             
             answer = soal[1]
 
@@ -288,29 +288,30 @@ class Games(Cog):
             return m.author == ctx.author
 
         try:
+            start_time = time.time()
             guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
         except asyncio.TimeoutError:
-            db.add_exp(ctx.author.id, -1/2*exp_multiplier)
+            db.add_exp(ctx.author.id, int(-1/2*exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))
             
             soal_embed = Embed(title = 'Question Summary')
             soal_embed.add_field(name='Correct Answer', value=f"```{answer}```", inline=False)
             await soal_e.edit(embed=soal_embed)
             
-            return await ctx.reply(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
+            return await ctx.reply(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{int(1/2*exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**'))
 
         if str(guess.content) == str(answer) or float(guess.content) == float(answer):
-            db.add_exp(ctx.author.id, exp_multiplier)
+            db.add_exp(ctx.author.id, int(exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))
             
-            await soal_e.reply(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{exp_multiplier}`**'))
+            await soal_e.reply(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{int(exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**'))
             await guess.delete()
         else:
-            db.add_exp(ctx.author.id, -1/2*exp_multiplier)
+            db.add_exp(ctx.author.id, int(-1/2*exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))
             
             soal_embed = Embed(title = 'Question Summary')
             soal_embed.add_field(name='Correct Answer', value=f"```{answer}```", inline=False)
             await soal_e.edit(embed=soal_embed)
             
-            await ctx.reply(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{1/2 * exp_multiplier}`**'))
+            await ctx.reply(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{int(1/2*exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**'))
         
     @command(name='quiz.jumbled-word')
     @cooldown(1, 30, BucketType.user)
