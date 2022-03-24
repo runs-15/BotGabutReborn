@@ -131,37 +131,37 @@ class Help(Cog):
         dtime = f'{s}_backup_'
         
         data_serversother = pd.DataFrame(db.servers_con['servers']['others'].find())
-        os.makedirs(os.path.dirname(f'{dtime}data_servers_other.csv'), exist_ok=True)
-        data_serversother.to_csv(f'{dtime}data_servers_other.csv')
+        #os.makedirs(os.path.dirname(f'{dtime}data_servers_other.csv'), exist_ok=True)
+        data_serversother.to_csv(f'./{dtime}data_servers_other.csv')
         
         data_servers = pd.DataFrame(db.servers_con['servers']['server'].find())
-        os.makedirs(os.path.dirname(f'{dtime}data_servers.csv'), exist_ok=True)
-        data_servers.to_csv(f'{dtime}data_servers.csv')
+        #os.makedirs(os.path.dirname(f'{dtime}data_servers.csv'), exist_ok=True)
+        data_servers.to_csv(f'./{dtime}data_servers.csv')
         
         data_socialcredit = pd.DataFrame(db.servers_con['servers']['social_credit'].find())
-        os.makedirs(os.path.dirname(f'{dtime}data_social_credit.csv'), exist_ok=True)
-        data_socialcredit.to_csv(f'{dtime}data_social_credit.csv')
+        #os.makedirs(os.path.dirname(f'{dtime}data_social_credit.csv'), exist_ok=True)
+        data_socialcredit.to_csv(f'./{dtime}data_social_credit.csv')
         
         data_presensi = pd.DataFrame(db.siswa_con['siswa']['presensi'].find())
-        os.makedirs(os.path.dirname(f'{dtime}data_presensi.csv'), exist_ok=True)
-        data_presensi.to_csv(f'{dtime}data_presensi.csv')
+        #os.makedirs(os.path.dirname(f'{dtime}data_presensi.csv'), exist_ok=True)
+        data_presensi.to_csv(f'./{dtime}data_presensi.csv')
         
         data_datasiswa = pd.DataFrame(db.siswa_con['siswa']['data'].find())
-        os.makedirs(os.path.dirname(f'{dtime}data_siswa.csv'), exist_ok=True)
-        data_datasiswa.to_csv(f'{dtime}data_siswa.csv')
+        #os.makedirs(os.path.dirname(f'{dtime}data_siswa.csv'), exist_ok=True)
+        data_datasiswa.to_csv(f'./{dtime}data_siswa.csv')
         
         data_jadwalpresensi = pd.DataFrame(db.siswa_con['siswa']['jadwal_presensi'].find())
-        os.makedirs(os.path.dirname(f'{dtime}data_jadwal_presensi.csv'), exist_ok=True)
-        data_jadwalpresensi.to_csv(f'{dtime}data_jadwal_presensi.csv')
+        #os.makedirs(os.path.dirname(f'{dtime}data_jadwal_presensi.csv'), exist_ok=True)
+        data_jadwalpresensi.to_csv(f'./{dtime}data_jadwal_presensi.csv')
         
         user = self.bot.get_user(616950344747974656)
         
-        await user.send(f'**{dtime}data_summary**', files = [discord.File(f'{dtime}data_servers_other.csv'),
-                                                             discord.File(f'{dtime}data_servers.csv'),
-                                                             discord.File(f'{dtime}data_social_credit.csv'),
-                                                             discord.File(f'{dtime}data_presensi.csv'),
-                                                             discord.File(f'{dtime}data_siswa.csv'),
-                                                             discord.File(f'{dtime}data_jadwal_presensi.csv')])
+        await user.send(f'**{dtime}data_summary**', files = [discord.File(f'./{dtime}data_servers_other.csv'),
+                                                             discord.File(f'./{dtime}data_servers.csv'),
+                                                             discord.File(f'./{dtime}data_social_credit.csv'),
+                                                             discord.File(f'./{dtime}data_presensi.csv'),
+                                                             discord.File(f'./{dtime}data_siswa.csv'),
+                                                             discord.File(f'./{dtime}data_jadwal_presensi.csv')])
         
         
         
@@ -170,7 +170,7 @@ class Help(Cog):
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
-        self.scheduler.add_job(self.backup, CronTrigger(hour=13, minute=48, timezone="Asia/Jakarta"))
+        self.scheduler.add_job(self.backup, CronTrigger(hour=14, minute=44, timezone="Asia/Jakarta"))
         self.scheduler.start()
         
 def setup(bot):
