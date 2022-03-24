@@ -302,7 +302,7 @@ class Games(Cog):
         if str(guess.content) == str(answer) or float(guess.content) == float(answer):
             db.add_exp(ctx.author.id, int(exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))
             
-            await soal_e.reply(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{int(exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**'))
+            await soal_e.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{int(exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**'))
             await guess.delete()
         else:
             db.add_exp(ctx.author.id, int(-1/2*exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))
