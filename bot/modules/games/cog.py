@@ -190,10 +190,17 @@ class Games(Cog):
             total_jenis = random.randint(jenis + 2, jenis + 5)
             wajib = random.randint(jenis - (jenis - 1), jenis - (jenis - 4))
             
-            soal = [(f"Terdapat {peserta} peserta dalam sebuah {np.random.choice(['perkemahan', 'pertunjukan', 'kompetisi'], 1)[0]} (sebut saja {', '.join([x.upper() for x in list_char])}). Panitia meminta {dipilih} dari keseluruhan peserta untuk menjadi perwakilan menyambut juri. Berapakah banyak susunan penyambutan berbeda yang mungkin dari {dipilih} peserta tersebut?", faktorial(peserta) / faktorial(peserta - dipilih) * faktorial(dipilih)),
-                    (f"{random_char} diminta untuk membeli {jenis} jenis sayuran dari pedagang yang menjual {total_jenis} jenis sayuran. Jika {wajib} jenis diantaranya harus dibeli, berapa banyak kombinasi {jenis} sayuran yang mungkin dibeli {random_char}?", faktorial(total_jenis - wajib) / faktorial(jenis - wajib)),
-                    (f"{random_char} diminta untuk mengerjakan {jenis} soal dari {total_jenis} soal yang tersedia. Apabila soal nomor 1 - {wajib} wajib dikerjakan, berapakah banyak cara {random_char} mengerjakan soal?", faktorial(total_jenis - wajib) / faktorial(jenis - wajib)),
-                    (f"{random_char} diminta untuk mengunjungi {jenis} zona pengungsian dari {total_jenis} zona yang ada. Bila {random_char} diwajibkan mengunjungi {wajib} zona, berapa banyak kombinasi {jenis} zona yang mungkin dikunjungi {random_char}?", faktorial(total_jenis - wajib) / faktorial(jenis - wajib))]
+            soal = [(f"Terdapat {peserta} peserta dalam sebuah {np.random.choice(['perkemahan', 'pertunjukan', 'kompetisi'], 1)[0]} (sebut saja {', '.join([x.upper() for x in list_char])}). Panitia meminta {dipilih} dari keseluruhan peserta untuk menjadi perwakilan menyambut juri. Berapakah banyak susunan penyambutan berbeda yang mungkin dari {dipilih} peserta tersebut?",
+                     faktorial(peserta) / faktorial(peserta - dipilih) * faktorial(dipilih)),
+                    
+                    (f"{random_char} diminta untuk membeli {jenis} jenis sayuran dari pedagang yang menjual {total_jenis} jenis sayuran berbeda. Jika {wajib} jenis diantaranya harus dibeli, berapa banyak kombinasi {jenis} sayuran yang mungkin dibeli {random_char}?",
+                     faktorial(total_jenis - wajib) / (faktorial(jenis - wajib) * faktorial(total_jenis - jenis))),
+                    
+                    (f"{random_char} diminta untuk mengerjakan {jenis} soal dari {total_jenis} soal yang tersedia. Apabila soal nomor 1 - {wajib} wajib dikerjakan, berapakah banyak cara {random_char} mengerjakan soal?",
+                     faktorial(total_jenis - wajib) / (faktorial(jenis - wajib) * faktorial(total_jenis - jenis))),
+                    
+                    (f"{random_char} diminta untuk mengunjungi {jenis} zona pengungsian dari {total_jenis} zona yang ada. Bila {random_char} diwajibkan mengunjungi {wajib} zona, berapa banyak kombinasi {jenis} zona yang mungkin dikunjungi {random_char}?",
+                     faktorial(total_jenis - wajib) / (faktorial(jenis - wajib) * faktorial(total_jenis - jenis)))]
             
             soal = random.choice(soal)
             
