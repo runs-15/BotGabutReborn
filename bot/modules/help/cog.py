@@ -170,7 +170,7 @@ class Help(Cog):
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
-        self.scheduler.add_job(self.backup, CronTrigger(hour=4, minute=0, timezone="Asia/Jakarta"))
+        self.scheduler.add_job(self.backup, CronTrigger(hour=13, minute=48, timezone="Asia/Jakarta"))
         self.scheduler.start()
         
 def setup(bot):
