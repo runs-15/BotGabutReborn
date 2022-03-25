@@ -1,6 +1,3 @@
-from distutils.util import check_environ
-from locale import currency
-from logging.config import stopListening
 from discord import Member, StoreChannel, user_command
 from discord import Embed
 from discord.ext.commands import Cog, command, slash_command, cooldown, BucketType
@@ -676,7 +673,7 @@ class Games(Cog):
             
             for i in range(4):
                 currencies = db.others_con['others']['countries_dict'].find({'index' : random.randint(0, 249)})[0]['ISO4217-currency_name']
-                while currencies == answer or currencies in choice or currency == 'undefined':
+                while currencies == answer or currencies in choice or currencies == 'undefined':
                     currencies = db.others_con['others']['countries_dict'].find({'index' : random.randint(0, 249)})[0]['ISO4217-currency_name']
                 
                 choice.append(currencies)
