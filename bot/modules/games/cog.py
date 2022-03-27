@@ -188,7 +188,7 @@ class Games(Cog):
             wajib = random.randint(jenis - (jenis - 1), jenis - (jenis - 4))
             
             soal = [(f"Terdapat {peserta} peserta dalam sebuah {np.random.choice(['perkemahan', 'pertunjukan', 'kompetisi'], 1)[0]} (sebut saja {', '.join([x.upper() for x in list_char])}). Panitia meminta {dipilih} dari keseluruhan peserta untuk menjadi perwakilan menyambut juri. Berapakah banyak susunan penyambutan berbeda yang mungkin dari {dipilih} peserta tersebut?",
-                     faktorial(peserta) / faktorial(peserta - dipilih) * faktorial(dipilih)),
+                     faktorial(peserta) / (faktorial(peserta - dipilih) * faktorial(dipilih))),
                     
                     (f"{random_char} diminta untuk membeli {jenis} jenis sayuran dari pedagang yang menjual {total_jenis} jenis sayuran berbeda. Jika {wajib} jenis diantaranya harus dibeli, berapa banyak kombinasi {jenis} sayuran yang mungkin dibeli {random_char}?",
                      faktorial(total_jenis - wajib) / (faktorial(jenis - wajib) * faktorial(total_jenis - jenis))),
