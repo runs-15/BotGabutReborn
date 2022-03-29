@@ -151,7 +151,7 @@ class Games(Cog):
                            f(1) = 0,\
                        and f(n) = f(n - 1) + f(n - 2)\
                        then f({n}) = ...", 
-                     str(formulaFib(n)[:2000])),
+                     str(formulaFib(n))[:2000]),
                     
                     (f"Let f(0) = 0,\
                            f(1) = 0,\
