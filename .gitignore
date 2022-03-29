@@ -117,3 +117,4 @@ venv.bak/
 .ipynb
 .csv
 test_objects.ipynb
+backup/
