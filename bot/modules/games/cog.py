@@ -5,6 +5,7 @@ import random, discord, db, datetime, asyncio, time
 from discord.utils import get
 from discord.ui import InputText, Modal
 import numpy as np
+import decimal
 
 # def soal_pilgan():
 #     data = {}
@@ -63,6 +64,195 @@ def faktorial(n):
 class Games(Cog):
     def __init__(self, bot):
         self.bot = bot
+        
+    @command(name='quiz.algorithm')
+    @cooldown(1, 240, BucketType.user)
+    async def algorithm_quiz(self, ctx):
+        """
+        > Shows an algorithm quiz. Your task is to answer correctly. Rewards exp if win and minus a quarter of the rewards if lost.
+
+        **Params:**
+        >    no params required
+
+        **Returns:**
+        >    **`embed`** → question
+
+        **Example:**
+        > ```<prefix>quiz.algorithm```
+        """
+        
+        # det = {
+        #     0 : 'Coin Change',
+        #     1 : 'Fibonacci Series',
+        #     2 : 'Factorial',
+        #     3 : 'Grid Traveler'
+        # }
+        
+        determiner = np.random.choice([0, 1], 1, p = [0.25, 0.25, 0.25, 0.25])[0]
+        
+        if determiner == 0:
+            # ===========
+            # dp function
+            # ===========
+            m = [1, 2, 5, 10, 20, 50, 100]
+            memo = {}
+
+            def dpCoin2(n):
+                memo[0] = 0
+                
+                for i in range(1, n + 1):
+                    best = 1e20
+                    for j in m:
+                        if j <= i:
+                            best = min(best, memo[i - j] + 1)
+                            memo[i] = best
+                    
+                return memo[n]
+
+            det_ = np.random.choice([[3, 1e3],[4, 1e4],[5, 1e5]], 1)[0]
+            money = n = int(round(random.random(), det_[0]) * det_[1])
+            memo = {x:0 for x in range(0, n + 1)}
+            
+            random_char = list(map(chr, range(97, 122)))[random.randint(0, 24)].upper()
+            
+            soal = [(f"Diketahui bahwa ada {len(m)} jenis dollar, yaitu {', '.join(['$' + str(i) for i in m])}. Jika {random_char} menghendaki uang sebanyak ${money}, maka banyak lembaran paling minimum yang dapat diterima {random_char} adalah ...",
+                     dpCoin2(money))]
+            
+            soal = random.choice(soal)
+            
+            timeout = det_[0] * 50
+            exp_multiplier = det_[0] * 120
+            
+            answer = soal[1]
+
+            soal_embed = Embed(title = 'Solve this question!')
+            soal_embed.add_field(name='Question', value=f'```{soal[0]}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal_embed.add_field(name='Reminder', value=f"```You can code for answer```", inline=False)
+            soal_e = await ctx.reply(embed=soal_embed)
+            
+        if determiner == 1:
+            def formulaFib(n):
+                decimal.getcontext().prec = int(n / 3)
+
+                root_5 = decimal.Decimal(5).sqrt()
+                phi = ((1 + root_5) / 2)
+
+                a = ((phi ** n) - ((-phi) ** -n)) / root_5
+
+                return round(a)
+            
+            det_ = np.random.choice([[2, 1e2], [3, 1e3],[4, 1e4],[5, 1e5]], 1)[0]
+            n = int(round(random.random(), det_[0]) * det_[1])
+            
+            soal = [(f"Let f(0) = 0,\
+                           f(1) = 0,\
+                       and f(n) = f(n - 1) + f(n - 2)\
+                       then f({n}) = ...", 
+                     str(formulaFib(n)[:2000])),
+                    
+                    (f"Let f(0) = 0,\
+                           f(1) = 0,\
+                       and f(n) = f(n - 1) + f(n - 2)\
+                       then f({n}) consists of ... digits.", 
+                       len(str(formulaFib(n)))),
+                    
+                    (f"Let f(0) = 0,\
+                           f(1) = 0,\
+                       and f(n) = f(n - 1) + f(n - 2)\
+                       then sum of each digits of f({n}) is ...", 
+                       sum([x for x in str(formulaFib(n))]))]
+            
+            soal = random.choice(soal)
+            
+            timeout = det_[0] * 50
+            exp_multiplier = det_[0] * 120
+            
+            answer = soal[1]
+
+            soal_embed = Embed(title = 'Solve this question!')
+            soal_embed.add_field(name='Question', value=f'```{soal[0]}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal_embed.add_field(name='Reminder', value=f"```You can code for answer. If the answer has > 2000 digits, answer with last 2000 digits of the number.```", inline=False)
+            soal_e = await ctx.reply(embed=soal_embed)
+            
+        if determiner == 2:
+            peserta = random.randint(4, 10)
+            list_char = list(map(chr, range(97, 97 + peserta)))
+            
+            random_char = list(map(chr, range(97, 122)))[random.randint(0, 24)].upper()
+            jenis = random.randint(5, 9)
+            total_jenis = random.randint(jenis + 2, jenis + 5)
+            wajib = random.randint(jenis - (jenis - 1), jenis - (jenis - 4))
+            
+            soal = [(f"Terdapat {peserta} orang dalam ruangan rapat meja bundar. Mengharapkan adanya komunikasi yang baik, panitia menghendaki adanya pengacakan susunan tempat duduk. Berapa banyakkah kemungkinan posisi duduk yang dapat dibentuk?", faktorial(peserta - 1)),
+                    (f"{random_char} memiliki {jenis} buah pernik yang akan disusun menjadi sebuah {np.random.choice(['kalung', 'gelang'], 1)[0]}. Banyak cara {random_char} untuk merangkainya adalah?", faktorial(jenis - 1))]
+            
+            soal = random.choice(soal)
+            
+            timeout = 30 + (peserta) * 15
+            exp_multiplier = 360
+            
+            answer = soal[1]
+
+            soal_embed = Embed(title = 'Solve this question!')
+            soal_embed.add_field(name='Question', value=f'```{soal[0]}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
+            soal_e = await ctx.reply(embed=soal_embed)
+            
+        if determiner == 3:
+            kata = db.others_con['others']['ina_dict'].find({'_id' : random.randint(1, 35970)})[0]['katakunci'].upper()
+            counter = {i : kata.count(i) for i in set(kata)}
+            
+            soal = f"Berapa banyak kata baru yang berbeda yang dapat disusun dari huruf-huruf penyusun kata \"{kata}\"?"
+            
+            timeout = 30 + (len(kata)) * 15
+            exp_multiplier = 360
+            
+            pembagi = 1
+            for i in counter.values():
+                pembagi *= faktorial(i)
+            answer = faktorial(len(kata)) / pembagi
+
+            soal_embed = Embed(title = 'Solve this question!')
+            soal_embed.add_field(name='Question', value=f'```{soal}```', inline=False)
+            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
+            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
+            soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
+            soal_e = await ctx.reply(embed=soal_embed)
+
+        def is_correct(m):
+            return m.author == ctx.author
+
+        try:
+            start_time = time.time()
+            guess = await self.bot.wait_for("message", check=is_correct, timeout=timeout)
+        except asyncio.TimeoutError:
+            db.add_exp(ctx.author.id, int(-1/4*exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))
+            
+            soal_embed = Embed(title = 'Question Summary')
+            soal_embed.add_field(name='Correct Answer', value=f"```{answer}```", inline=False)
+            await soal_e.edit(embed=soal_embed)
+            
+            return await ctx.reply(embed=Embed(title="Time's Up!", description=f'Your exp was decreased by **`{int(1/4*exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**'))
+
+        if str(guess.content) == str(answer) or float(guess.content) == float(answer):
+            db.add_exp(ctx.author.id, int(exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))
+            
+            await soal_e.edit(embed=Embed(title='You got that!', description=f'Your exp was increased by **`{int(exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**'))
+            await guess.delete()
+        else:
+            db.add_exp(ctx.author.id, int(-1/4*exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier)))
+            
+            soal_embed = Embed(title = 'Question Summary')
+            soal_embed.add_field(name='Correct Answer', value=f"```{answer}```", inline=False)
+            await soal_e.edit(embed=soal_embed)
+            
+            await ctx.reply(embed=Embed(title='Oops!', description=f'Your exp was decreased by **`{int(1/4*exp_multiplier + (1 / int(time.time() - start_time) * exp_multiplier))}`**'))
 
     @command(name='quiz.basic-math')
     @cooldown(1, 60, BucketType.user)
