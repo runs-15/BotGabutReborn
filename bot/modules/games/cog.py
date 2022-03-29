@@ -147,13 +147,13 @@ class Games(Cog):
             det_ = random.choice([(2, 1e2), (3, 1e3), (4, 1e4), (5, 1e5)])
             n = int(round(random.random(), det_[0]) * det_[1])
             
-            soal = [(f"Let f(0) = 0,\n    f(1) = 0,\nand f(n) = f(n - 1) + f(n - 2)\nthen f({n}) = ...", 
+            soal = [(f"Let f(0) = 0,\n    f(1) = 1,\nand f(n) = f(n - 1) + f(n - 2)\nthen f({n}) = ...", 
                      str(formulaFib(n))[:2000]),
                     
-                    (f"Let f(0) = 0,\n    f(1) = 0,\nand f(n) = f(n - 1) + f(n - 2)\nthen f({n}) consists of ... digits.", 
+                    (f"Let f(0) = 0,\n    f(1) = 1,\nand f(n) = f(n - 1) + f(n - 2)\nthen f({n}) consists of ... digits.", 
                        len(str(formulaFib(n)))),
                     
-                    (f"Let f(0) = 0,\n    f(1) = 0,\nand f(n) = f(n - 1) + f(n - 2)\nthen sum of each digits of f({n}) is ...", 
+                    (f"Let f(0) = 0,\n    f(1) = 1,\nand f(n) = f(n - 1) + f(n - 2)\nthen sum of each digits of f({n}) is ...", 
                        sum([int(x) for x in str(formulaFib(n))]))]
             
             soal = random.choice(soal)
