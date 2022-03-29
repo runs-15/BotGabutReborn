@@ -178,53 +178,6 @@ class Games(Cog):
             soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
             soal_embed.add_field(name='Reminder', value=f"```You can code for answer. If the answer has > 2000 digits, answer with last 2000 digits of the number.```", inline=False)
             soal_e = await ctx.reply(embed=soal_embed)
-            
-        if determiner == 2:
-            peserta = random.randint(4, 10)
-            list_char = list(map(chr, range(97, 97 + peserta)))
-            
-            random_char = list(map(chr, range(97, 122)))[random.randint(0, 24)].upper()
-            jenis = random.randint(5, 9)
-            total_jenis = random.randint(jenis + 2, jenis + 5)
-            wajib = random.randint(jenis - (jenis - 1), jenis - (jenis - 4))
-            
-            soal = [(f"Terdapat {peserta} orang dalam ruangan rapat meja bundar. Mengharapkan adanya komunikasi yang baik, panitia menghendaki adanya pengacakan susunan tempat duduk. Berapa banyakkah kemungkinan posisi duduk yang dapat dibentuk?", faktorial(peserta - 1)),
-                    (f"{random_char} memiliki {jenis} buah pernik yang akan disusun menjadi sebuah {np.random.choice(['kalung', 'gelang'], 1)[0]}. Banyak cara {random_char} untuk merangkainya adalah?", faktorial(jenis - 1))]
-            
-            soal = random.choice(soal)
-            
-            timeout = 30 + (peserta) * 15
-            exp_multiplier = 360
-            
-            answer = soal[1]
-
-            soal_embed = Embed(title = 'Solve this question!')
-            soal_embed.add_field(name='Question', value=f'```{soal[0]}```', inline=False)
-            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
-            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
-            soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
-            soal_e = await ctx.reply(embed=soal_embed)
-            
-        if determiner == 3:
-            kata = db.others_con['others']['ina_dict'].find({'_id' : random.randint(1, 35970)})[0]['katakunci'].upper()
-            counter = {i : kata.count(i) for i in set(kata)}
-            
-            soal = f"Berapa banyak kata baru yang berbeda yang dapat disusun dari huruf-huruf penyusun kata \"{kata}\"?"
-            
-            timeout = 30 + (len(kata)) * 15
-            exp_multiplier = 360
-            
-            pembagi = 1
-            for i in counter.values():
-                pembagi *= faktorial(i)
-            answer = faktorial(len(kata)) / pembagi
-
-            soal_embed = Embed(title = 'Solve this question!')
-            soal_embed.add_field(name='Question', value=f'```{soal}```', inline=False)
-            soal_embed.add_field(name='Answer Timeout', value=f'```{timeout} seconds```', inline=True)
-            soal_embed.add_field(name='Potential Reward', value=f'```{exp_multiplier} exp```', inline=True)
-            soal_embed.add_field(name='Reminder', value=f"```If the question contains division (/), always put dot, and round two numbers\nExample  : 12.345 → 12.35\n         : 12     → 12.00```", inline=False)
-            soal_e = await ctx.reply(embed=soal_embed)
 
         def is_correct(m):
             return m.author == ctx.author

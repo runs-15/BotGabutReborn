@@ -65,7 +65,7 @@ class Presensi(Cog):
     
     @Cog.listener()
     async def on_ready(self):
-        self.get_day()
+        await self.get_day()
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
