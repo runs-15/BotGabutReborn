@@ -110,7 +110,7 @@ class Games(Cog):
                     
                 return memo[n]
 
-            det_ = random.choice([(2, 1e2), (3, 1e3), (4, 1e4), (5, 1e5)])[0]
+            det_ = random.choice([(2, 1e2), (3, 1e3), (4, 1e4), (5, 1e5)])
             money = n = int(round(random.random(), det_[0]) * det_[1])
             memo = {x:0 for x in range(0, n + 1)}
             
