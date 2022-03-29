@@ -163,7 +163,7 @@ class Games(Cog):
                            f(1) = 0,\
                        and f(n) = f(n - 1) + f(n - 2)\
                        then sum of each digits of f({n}) is ...", 
-                       sum([x for x in str(formulaFib(n))]))]
+                       sum([int(x) for x in str(formulaFib(n))]))]
             
             soal = random.choice(soal)
             
