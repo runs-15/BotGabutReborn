@@ -88,7 +88,8 @@ class Games(Cog):
         #     3 : 'Grid Traveler'
         # }
         
-        determiner = np.random.choice([0, 1], 1, p = [0.25, 0.25, 0.25, 0.25])[0]
+        # determiner = np.random.choice([0, 1], 1, p = [0.25, 0.25, 0.25, 0.25])[0]
+        determiner = np.random.choice([0, 1], 1)[0]
         
         if determiner == 0:
             # ===========
