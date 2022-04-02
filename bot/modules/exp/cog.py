@@ -383,7 +383,7 @@ class Exp(Cog):
                     self.user[member.id]["time"] = int(time.time())
                     self.user[member.id]["channel"] = after.channel.id
                 if after.channel == None and before.channel != None:
-                    if before.channel.id == 853600737808089098 and member.id == 627138670234828810:
+                    if member.id == 627138670234828810:
                         await self.levelling_channel.send(f"<@{627138670234828810}> telah keluar dari channel!")
                     await self.voice_submit()
                     try:
