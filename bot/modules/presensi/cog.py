@@ -65,7 +65,21 @@ class Presensi(Cog):
     
     @Cog.listener()
     async def on_ready(self):
-        await self.get_day()
+        d_aware = datetime.datetime.now(tz=tz.gettz("Asia/Jakarta"))
+        day = d_aware.strftime("%A")
+        
+        #day dictionary
+        day_dict = {
+            'Monday'   : 'senin',
+            'Tuesday'  : 'selasa',
+            'Wednesday': 'rabu',
+            'Thursday' : 'kamis',
+            'Friday'   : 'jumat'
+        }
+        
+        if day in day_dict.keys():
+            await self.get_day()
+            
         self.scheduler = AsyncIOScheduler()
         
         #get day scheduler
