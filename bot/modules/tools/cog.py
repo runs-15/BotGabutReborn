@@ -227,9 +227,16 @@ class Tools(Cog):
             await member.edit(voice_channel=init)
             
     @command(name='random')    
-    async def bangun(self, ctx, *cat):
+    async def randomm(self, ctx, *cat):
         data = [x for x in cat]
         await ctx.send(f'**{random.choice(data)}**')
+        
+    @command(name='sequence')    
+    async def seq_orang(self, ctx, channel : discord.VoiceChannel):
+        data = [x for x in channel.members]
+        data = random.sample(data, len(data))
+        str_orang = ', '.join([member.mention for member in data])
+        await ctx.reply(f'**Urutan Membaca**\n{str_orang}.')
             
     @slash_command(name="cari-data-siswa", guild_ids=db.guild_list)
     async def cari_siswa(self, ctx, query):
