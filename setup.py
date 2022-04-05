@@ -40,7 +40,9 @@ setuptools.setup(
         'pandas',
         'lxml',
         'html5lib',
-        'beautifulsoup4'
+        'beautifulsoup4',
+        'seaborn',
+        'matplotlib'
     ],
     python_requires='>=3.6',
 )

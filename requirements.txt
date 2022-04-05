@@ -18,3 +18,5 @@ pillow
 lxml
 html5lib
 beautifulsoup4
+seaborn
+matplotlib
