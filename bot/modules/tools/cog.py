@@ -6,6 +6,54 @@ import pandas as pd
 from discord.commands import Option
 from asyncio import sleep
 from discord.utils import get
+import re, time, random
+import seaborn as sns
+import matplotlib.pyplot as plt
+from numpy import *
+
+def string2func(string):
+    ''' evaluates the string and returns a function of x '''
+    # find all words and check if all are allowed:
+    replacements = {
+        'sin' : 'np.sin',
+        'cos' : 'np.cos',
+        'exp': 'np.exp',
+        'sqrt': 'np.sqrt',
+        '^': '**',
+        'pi': 'np.pi',
+        'floor' : 'np.floor'
+    }
+
+    allowed_words = [
+        'x',
+        'sin',
+        'cos',
+        'sqrt',
+        'exp',
+        'pi',
+        'time',
+        'floor',
+        'np',
+        'tan',
+        'ceil',
+        'fix',
+        'rint',
+        'trunc'
+    ]
+
+    for word in re.findall('[a-zA-Z_]+', string):
+        if word not in allowed_words:
+            raise ValueError(
+                '"{}" is forbidden to use in math expression'.format(word)
+            )
+
+    #for old, new in replacements.items():
+        #string = string.replace(old, new)
+
+    def func(x):
+        return eval(string)
+
+    return func
 
 class MyModal(Modal):
     def __init__(self, *args, **kwargs) -> None:
@@ -237,6 +285,35 @@ class Tools(Cog):
         data = random.sample(data, len(data))
         str_orang = '\n'.join([f'{index + 1}. {member.mention}' for index, member in enumerate(data)])
         await ctx.reply(f'**Urutan Membaca: **\n{str_orang}.')
+
+    @command(name='plot-function')   
+    async def createPlotFunction(self, ctx, function, start = '0', end = '100', step = '1000', title = '', xLabel = 'x', yLabel = 'y'):    
+        func = string2func(function)
+        # x = np.linspace(start, end, step)
+
+        # plt.plot(x, func(x))
+        # plt.xlim(start, end)
+        # plt.show()
+        
+        # x = np.linspace(start, end, step)
+        x = linspace(string2func(start)(1), string2func(end)(1), string2func(step)(1))
+
+        # draw the graph
+        sns.set(rc={'figure.figsize':(20, 15)})
+        sns.set_style('darkgrid')
+        fig, ax= plt.subplots()
+        ax = sns.lineplot(x=x, y=func(x))
+        ax.set_title(f'Generated plot from function f(x) = {function}' if title == '' else title)
+        ax.set_xlabel(xLabel)
+        ax.set_ylabel(yLabel)
+        name = int(time.time())
+        plt.savefig(f'{name}.png')
+        file = discord.File(f"{name}.png", filename=f"{name}.png")
+        
+        embed = discord.Embed(title=f"Function Plotting", colour=ctx.author.colour)
+        embed.set_image(url=f"attachment://{name}.jpg")
+        
+        await ctx.send(file=file, embed=embed)
             
     @slash_command(name="cari-data-siswa", guild_ids=db.guild_list)
     async def cari_siswa(self, ctx, query):
