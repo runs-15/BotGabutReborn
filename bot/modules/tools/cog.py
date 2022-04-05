@@ -303,7 +303,7 @@ class Tools(Cog):
         # draw the graph
         sns.set(rc={'figure.figsize':(20, 15)})
         sns.set_context('paper', font_scale = 2)
-        ax = sns.lineplot(x=x, y=func(x), color = 'm')
+        ax = sns.lineplot(x=x, y=func(x), color = 'm', linewidth=2.5)
         ax.set_title(f'Generated plot from function f(x) = {function}' if title == '' else title)
         ax.set_xlabel(xLabel)
         ax.set_ylabel(yLabel)
