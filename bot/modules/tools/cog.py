@@ -282,7 +282,7 @@ class Tools(Cog):
     @command(name='sequence')    
     async def seq_orang(self, ctx, channel : discord.VoiceChannel):
         data = [x for x in channel.members]
-        not_join = [x for x in ctx.server.members if x not in data]
+        not_join = [x for x in ctx.guild.members if x not in data]
         data = random.sample(data, len(data))
         str_orang = '\n'.join([f'{index + 1}. {member.mention}' for index, member in enumerate(data)])
         str_not_joined = ', '.join([f'{member.mention}' for member in not_join])
