@@ -315,7 +315,7 @@ class Tools(Cog):
         plt.savefig(f'{name}.png')
         file = discord.File(f"{name}.png", filename=f"{name}.png")
         
-        embed = discord.Embed(title=f"Function Plotting", colour=ctx.author.colour)
+        embed = discord.Embed(title=f"Generated plot from function f(x) = {function}", colour=ctx.author.colour)
         embed.set_image(url=f"attachment://{name}.jpg")
         
         await ctx.send(file=file, embed=embed)
