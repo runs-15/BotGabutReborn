@@ -283,7 +283,7 @@ class Tools(Cog):
     async def seq_orang(self, ctx, channel : discord.VoiceChannel):
         data = [x for x in channel.members]
         not_join = [x for x in ctx.guild.members if x not in data]
-        data = random.sample(data, len(data))
+        data = random.sample(data, len(data)) if len(data) >= 1 else data
         str_orang = '\n'.join([f'{index + 1}. {member.mention}' for index, member in enumerate(data)])
         str_not_joined = ', '.join([f'{member.mention}' for member in not_join])
         await ctx.reply(f'**Urutan Membaca: **\n{str_orang}\n\nDimohon kepada:\n{str_not_joined}\nuntuk segera bergabung ke channel {channel.mention}!')
