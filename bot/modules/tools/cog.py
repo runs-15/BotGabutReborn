@@ -282,9 +282,11 @@ class Tools(Cog):
     @command(name='sequence')    
     async def seq_orang(self, ctx, channel : discord.VoiceChannel):
         data = [x for x in channel.members]
+        not_join = [x for x in ctx.server.members if x not in data]
         data = random.sample(data, len(data))
         str_orang = '\n'.join([f'{index + 1}. {member.mention}' for index, member in enumerate(data)])
-        await ctx.reply(f'**Urutan Membaca: **\n{str_orang}.')
+        str_not_joined = ', '.join([f'{member.mention}' for member in not_join])
+        await ctx.reply(f'**Urutan Membaca: **\n{str_orang}\n\nDimohon kepada:\n{str_not_joined}\nuntuk segera bergabung ke channel {channel.mention}!')
 
     @command(name='plot-function')   
     async def createPlotFunction(self, ctx, function, start = '0', end = '100', step = '1000', title = '', xLabel = 'x', yLabel = 'y'):    
