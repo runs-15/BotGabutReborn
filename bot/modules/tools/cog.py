@@ -302,12 +302,8 @@ class Tools(Cog):
 
         # draw the graph
         sns.set(rc={'figure.figsize':(20, 15)})
-        sns.set_style('darkgrid')
-        diverging_colors = sns.color_palette("RdBu", 10)
-        sns.palplot(diverging_colors)
-        plt.tight_layout()
-        fig, ax= plt.subplots()
-        ax = sns.lineplot(x=x, y=func(x))
+        sns.set_context('paper', font_scale = 2)
+        ax = sns.lineplot(x=x, y=func(x), color = 'm')
         ax.set_title(f'Generated plot from function f(x) = {function}' if title == '' else title)
         ax.set_xlabel(xLabel)
         ax.set_ylabel(yLabel)
