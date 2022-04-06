@@ -31,18 +31,19 @@ class Ramadan(Cog):
         
     @command(name='sequence')    
     async def seq_orang(self, ctx, channel : discord.VoiceChannel):
-        self.channel_data = channel
-        data = [x for x in channel.members]
-        not_join = [x for x in ctx.guild.members if x not in data]
-        if len(data) >= 1:
-            data_end = random.sample(data, len(data))
-        else:
-            data_end = data
-        str_orang = '\n'.join([f'{index + 1}. {member.mention}' for index, member in enumerate(data_end)])
-        str_not_joined = ', '.join([f'{member.mention}' for member in not_join])
-        self.data = dict(zip([x.id for x in ctx.guild.members if not x.bot], [0 for i in range(len(ctx.guild.members) - len([x for x in ctx.guild.members if not x.bot]))]))
-        self.records_presence.start(ctx)
-        await ctx.reply(f'**Urutan Membaca: **\n{str_orang}\n\nDimohon kepada:\n{str_not_joined} untuk segera bergabung ke channel {channel.mention}!\nBagi yang berhalangan diharapkan untuk segera izin **sebelum sesi berakhir**\n\nFormat perizinan: ```!izin <alasan>```')
+        if ctx.author.id == 616950344747974656:
+            self.channel_data = channel
+            data = [x for x in channel.members]
+            not_join = [x for x in ctx.guild.members if x not in data]
+            if len(data) >= 1:
+                data_end = random.sample(data, len(data))
+            else:
+                data_end = data
+            str_orang = '\n'.join([f'{index + 1}. {member.mention}' for index, member in enumerate(data_end)])
+            str_not_joined = ', '.join([f'{member.mention}' for member in not_join])
+            self.data = dict(zip([x.id for x in ctx.guild.members if not x.bot], [0 for i in range(len(ctx.guild.members) - len([x for x in ctx.guild.members if not x.bot]))]))
+            self.records_presence.start(ctx)
+            await ctx.reply(f'**Urutan Membaca: **\n{str_orang}\n\nDimohon kepada:\n{str_not_joined} untuk segera bergabung ke channel {channel.mention}!\nBagi yang berhalangan diharapkan untuk segera izin **sebelum sesi berakhir**\n\nFormat perizinan: ```!izin <alasan>```')
     
     @command(name='izin')
     async def izin(self, ctx, *alasan):
@@ -58,6 +59,7 @@ class Ramadan(Cog):
     
     @tasks.loop(seconds = 60, count = 1)
     async def records_presence(self, ctx):
+        print('recording presence', ctx.author.id)
         if ctx.author.id == 616950344747974656:
             for member in ctx.guild.members:
                 if member.id in self.channel_data.members and member.id in self.data.keys():
@@ -65,7 +67,7 @@ class Ramadan(Cog):
                 elif member.id in self.channel_data.members and member.id not in self.data.keys():
                     self.data[member.id] = 1
                 else:
-                    pass
+                    self.data[member.id] = 0
 
     @records_presence.after_loop
     async def after_records_presence(self):
