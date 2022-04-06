@@ -9,7 +9,7 @@ from discord.utils import get
 import re, time, random
 import seaborn as sns
 import matplotlib.pyplot as plt
-from numpy import *
+#from numpy import *
 
 def string2func(string):
     ''' evaluates the string and returns a function of x '''
