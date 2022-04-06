@@ -34,7 +34,7 @@ class Ramadan(Cog):
         if ctx.author.id == 616950344747974656:
             self.channel_data = channel
             data = [x for x in channel.members]
-            not_join = [x for x in ctx.guild.members if x not in data]
+            not_join = [x for x in ctx.guild.members if x not in data and not x.bot]
             if len(data) >= 1:
                 data_end = random.sample(data, len(data))
             else:
@@ -63,16 +63,16 @@ class Ramadan(Cog):
         print('recording presence', ctx.author.id)
         if ctx.author.id == 616950344747974656:
             for member in ctx.guild.members:
-                if member.id in self.channel_data.members and member.id in self.data.keys():
+                if member in self.channel_data.members and member.id in self.data.keys():
                     self.data[member.id] += 1
-                elif member.id in self.channel_data.members and member.id not in self.data.keys():
+                elif member in self.channel_data.members and member.id not in self.data.keys():
                     self.data[member.id] = 1
                 else:
                     self.data[member.id] = 0
 
     @records_presence.after_loop
     async def after_records_presence(self):
-        print('finished recording')
+        print('finished recording', self.data)
         hadir = []
         tidak_hadir_beralasan = []
         tidak_hadir_tidak_beralasan = []
@@ -84,7 +84,7 @@ class Ramadan(Cog):
                 kehadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['kehadiran']
                 db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'kehadiran': kehadiran + 1}})
                 hadir.append(key)
-            elif self.perizinan[key]:
+            elif self.perizinan[key] == True:
                 ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['beralasan']
                 db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.beralasan': ketidakhadiran + 1}})
                 tidak_hadir_beralasan.append(key)
