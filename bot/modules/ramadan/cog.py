@@ -23,9 +23,10 @@ class Ramadan(Cog):
             for member in [m for m in ctx.guild.members if not m.bot]:
                 db.servers_con['ramadan']['jumlah_kehadiran'].insert_one({'discord_id' : member.id,
                                                                            'kehadiran' : 0,
-                                                                           'ketidakhadiran.beralasan' : 0,
-                                                                           'ketidakhadiran.tidak_beralasan' : 0,
-                                                                           'ketidakhadiran.streak' : 0})
+                                                                           'ketidakhadiran' : { 'beralasan' : 0,
+                                                                                                'tidak_beralasan' : 0,
+                                                                                                'streak' : 0}
+                                                                           })
             await ctx.send("Command Executed!")
         
     @command(name='sequence')    
@@ -100,9 +101,12 @@ class Ramadan(Cog):
                 
         db.servers_con['ramadan']['presensi'].insert_one({'date' : str(datetime.datetime.now()),
                                                           'peserta' : hadir,
-                                                          'ketidakhadiran.beralasan' : tidak_hadir_beralasan,
-                                                          'ketidakhadiran.tidak_beralasan' : tidak_hadir_tidak_beralasan,
-                                                          'ketidakhadiran.abai' : tidak_hadir_abai})
+                                                          'ketidakhadiran' : {
+                                                                                'beralasan' : tidak_hadir_beralasan,
+                                                                                'tidak_beralasan' : tidak_hadir_tidak_beralasan,
+                                                                                'abai' : tidak_hadir_abai
+                                                                                }
+                                                          })
         self.data = {}
         self.channel_data = None
         self.perizinan = {}
