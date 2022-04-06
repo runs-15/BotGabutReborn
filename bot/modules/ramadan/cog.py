@@ -50,7 +50,7 @@ class Ramadan(Cog):
         await user.send(ctx.author.mention, f'tidak bisa hadir karena {" ".join(alasan)}')
         
     @slash_command(name="accept", guild_ids=[960081979754283058])
-    async def accept(self, ctx, message_id: Option(int, "message id", required=True), decider: Option(bool, "accept or not", choices=[True, False])):
+    async def accept(self, ctx, message_id: Option(int, "message id", required=True), decider: Option(int, "accept or not", choices=[0, 1])):
         if ctx.author.id == 616950344747974656:
             msg = await ctx.fetch_message(message_id)
             self.perizinan[msg.author.id] = decider
@@ -86,11 +86,13 @@ class Ramadan(Cog):
                 ketidakhadiran = db.servers_con['ramadan']['kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
                 streak = db.servers_con['ramadan']['kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
                 if streak + 1 >= 3:
-                    await member.kick(reason='unappealed reason for not attending daily tilawah more than 3 times while online.')
                     db.servers_con['ramadan']['kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': 0}})
+                    await member.send('anda ditendang karena ketidakhadiran 3 kali tanpa alasan yang diterima selagi online')
+                    await member.kick(reason='unappealed reason for not attending daily tilawah more than 3 times while online.')
                 db.servers_con['ramadan']['kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
                 db.servers_con['ramadan']['kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
                 tidak_hadir_abai.append(key)
+                
             else:
                 ketidakhadiran = db.servers_con['ramadan']['kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
                 db.servers_con['ramadan']['kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
