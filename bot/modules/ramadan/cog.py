@@ -79,27 +79,27 @@ class Ramadan(Cog):
         for key, value in self.data.items():
             member = get(self.bot.get_all_members(), id=key)
             if value >= 15:
-                kehadiran = db.servers_con['ramadan']['kehadiran'].find({'discord_id' : key})[0]['kehadiran']
-                db.servers_con['ramadan']['kehadiran'].update_one({'discord_id' : key}, {"$set": {'kehadiran': kehadiran + 1}})
+                kehadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['kehadiran']
+                db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'kehadiran': kehadiran + 1}})
                 hadir.append(key)
             elif self.perizinan[key]:
-                ketidakhadiran = db.servers_con['ramadan']['kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['beralasan']
-                db.servers_con['ramadan']['kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.beralasan': ketidakhadiran + 1}})
+                ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['beralasan']
+                db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.beralasan': ketidakhadiran + 1}})
                 tidak_hadir_beralasan.append(key)
             elif (member.voice.channel != None or member.status != 'offline') and self.perizinan[member.id] == False:
-                ketidakhadiran = db.servers_con['ramadan']['kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
-                streak = db.servers_con['ramadan']['kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
+                ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
+                streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
                 if streak + 1 >= 3:
-                    db.servers_con['ramadan']['kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': 0}})
+                    db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': 0}})
                     await member.send('anda ditendang karena ketidakhadiran 3 kali tanpa alasan yang diterima selagi online')
                     await member.kick(reason='unappealed reason for not attending daily tilawah more than 3 times while online.')
-                db.servers_con['ramadan']['kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
-                db.servers_con['ramadan']['kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
+                db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
+                db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
                 tidak_hadir_abai.append(key)
                 
             else:
-                ketidakhadiran = db.servers_con['ramadan']['kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
-                db.servers_con['ramadan']['kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
+                ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
+                db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
                 tidak_hadir_tidak_beralasan.append(key)
                 
         db.servers_con['ramadan']['presensi'].insert_one({'date' : str(datetime.datetime.now()),
