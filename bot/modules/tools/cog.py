@@ -277,7 +277,7 @@ class Tools(Cog):
     @command(name='random')    
     async def randomm(self, ctx, *cat):
         data = [x for x in cat]
-        await ctx.send(f'**{random.choice(data)}**')
+        await ctx.reply(embed = discord.Embed(name = random.choice(data)))
         
     @command(name='sequence')    
     async def seq_orang(self, ctx, channel : discord.VoiceChannel):
@@ -309,6 +309,7 @@ class Tools(Cog):
         ax.set_ylabel(yLabel)
         name = int(time.time())
         plt.savefig(f'{name}.png')
+        plt.clf()
         file = discord.File(f"{name}.png", filename=f"{name}.png")
         
         embed = discord.Embed(title=f"Generated plot from function f(x) = {function}", colour=ctx.author.colour)
