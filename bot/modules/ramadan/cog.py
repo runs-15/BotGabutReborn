@@ -41,7 +41,7 @@ class Ramadan(Cog):
         str_orang = '\n'.join([f'{index + 1}. {member.mention}' for index, member in enumerate(data_end)])
         str_not_joined = ', '.join([f'{member.mention}' for member in not_join])
         self.data = dict(zip([x.id for x in ctx.guild.members if not x.bot], [0 for i in range(len(ctx.guild.members) - len([x for x in ctx.guild.members if not x.bot]))]))
-        self.records_presence.start()
+        self.records_presence.start(ctx)
         await ctx.reply(f'**Urutan Membaca: **\n{str_orang}\n\nDimohon kepada:\n{str_not_joined} untuk segera bergabung ke channel {channel.mention}!\nBagi yang berhalangan diharapkan untuk segera izin **sebelum sesi berakhir**\n\nFormat perizinan: ```!izin <alasan>```')
     
     @command(name='izin')
