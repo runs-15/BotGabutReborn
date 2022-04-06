@@ -313,13 +313,14 @@ class Tools(Cog):
         if ctx.author.id == 616950344747974656:
             embed = discord.Embed(title=f"{member.name}'s info")
             embed.add_field(name="Status", value=member.status, inline=True)
-            embed.add_field(name="Is AFK?", value=member.voice.afk, inline=True)
-            embed.add_field(name="Current Channel", value=member.voice.channel.mention, inline=True)
-            embed.add_field(name="Member in current channel", value=[m.mention for m in member.voice.channel.members], inline=True)
-            embed.add_field(name="Is deaf?", value=member.voice.self_deaf, inline=True)
-            embed.add_field(name="Is mute?", value=member.voice.self_mute, inline=True)
-            embed.add_field(name="Is stream?", value=member.voice.self_stream, inline=True)
-            embed.add_field(name="Is video?", value=member.voice.self_video, inline=True)
+            if member.voice != None:
+                embed.add_field(name="Is AFK?", value=member.voice.afk, inline=True)
+                embed.add_field(name="Current Channel", value=member.voice.channel.mention, inline=True)
+                embed.add_field(name="Member in current channel", value=[m.mention for m in member.voice.channel.members], inline=True)
+                embed.add_field(name="Is deaf?", value=member.voice.self_deaf, inline=True)
+                embed.add_field(name="Is mute?", value=member.voice.self_mute, inline=True)
+                embed.add_field(name="Is stream?", value=member.voice.self_stream, inline=True)
+                embed.add_field(name="Is video?", value=member.voice.self_video, inline=True)
             await ctx.respond(embed=embed, ephemeral=True)
         
     @slash_command(name="cari-data-siswa", guild_ids=db.guild_list)
