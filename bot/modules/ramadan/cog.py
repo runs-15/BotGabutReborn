@@ -63,6 +63,8 @@ class Ramadan(Cog):
         print('recording presence', ctx.author.id)
         if ctx.author.id == 616950344747974656:
             for member in ctx.guild.members:
+                if member.id not in self.perizinan.keys():
+                    self.perizinan[member.id] = 0
                 if member in self.channel_data.members and member.id in self.data.keys():
                     self.data[member.id] += 1
                 elif member in self.channel_data.members and member.id not in self.data.keys():
