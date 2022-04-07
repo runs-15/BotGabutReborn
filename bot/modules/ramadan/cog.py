@@ -31,20 +31,20 @@ class Ramadan(Cog):
         
     @command(name='sequence')    
     async def seq_orang(self, ctx, channel : discord.VoiceChannel):
+        self.channel_data = channel
+        data = [x for x in channel.members]
+        not_join = [x for x in ctx.guild.members if x not in data and not x.bot]
+        if len(data) >= 1:
+            data_end = random.sample(data, len(data))
+        else:
+            data_end = data
+        str_orang = '\n'.join([f'{index + 1}. {member.mention}' for index, member in enumerate(data_end)])
+        str_not_joined = ', '.join([f'{member.mention}' for member in not_join])
+        self.data = dict(zip([x.id for x in ctx.guild.members if not x.bot], [0 for i in range(len(ctx.guild.members) - len([x for x in ctx.guild.members if not x.bot]))]))
+        self.perizinan = dict(zip([x.id for x in ctx.guild.members if not x.bot], [0 for i in range(len(ctx.guild.members) - len([x for x in ctx.guild.members if not x.bot]))]))
         if ctx.author.id == 616950344747974656:
-            self.channel_data = channel
-            data = [x for x in channel.members]
-            not_join = [x for x in ctx.guild.members if x not in data and not x.bot]
-            if len(data) >= 1:
-                data_end = random.sample(data, len(data))
-            else:
-                data_end = data
-            str_orang = '\n'.join([f'{index + 1}. {member.mention}' for index, member in enumerate(data_end)])
-            str_not_joined = ', '.join([f'{member.mention}' for member in not_join])
-            self.data = dict(zip([x.id for x in ctx.guild.members if not x.bot], [0 for i in range(len(ctx.guild.members) - len([x for x in ctx.guild.members if not x.bot]))]))
-            self.perizinan = dict(zip([x.id for x in ctx.guild.members if not x.bot], [0 for i in range(len(ctx.guild.members) - len([x for x in ctx.guild.members if not x.bot]))]))
             self.records_presence.start(ctx)
-            await ctx.reply(f'**Urutan Membaca: **\n{str_orang}\n\nDimohon kepada:\n{str_not_joined} untuk segera bergabung ke channel {channel.mention}!\nBagi yang berhalangan diharapkan untuk segera izin **sebelum sesi berakhir**\n\nFormat perizinan: ```!izin <alasan>```')
+        await ctx.reply(f'**Urutan Membaca: **\n{str_orang}\n\nDimohon kepada:\n{str_not_joined} untuk segera bergabung ke channel {channel.mention}!\nBagi yang berhalangan diharapkan untuk segera izin **sebelum sesi berakhir**\n\nFormat perizinan: ```!izin <alasan>```')
     
     @command(name='izin')
     async def izin(self, ctx, *alasan):
@@ -98,7 +98,6 @@ class Ramadan(Cog):
                 db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
                 db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
                 tidak_hadir_abai.append(key)
-                
             else:
                 ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
                 db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
