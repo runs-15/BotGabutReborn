@@ -54,13 +54,13 @@ class Ramadan(Cog):
         await user.send(f'{ctx.author.mention} tidak bisa hadir karena {" ".join(alasan)}')
         
     @slash_command(name="accept", guild_ids=[960081979754283058])
-    async def accept(self, ctx, message_id: Option(str, "message id", required=True), decider: Option(int, "accept or not", choices=[0, 1, 2])):
+    async def accept(self, ctx, message_id: Option(str, "message id", required=True), decider: Option(int, "accept or not", choices=[-1, 0, 1, 2])):
         if ctx.author.id == 616950344747974656:
             msg = await ctx.fetch_message(int(message_id))
-            if decider != 2:
+            if decider != -1:
                 self.perizinan[msg.author.id] = decider
                 await ctx.respond('appealed' if decider == 1 else 'unappealed', ephemeral = True)
-                await msg.author.send('reason accepted.' if decider == 1 else 'reason declined')
+                await msg.author.send('reason accepted.' if decider == 1 else 'reason declined.')
             else:
                 member = msg.author
                 await ctx.respond(f'{msg.author.mention} will be kicked.', ephemeral = True)
@@ -104,7 +104,7 @@ class Ramadan(Cog):
                     ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['beralasan']
                     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.beralasan': ketidakhadiran + 1}})
                     tidak_hadir_beralasan.append(key)
-                elif self.perizinan[key] == 0:
+                elif self.perizinan[key] == 2:
                     print(self.perizinan[key])
                     ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
                     streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
@@ -139,7 +139,7 @@ class Ramadan(Cog):
                     ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['beralasan']
                     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.beralasan': ketidakhadiran + 1}})
                     tidak_hadir_beralasan.append(key)
-                elif self.perizinan[key] == 0:
+                elif self.perizinan[key] == 2:
                     print(self.perizinan[key])
                     ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
                     streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
@@ -193,7 +193,7 @@ class Ramadan(Cog):
                     ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['beralasan']
                     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.beralasan': ketidakhadiran + 1}})
                     tidak_hadir_beralasan.append(key)
-                elif perizinan[key] == 0:
+                elif perizinan[key] == 2:
                     print(perizinan[key])
                     ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
                     streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
@@ -228,7 +228,7 @@ class Ramadan(Cog):
                     ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['beralasan']
                     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.beralasan': ketidakhadiran + 1}})
                     tidak_hadir_beralasan.append(key)
-                elif perizinan[key] == 0:
+                elif perizinan[key] == 2:
                     print(perizinan[key])
                     ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
                     streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
