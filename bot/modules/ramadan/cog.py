@@ -90,6 +90,13 @@ class Ramadan(Cog):
         tidak_hadir_tidak_beralasan = []
         tidak_hadir_abai = []
         for key, value in self.data.items():
+            if db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['kehadiran'] == None:
+                db.servers_con['ramadan']['jumlah_kehadiran'].insert_one({'discord_id' : key,
+                                                                           'kehadiran' : 0,
+                                                                           'ketidakhadiran' : { 'beralasan' : 0,
+                                                                                                'tidak_beralasan' : 0,
+                                                                                                'streak' : 0}
+                                                                           })
             try:
                 member = self.member_data[key]
                 print(key, value, self.perizinan[key])
