@@ -80,7 +80,7 @@ class Ramadan(Cog):
         tidak_hadir_tidak_beralasan = []
         tidak_hadir_abai = []
         for key, value in self.data.items():
-            member = get(self.bot.get_all_members(), id=key)
+            member = self.bot.get_user(key)
             print(key, value, self.perizinan[key])
             if value >= 15:
                 kehadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['kehadiran']
