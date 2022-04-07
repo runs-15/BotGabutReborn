@@ -58,7 +58,7 @@ class Ramadan(Cog):
             msg = await ctx.fetch_message(message_id)
             self.perizinan[msg.author.id] = decider
     
-    @tasks.loop(seconds = 60, count = 2)
+    @tasks.loop(seconds = 60, count = 1)
     async def records_presence(self, ctx):
         print('recording presence', ctx.author.id)
         if ctx.author.id == 616950344747974656:
