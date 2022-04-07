@@ -51,7 +51,7 @@ class Ramadan(Cog):
     async def izin(self, ctx, *alasan):
         self.perizinan[ctx.author.id] = (ctx.message.id, ' '.join(alasan))
         user = self.bot.get_user(616950344747974656)
-        await user.send(ctx.author.mention, f'tidak bisa hadir karena {" ".join(alasan)}')
+        await user.send(f'{ctx.author.mention} tidak bisa hadir karena {" ".join(alasan)}')
         
     @slash_command(name="accept", guild_ids=[960081979754283058])
     async def accept(self, ctx, message_id: Option(int, "message id", required=True), decider: Option(int, "accept or not", choices=[0, 1, 2])):
