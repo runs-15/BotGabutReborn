@@ -60,7 +60,7 @@ class Ramadan(Cog):
                 msg = await ctx.fetch_message(message_id)
                 self.perizinan[msg.author.id] = decider
             else:
-                member = self.bot.get_user(msg.author.id)
+                member = msg.author
                 await member.send('Maaf, Anda dikeluarkan dari server karena alasan yang tidak dapat diterima.')
                 await member.kick(reason='severe unappealed reason.')
     
