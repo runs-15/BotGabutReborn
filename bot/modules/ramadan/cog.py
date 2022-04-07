@@ -54,10 +54,10 @@ class Ramadan(Cog):
         await user.send(f'{ctx.author.mention} tidak bisa hadir karena {" ".join(alasan)}')
         
     @slash_command(name="accept", guild_ids=[960081979754283058])
-    async def accept(self, ctx, message_id: Option(int, "message id", required=True), decider: Option(int, "accept or not", choices=[0, 1, 2])):
+    async def accept(self, ctx, message_id: Option(str, "message id", required=True), decider: Option(int, "accept or not", choices=[0, 1, 2])):
         if ctx.author.id == 616950344747974656:
             if decider != 2:
-                msg = await ctx.fetch_message(message_id)
+                msg = await ctx.fetch_message(int(message_id))
                 self.perizinan[msg.author.id] = decider
                 await ctx.respond('appealed' if decider == 1 else 'unappealed', ephemeral = True)
                 await msg.author.send('reason accepted.' if decider == 1 else 'reason declined')
