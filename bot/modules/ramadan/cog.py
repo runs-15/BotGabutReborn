@@ -60,10 +60,11 @@ class Ramadan(Cog):
                 msg = await ctx.fetch_message(message_id)
                 self.perizinan[msg.author.id] = decider
                 await ctx.respond('appealed' if decider == 1 else 'unappealed', ephemeral = True)
+                await msg.author.send('reason accepted.' if decider == 1 else 'reason declined')
             else:
                 member = msg.author
                 await ctx.respond(f'{msg.author.mention} will be kicked.', ephemeral = True)
-                await member.send('Maaf, Anda dikeluarkan dari server karena alasan yang tidak dapat diterima.')
+                await member.send('Maaf, Anda dikeluarkan dari server karena alasan yang sama sekali tidak dapat diterima.')
                 await member.kick(reason='severe unappealed reason.')
     
     @tasks.loop(seconds = 60, count = 90)
