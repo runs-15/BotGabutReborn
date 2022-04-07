@@ -45,7 +45,7 @@ class Ramadan(Cog):
         self.perizinan = dict(zip([x.id for x in ctx.guild.members if not x.bot], [0 for i in range(len(ctx.guild.members) - len([x for x in ctx.guild.members if not x.bot]))]))
         if ctx.author.id == 616950344747974656:
             self.records_presence.start(ctx)
-        await ctx.reply(f'**Urutan Membaca: **\n{str_orang}\n\nDimohon kepada:\n{str_not_joined} untuk segera bergabung ke channel {channel.mention}!\nBagi yang berhalangan diharapkan untuk segera izin **sebelum sesi berakhir**\n\nFormat perizinan: ```!izin <alasan>```')
+        await ctx.respond(f'**Urutan Membaca: **\n{str_orang}\n\nDimohon kepada:\n{str_not_joined} untuk segera bergabung ke channel {channel.mention}!\nBagi yang berhalangan hadir diharapkan untuk segera izin **sebelum sesi berakhir!**\n\nFormat perizinan: ```!izin <alasan> \ncontoh: !izin tadarus di masjid```')
     
     @command(name='izin')
     async def izin(self, ctx, *alasan):
