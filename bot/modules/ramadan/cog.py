@@ -72,7 +72,7 @@ class Ramadan(Cog):
 
     @records_presence.after_loop
     async def after_records_presence(self):
-        print('finished recording', self.data)
+        print('finished recording', self.data, self.perizinan)
         hadir = []
         tidak_hadir_beralasan = []
         tidak_hadir_tidak_beralasan = []
