@@ -30,8 +30,8 @@ class Ramadan(Cog):
                                                                            })
             await ctx.send("Command Executed!")
         
-    @command(name='sequence')    
-    async def seq_orang(self, ctx, channel : discord.VoiceChannel):
+    @slash_command(name="sequence", guild_ids=[960081979754283058], description = 'sequence over the channel members.')    
+    async def seq_orang(self, ctx, channel : Option(discord.VoiceChannel, 'channel for applying sequence', required = True)):
         self.channel_data = channel
         data = [x for x in channel.members]
         not_join = [x for x in ctx.guild.members if x not in data and not x.bot]
@@ -59,8 +59,10 @@ class Ramadan(Cog):
             if decider != 2:
                 msg = await ctx.fetch_message(message_id)
                 self.perizinan[msg.author.id] = decider
+                await ctx.respond('appealed' if decider == 1 else 'unappealed', ephemeral = True)
             else:
                 member = msg.author
+                await ctx.respond(f'{msg.author.mention} will be kicked.', ephemeral = True)
                 await member.send('Maaf, Anda dikeluarkan dari server karena alasan yang tidak dapat diterima.')
                 await member.kick(reason='severe unappealed reason.')
     
