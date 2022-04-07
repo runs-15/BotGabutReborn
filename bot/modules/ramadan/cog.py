@@ -93,7 +93,7 @@ class Ramadan(Cog):
             member = self.member_data[key]
             print(key, value, self.perizinan[key])
             try:
-                if value >= 15:
+                if value >= 7:
                     kehadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['kehadiran']
                     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'kehadiran': kehadiran + 1}})
                     hadir.append(key)
@@ -128,7 +128,7 @@ class Ramadan(Cog):
                     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
                     tidak_hadir_tidak_beralasan.append(key)
             except:
-                if value >= 15:
+                if value >= 7:
                     kehadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['kehadiran']
                     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'kehadiran': kehadiran + 1}})
                     hadir.append(key)
