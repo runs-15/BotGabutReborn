@@ -90,7 +90,7 @@ class Ramadan(Cog):
         tidak_hadir_tidak_beralasan = []
         tidak_hadir_abai = []
         for key, value in self.data.items():
-            if db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['kehadiran'] == None:
+            if db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key}) == []:
                 db.servers_con['ramadan']['jumlah_kehadiran'].insert_one({'discord_id' : key,
                                                                            'kehadiran' : 0,
                                                                            'ketidakhadiran' : { 'beralasan' : 0,
@@ -186,7 +186,7 @@ class Ramadan(Cog):
         tidak_hadir_tidak_beralasan = []
         tidak_hadir_abai = []
         for key, value in data.items():
-            if db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['kehadiran'] == None:
+            if db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key}) == []:
                 db.servers_con['ramadan']['jumlah_kehadiran'].insert_one({'discord_id' : key,
                                                                            'kehadiran' : 0,
                                                                            'ketidakhadiran' : { 'beralasan' : 0,
