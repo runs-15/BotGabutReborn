@@ -276,7 +276,7 @@ class Tools(Cog):
             
     @command(name='random')    
     async def randomm(self, ctx, *cat):
-        await ctx.reply(embed = discord.Embed(name = random.choice(cat)))
+        await ctx.reply(embed = discord.Embed(title = random.choice(cat)))
 
     @command(name='plot-function')   
     async def createPlotFunction(self, ctx, function, start = '0', end = '100', step = '1000', title = '', xLabel = 'x', yLabel = 'y'):    
@@ -288,7 +288,7 @@ class Tools(Cog):
         # plt.show()
         
         # x = np.linspace(start, end, step)
-        x = linspace(string2func(start)(1), string2func(end)(1), string2func(step)(1))
+        x = np.linspace(string2func(start)(1), string2func(end)(1), string2func(step)(1))
 
         # draw the graph
         sns.set(rc={'figure.figsize':(20, 15)})
