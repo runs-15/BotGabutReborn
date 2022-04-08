@@ -41,6 +41,11 @@ class Ramadan(Cog):
         else:
             data_end = data
         str_orang = '\n'.join([f'{index + 1}. {member.mention}' for index, member in enumerate(data_end)])
+        for member in not_join:
+            try: 
+                await member.send(f'dimohon untuk segera bergabung ke channel {channel.mention} atau **izin** terlebih dahulu.')
+            except:
+                pass
         str_not_joined = ', '.join([f'{member.mention}' for member in not_join])
         self.data = dict(zip([x.id for x in ctx.guild.members if not x.bot], [0 for i in range(len(ctx.guild.members) - len([x for x in ctx.guild.members if not x.bot]))]))
         self.perizinan = dict(zip([x.id for x in ctx.guild.members if not x.bot], [0 for i in range(len(ctx.guild.members) - len([x for x in ctx.guild.members if not x.bot]))]))
@@ -58,13 +63,16 @@ class Ramadan(Cog):
     async def accept(self, ctx, message_id: Option(str, "message id", required=True), decider: Option(int, "accept or not", choices=[-1, 0, 1, 2])):
         if ctx.author.id == 616950344747974656:
             msg = await ctx.fetch_message(int(message_id))
+            report = self.bot.get_channel(961632363996127364)
             if decider != -1:
                 self.perizinan[msg.author.id] = decider
                 await ctx.respond('accepted.' if decider == 1 else 'declined.', ephemeral = True)
+                await report.send(f'reason for {msg.author.mention} was **accepted**.' if decider == 1 else 'reason for {msg.author.mention} was **declined**.')
                 await msg.author.send('reason accepted.' if decider == 1 else 'reason declined.')
             else:
                 member = msg.author
                 await ctx.respond(f'{msg.author.mention} will be kicked.', ephemeral = True)
+                await report.send(f'{msg.author.mention} akan ditendang karena alasan yang tidak bisa diterima')
                 await member.send('Maaf, Anda telah dikeluarkan dari server karena alasan yang sama sekali tidak dapat diterima.')
                 await member.kick(reason='severe unappealed reason.')
     
@@ -184,7 +192,7 @@ class Ramadan(Cog):
         embed.add_field(name='Hadir', value=hadir_report, inline=False)
         embed.add_field(name='Tidak Hadir w/ reason', value=tidak_hadir_beralasan_report, inline=False)
         embed.add_field(name='Tidak Hadir w/o reason', value=tidak_hadir_tidak_beralasan_report, inline=False)
-        embed.add_field(name='Tidak Hadir w/ self online status or declined reason', value=tidak_hadir_abai_report, inline=False)
+        embed.add_field(name='Tidak Hadir w/o (reason and online discord status) or declined reason', value=tidak_hadir_abai_report, inline=False)
         await report.send(embed = embed)
         
         self.data = {}
