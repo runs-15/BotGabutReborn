@@ -16,6 +16,7 @@ class Ramadan(Cog):
         self.data = {}
         self.channel_data = None
         self.perizinan = {}
+        self.alasan = {}
         self.member_data = {}
         
     @command(name="ramadan.initialize", hidden = True)
@@ -49,9 +50,9 @@ class Ramadan(Cog):
     
     @command(name='izin')
     async def izin(self, ctx, *alasan):
-        self.perizinan[ctx.author.id] = (ctx.message.id, ' '.join(alasan))
-        user = self.bot.get_user(616950344747974656)
-        await user.send(f'{ctx.author.mention} tidak bisa hadir karena {" ".join(alasan)}')
+        self.alasan[ctx.author.id] = (ctx.message.id, ' '.join(alasan), 0)
+        report = self.bot.get_channel(961632363996127364)
+        await report.send(f'{ctx.author.mention} tidak bisa hadir karena {" ".join(alasan)}')
         
     @slash_command(name="accept", guild_ids=[960081979754283058])
     async def accept(self, ctx, message_id: Option(str, "message id", required=True), decider: Option(int, "accept or not", choices=[-1, 0, 1, 2])):
@@ -275,13 +276,12 @@ class Ramadan(Cog):
         tidak_hadir_abai_report = ', '.join([m.mention for m in [x for x in member_data.values() if x.id in tidak_hadir_abai]])
         
         report = self.bot.get_channel(961632363996127364)
-        embed = discord.Embed(title=f'Generated report_{timestamp}', timestamp=datetime.datetime.now())
+        embed = discord.Embed(title=f'[{timestamp}] GENERATED REPORT', timestamp=datetime.datetime.now())
         embed.add_field(name='Hadir', value=hadir_report, inline=False)
         embed.add_field(name='Tidak Hadir w/ reason', value=tidak_hadir_beralasan_report, inline=False)
         embed.add_field(name='Tidak Hadir w/o reason', value=tidak_hadir_tidak_beralasan_report, inline=False)
         embed.add_field(name='Tidak Hadir w/ self online status or declined reason', value=tidak_hadir_abai_report, inline=False)
         await report.send(embed = embed)
-                
         
 def setup(bot):
     bot.add_cog(Ramadan(bot))
