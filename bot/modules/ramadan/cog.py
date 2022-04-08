@@ -138,7 +138,7 @@ class Ramadan(Cog):
                     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
                     tidak_hadir_tidak_beralasan.append(key)
             except:
-                if value >= 7:
+                if value >= 5:
                     kehadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['kehadiran']
                     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'kehadiran': kehadiran + 1}})
                     hadir.append(key)
@@ -179,7 +179,7 @@ class Ramadan(Cog):
     @command(name='record.manual')
     async def manual_records_presence(self, ctx):
         data = {915388147100176414: 90, 851354954392141859: 0, 757473573227987035: 90, 616950344747974656: 90, 599510213225218059: 0, 588495359094030336: 90, 465103196176777236: 90, 405311684903698443: 6, 342600543107284993: 84, 438230172437577729: 0, 462606134218588161: 0, 462825721916686337: 0, 486171419256815636: 0, 522307766421946372: 0, 529934718968528899: 63, 562472211005440011: 0, 627138670234828810: 0, 770341184458719252: 0, 794591789763133470: 0, 798938840252678145: 0, 888246772424650842: 0, 897317879341543494: 0}
-        perizinan = {915388147100176414: 0, 851354954392141859: 0, 757473573227987035: 0, 616950344747974656: 0, 599510213225218059: 0, 588495359094030336: 0, 465103196176777236: 0, 405311684903698443: 0, 342600543107284993: 0, 438230172437577729: 0, 462606134218588161: 0, 462825721916686337: 0, 486171419256815636: 0, 522307766421946372: 1, 529934718968528899: 1, 562472211005440011: 1, 627138670234828810: 0, 770341184458719252: 0, 794591789763133470: 0, 798938840252678145: 0, 888246772424650842: 0, 897317879341543494: 0}
+        perizinan = {915388147100176414: 0, 851354954392141859: 0, 757473573227987035: 0, 616950344747974656: 0, 599510213225218059: 2, 588495359094030336: 0, 465103196176777236: 0, 405311684903698443: 0, 342600543107284993: 0, 438230172437577729: 1, 462606134218588161: 1, 462825721916686337: 1, 486171419256815636: 2, 522307766421946372: 1, 529934718968528899: 1, 562472211005440011: 1, 627138670234828810: 0, 770341184458719252: 0, 794591789763133470: 0, 798938840252678145: 0, 888246772424650842: 0, 897317879341543494: 0}
         member_data = dict(zip([x.id for x in ctx.guild.members if not x.bot], [x for x in ctx.guild.members if not x.bot]))
         hadir = []
         tidak_hadir_beralasan = []
@@ -199,7 +199,7 @@ class Ramadan(Cog):
             except:
                 pass
             try:
-                if value >= 7:
+                if value >= 5:
                     kehadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['kehadiran']
                     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'kehadiran': kehadiran + 1}})
                     hadir.append(key)
