@@ -269,10 +269,10 @@ class Ramadan(Cog):
                                                           })
         print(hadir, tidak_hadir_beralasan, tidak_hadir_tidak_beralasan, tidak_hadir_abai)
         
-        hadir_report = ', '.join([m.mention for m in [x for x in member_data if x.id in hadir]])
-        tidak_hadir_beralasan_report = ', '.join([m.mention for m in [x for x in member_data if x.id in tidak_hadir_beralasan]])
-        tidak_hadir_tidak_beralasan_report = ', '.join([m.mention for m in [x for x in member_data if x.id in tidak_hadir_tidak_beralasan]])
-        tidak_hadir_abai_report = ', '.join([m.mention for m in [x for x in member_data if x.id in tidak_hadir_abai]])
+        hadir_report = ', '.join([m.mention for m in [x for x in member_data.values() if x.id in hadir]])
+        tidak_hadir_beralasan_report = ', '.join([m.mention for m in [x for x in member_data.values() if x.id in tidak_hadir_beralasan]])
+        tidak_hadir_tidak_beralasan_report = ', '.join([m.mention for m in [x for x in member_data.values() if x.id in tidak_hadir_tidak_beralasan]])
+        tidak_hadir_abai_report = ', '.join([m.mention for m in [x for x in member_data.values() if x.id in tidak_hadir_abai]])
         
         report = self.bot.get_channel(961632363996127364)
         embed = discord.Embed(title=f'Generated report_{timestamp}', timestamp=datetime.datetime.now())
