@@ -9,7 +9,7 @@ from discord.utils import get
 import re, time, random
 import seaborn as sns
 import matplotlib.pyplot as plt
-from numpy import *
+import numpy as np
 
 def string2func(string):
     ''' evaluates the string and returns a function of x '''
@@ -26,19 +26,19 @@ def string2func(string):
 
     allowed_words = [
         'x',
-        'sin',
-        'cos',
-        'sqrt',
-        'exp',
-        'pi',
+        'np.sin',
+        'np.cos',
+        'np.sqrt',
+        'np.exp',
+        'np.pi',
         'time',
-        'floor',
+        'np.floor',
         'np',
-        'tan',
-        'ceil',
-        'fix',
-        'rint',
-        'trunc'
+        'np.tan',
+        'np.ceil',
+        'np.fix',
+        'np.rint',
+        'np.trunc'
     ]
 
     for word in re.findall('[a-zA-Z_]+', string):
@@ -276,8 +276,7 @@ class Tools(Cog):
             
     @command(name='random')    
     async def randomm(self, ctx, *cat):
-        data = [x for x in cat]
-        await ctx.reply(embed = discord.Embed(name = random.choice(data)))
+        await ctx.reply(embed = discord.Embed(name = random.choice(cat)))
 
     @command(name='plot-function')   
     async def createPlotFunction(self, ctx, function, start = '0', end = '100', step = '1000', title = '', xLabel = 'x', yLabel = 'y'):    
