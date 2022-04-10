@@ -96,9 +96,10 @@ class Ramadan(Cog):
                     continue
                 else:
                     self.data[member.id] = 0
-            live_rep = 'discord_id          minute'
+            live_rep = 'discord_id           minute   name'
+                      # 915388147100176xxx → 12 min → runs
             for x, y in self.data.items():
-                live_rep += f'\n{x} → {y} min'
+                live_rep += f'\n{x} → {y:<2} min → {self.member_data[x].name}'
             await self.live_report.edit(embed=discord.Embed(title = datetime.datetime.now(), description = f'```{live_rep}```'))
 
     @records_presence.after_loop
@@ -200,9 +201,9 @@ class Ramadan(Cog):
         report = self.bot.get_channel(961632363996127364)
         embed = discord.Embed(title=f'[{timestamp}] GENERATED REPORT', timestamp=datetime.datetime.now())
         embed.add_field(name='Hadir', value=hadir_report if hadir_report != '' else 'none', inline=False)
-        embed.add_field(name='Tidak Hadir w/ reason', value=tidak_hadir_beralasan_report if tidak_hadir_beralasan_report != '' else 'none', inline=False)
-        embed.add_field(name='Tidak Hadir w/o reason', value=tidak_hadir_tidak_beralasan_report if tidak_hadir_tidak_beralasan_report != '' else 'none', inline=False)
-        embed.add_field(name='Tidak Hadir w/ self online status or declined reason', value=tidak_hadir_abai_report if tidak_hadir_abai_report != '' else 'none', inline=False)
+        embed.add_field(name='Tidak Hadir w/ accepted reason', value=tidak_hadir_beralasan_report if tidak_hadir_beralasan_report != '' else 'none', inline=False)
+        embed.add_field(name='Tidak Hadir w/o reason but offline state', value=tidak_hadir_tidak_beralasan_report if tidak_hadir_tidak_beralasan_report != '' else 'none', inline=False)
+        embed.add_field(name='Tidak Hadir w/o reason while discord status = online or declined reason', value=tidak_hadir_abai_report if tidak_hadir_abai_report != '' else 'none', inline=False)
         await report.send(embed = embed)
         
         self.data = {}
@@ -313,9 +314,9 @@ class Ramadan(Cog):
         report = self.bot.get_channel(961632363996127364)
         embed = discord.Embed(title=f'[{timestamp}] GENERATED REPORT', timestamp=datetime.datetime.now())
         embed.add_field(name='Hadir', value=hadir_report if hadir_report != '' else 'none', inline=False)
-        embed.add_field(name='Tidak Hadir w/ reason', value=tidak_hadir_beralasan_report if tidak_hadir_beralasan_report != '' else 'none', inline=False)
-        embed.add_field(name='Tidak Hadir w/o reason', value=tidak_hadir_tidak_beralasan_report if tidak_hadir_tidak_beralasan_report != '' else 'none', inline=False)
-        embed.add_field(name='Tidak Hadir w/ self online status or declined reason', value=tidak_hadir_abai_report if tidak_hadir_abai_report != '' else 'none', inline=False)
+        embed.add_field(name='Tidak Hadir w/ accepted reason', value=tidak_hadir_beralasan_report if tidak_hadir_beralasan_report != '' else 'none', inline=False)
+        embed.add_field(name='Tidak Hadir w/o reason but offline state', value=tidak_hadir_tidak_beralasan_report if tidak_hadir_tidak_beralasan_report != '' else 'none', inline=False)
+        embed.add_field(name='Tidak Hadir w/o reason while discord status = online or declined reason', value=tidak_hadir_abai_report if tidak_hadir_abai_report != '' else 'none', inline=False)
         await report.send(embed = embed)
         
 def setup(bot):
