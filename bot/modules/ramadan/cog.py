@@ -45,11 +45,12 @@ class Ramadan(Cog):
         str_not_joined = ', '.join([f'{member.mention}' for member in not_join])
         self.data = dict(zip([x.id for x in ctx.guild.members if not x.bot], [0 for i in range(len(ctx.guild.members) - len([x for x in ctx.guild.members if not x.bot]))]))
         self.perizinan = dict(zip([x.id for x in ctx.guild.members if not x.bot], [0 for i in range(len(ctx.guild.members) - len([x for x in ctx.guild.members if not x.bot]))]))
+        msg = self.bot.get_channel(961632363996127364)
+        self.live_report = await msg.send('live report')
+        
         if ctx.author.id == 616950344747974656:
             self.records_presence.start(ctx)
         await ctx.respond(f'**Urutan Membaca: **\n{str_orang}\n\nDimohon kepada:\n{str_not_joined} untuk segera bergabung ke channel {channel.mention}!\nBagi yang berhalangan hadir diharapkan untuk segera izin **sebelum sesi berakhir!**\n\nFormat perizinan: ```!izin <alasan> | contoh: \n!izin tadarus di masjid```')
-        msg = self.bot.get_channel(961632363996127364)
-        self.live_report = await msg.send('live report')
         for member in not_join:
             try: 
                 await member.send(f'dimohon untuk segera bergabung ke channel {channel.mention} atau **izin** terlebih dahulu.')
