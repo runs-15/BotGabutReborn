@@ -252,7 +252,7 @@ class Ramadan(Cog):
     @command(name='records.presensi')
     async def presensi_records(self, ctx):
         if ctx.author.id == 616950344747974656:
-            final = 'discord_id          kehadiran  tidak hadir (beralasan)  tidak hadir (tidak beralasan)  pelanggaran berat'
+            final = 'discord_id          h  i  a  pelanggaran berat'
             records = db.servers_con['ramadan']['jumlah_kehadiran'].find()
             for record in records:
                 final += f"\n{record['discord_id']}  {record['kehadiran']}  {record['ketidakhadiran']['beralasan']}  {record['ketidakhadiran']['tidak_beralasan']}  {record['ketidakhadiran']['streak']}"
