@@ -79,6 +79,39 @@ class Ramadan(Cog):
                 await report.send(f'{msg.author.mention} akan ditendang karena alasan yang tidak bisa diterima')
                 await member.send('Maaf, Anda telah dikeluarkan dari server karena alasan yang sama sekali tidak dapat diterima.')
                 await member.kick(reason='severe unappealed reason.')
+                
+    @slash_command(name="late-accept", guild_ids=[960081979754283058])
+    async def late_accept(self, ctx, message_id: Option(str, "message id", required=True), decider: Option(str, "cases", choices=['!hadir && status == online', '!hadir && status != online', 'decline'])):
+        if ctx.author.id == 616950344747974656:
+            msg = await ctx.fetch_message(int(message_id))
+            report = self.bot.get_channel(961632363996127364)
+            if decider == '!hadir && status == online':
+                ketidakhadiran_alpha = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : msg.author.id})[0]['ketidakhadiran']['tidak_beralasan']
+                streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : msg.author.id})[0]['ketidakhadiran']['streak']
+                ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : msg.author.id})[0]['ketidakhadiran']['beralasan']
+                
+                db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : msg.author.id}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran_alpha - 1}})
+                db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : msg.author.id}, {"$set": {'ketidakhadiran.streak': streak - 1}})
+                db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : msg.author.id}, {"$set": {'ketidakhadiran.beralasan': ketidakhadiran + 1}})
+                    
+                await ctx.respond('accepted.', ephemeral = True)
+                await report.send(f'reason for {msg.author.mention} was **accepted**.')
+                await msg.author.send('reason accepted.')
+                
+            elif decider == '!hadir && status != online':
+                ketidakhadiran_alpha = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : msg.author.id})[0]['ketidakhadiran']['tidak_beralasan']
+                ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : msg.author.id})[0]['ketidakhadiran']['beralasan']
+                
+                db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : msg.author.id}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran_alpha - 1}})
+                db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : msg.author.id}, {"$set": {'ketidakhadiran.beralasan': ketidakhadiran + 1}})
+                    
+                await ctx.respond('accepted.', ephemeral = True)
+                await report.send(f'reason for {msg.author.mention} was **accepted**.')
+                await msg.author.send('reason accepted.')
+            else:
+                await ctx.respond('declined.', ephemeral = True)
+                await report.send(f'reason for {msg.author.mention} was **declined**.')
+                await msg.author.send('reason declined.')
     
     @tasks.loop(seconds = 60, count = 90)
     async def records_presence(self, ctx):
@@ -96,10 +129,10 @@ class Ramadan(Cog):
                     continue
                 else:
                     self.data[member.id] = 0
-            live_rep = 'discord_id           minute   name'
-                      # 915388147100176xxx → 12 min → runs
+            live_rep = 'discord_id          time    izin  name'
+                      # 915388147100176xxx  12 min  0     runs
             for x, y in self.data.items():
-                live_rep += f'\n{x} → {y:<2} min → {self.member_data[x].name}'
+                live_rep += f'\n{x}  {y:<2} min  {self.perizinan[x]:<4}  {self.member_data[x].name}'
             await self.live_report.edit(embed=discord.Embed(title = datetime.datetime.now(), description = f'```{live_rep}```'))
 
     @records_presence.after_loop
@@ -203,7 +236,7 @@ class Ramadan(Cog):
         embed.add_field(name='Hadir', value=hadir_report if hadir_report != '' else 'none', inline=False)
         embed.add_field(name='Tidak Hadir w/ accepted reason', value=tidak_hadir_beralasan_report if tidak_hadir_beralasan_report != '' else 'none', inline=False)
         embed.add_field(name='Tidak Hadir w/o reason but offline state', value=tidak_hadir_tidak_beralasan_report if tidak_hadir_tidak_beralasan_report != '' else 'none', inline=False)
-        embed.add_field(name='Tidak Hadir w/o reason while discord status = online or declined reason', value=tidak_hadir_abai_report if tidak_hadir_abai_report != '' else 'none', inline=False)
+        embed.add_field(name='Tidak Hadir w/o reason while discord status == online or declined reason', value=tidak_hadir_abai_report if tidak_hadir_abai_report != '' else 'none', inline=False)
         await report.send(embed = embed)
         
         self.data = {}
@@ -316,7 +349,7 @@ class Ramadan(Cog):
         embed.add_field(name='Hadir', value=hadir_report if hadir_report != '' else 'none', inline=False)
         embed.add_field(name='Tidak Hadir w/ accepted reason', value=tidak_hadir_beralasan_report if tidak_hadir_beralasan_report != '' else 'none', inline=False)
         embed.add_field(name='Tidak Hadir w/o reason but offline state', value=tidak_hadir_tidak_beralasan_report if tidak_hadir_tidak_beralasan_report != '' else 'none', inline=False)
-        embed.add_field(name='Tidak Hadir w/o reason while discord status = online or declined reason', value=tidak_hadir_abai_report if tidak_hadir_abai_report != '' else 'none', inline=False)
+        embed.add_field(name='Tidak Hadir w/o reason while discord status == online or declined reason', value=tidak_hadir_abai_report if tidak_hadir_abai_report != '' else 'none', inline=False)
         await report.send(embed = embed)
         
 def setup(bot):
