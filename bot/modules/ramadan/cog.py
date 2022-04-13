@@ -72,7 +72,7 @@ class Ramadan(Cog):
             if decider != -1:
                 self.perizinan[msg.author.id] = decider
                 await ctx.respond('accepted.' if decider == 1 else 'declined.', ephemeral = True)
-                await report.send(f'reason for {msg.author.mention} was **accepted**.' if decider == 1 else 'reason for {msg.author.mention} was **declined**.')
+                await report.send(f'reason for {msg.author.mention} was **accepted**.' if decider == 1 else f'reason for {msg.author.mention} was **declined**.')
                 await msg.author.send('reason accepted.' if decider == 1 else 'reason declined.')
             else:
                 member = msg.author
@@ -134,7 +134,7 @@ class Ramadan(Cog):
             try:
                 if self.count > 0:        
                     live_rep = 'discord_id          time    izin  name'
-                            # 915388147100176xxx  12 min  0     runs
+                                # 915388147100176xxx  12 min  0     runs
                     for x, y in self.data.items():
                         try:
                             live_rep += f'\n{x}  {y:<2} min  {self.perizinan[x]:<4}  {self.member_data[x].name}'
@@ -180,7 +180,9 @@ class Ramadan(Cog):
                     ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
                     streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
                     if streak + 1 >= 3:
-                        db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': 0}})
+                        report = self.bot.get_channel(961632363996127364)
+                        db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
+                        await report.send(f'{member.mention} has been **kicked** from the server.')
                         await member.send('Maaf, Anda dikeluarkan dari server karena 3 kali ketidakhadiran dan atau tanpa alasan yang diterima')
                         await member.kick(reason='not attending meet for 3 times or declined reason for 3 times')
                     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
@@ -191,7 +193,8 @@ class Ramadan(Cog):
                     ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
                     streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
                     if streak + 1 >= 3:
-                        db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': 0}})
+                        db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
+                        await report.send(f'{member.mention} has been **kicked** from the server.')
                         await member.send('Maaf, Anda dikeluarkan dari server karena 3 kali ketidakhadiran dan atau tanpa alasan yang diterima')
                         await member.kick(reason='not attending meet for 3 times or declined reason for 3 times')
                     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
@@ -215,7 +218,8 @@ class Ramadan(Cog):
                     ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
                     streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
                     if streak + 1 >= 3:
-                        db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': 0}})
+                        db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
+                        await report.send(f'{member.mention} has been **kicked** from the server.')
                         await member.send('Maaf, Anda dikeluarkan dari server karena 3 kali ketidakhadiran dan atau tanpa alasan yang diterima')
                         await member.kick(reason='not attending meet for 3 times or declined reason for 3 times')
                     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
@@ -266,7 +270,7 @@ class Ramadan(Cog):
             final = 'discord_id          h  i  a  pelanggaran berat'
             records = db.servers_con['ramadan']['jumlah_kehadiran'].find()
             for record in records:
-                final += f"\n{record['discord_id']}  {record['kehadiran']}  {record['ketidakhadiran']['beralasan']}  {record['ketidakhadiran']['tidak_beralasan']}  {record['ketidakhadiran']['streak']}"
+                final += f"\n{record['discord_id']}  {record['kehadiran']}  {record['ketidakhadiran']['beralasan']}  {record['ketidakhadiran']['tidak_beralasan']}  {record['ketidakhadiran']['streak']} (toleransi : {3 - record['ketidakhadiran']['streak']})"
             await ctx.send(embed=discord.Embed(title = 'rekap presensi', description = f'```{final}```'))
         
     # @command(name='record.manual')
