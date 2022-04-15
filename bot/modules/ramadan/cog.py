@@ -49,7 +49,7 @@ class Ramadan(Cog):
         msg = self.bot.get_channel(961632363996127364)
         self.live_report = await msg.send('live report')
         
-        if ctx.author.id == 616950344747974656:
+        if ctx.author.id in [616950344747974656, 462825721916686337, 405311684903698443]:
             self.records_presence.start(ctx)
         await ctx.respond(f'**Urutan Membaca: **\n{str_orang}\n\nDimohon kepada:\n{str_not_joined} untuk segera bergabung ke channel {channel.mention}!\nBagi yang berhalangan hadir diharapkan untuk segera izin **sebelum sesi berakhir!**\n\nFormat perizinan: ```!izin <alasan> | contoh: \n!izin tadarus di masjid```')
         for member in not_join:
