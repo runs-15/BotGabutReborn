@@ -273,7 +273,7 @@ class Ramadan(Cog):
                 final += f"\n{record['discord_id']}  {record['kehadiran']}  {record['ketidakhadiran']['beralasan']}  {record['ketidakhadiran']['tidak_beralasan']}  {record['ketidakhadiran']['streak']} (toleransi : {3 - record['ketidakhadiran']['streak']})"
             await ctx.send(embed=discord.Embed(title = 'rekap presensi', description = f'```{final}```'))
             
-    @command(name='records.exec')
+    @command(name='records.execute')
     async def execute_records(self, ctx, data, izin):
         data = eval(data)
         perizinan = eval(izin)
@@ -360,14 +360,14 @@ class Ramadan(Cog):
                     tidak_hadir_tidak_beralasan.append(key)
                 
         timestamp = str(datetime.datetime.now())
-        db.servers_con['ramadan']['presensi'].insert_one({'date' : timestamp,
-                                                          'peserta' : hadir if len(hadir) >= 1 else 'None',
-                                                          'ketidakhadiran' : {
-                                                                                'beralasan' : tidak_hadir_beralasan if len(tidak_hadir_beralasan) >= 1 else 'None',
-                                                                                'tidak_beralasan' : tidak_hadir_tidak_beralasan if len(tidak_hadir_tidak_beralasan) >= 1 else 'None',
-                                                                                'abai' : tidak_hadir_abai if len(tidak_hadir_abai) >= 1 else 'None'
-                                                                                }
-                                                          })
+        # db.servers_con['ramadan']['presensi'].insert_one({'date' : timestamp,
+        #                                                   'peserta' : hadir if len(hadir) >= 1 else 'None',
+        #                                                   'ketidakhadiran' : {
+        #                                                                         'beralasan' : tidak_hadir_beralasan if len(tidak_hadir_beralasan) >= 1 else 'None',
+        #                                                                         'tidak_beralasan' : tidak_hadir_tidak_beralasan if len(tidak_hadir_tidak_beralasan) >= 1 else 'None',
+        #                                                                         'abai' : tidak_hadir_abai if len(tidak_hadir_abai) >= 1 else 'None'
+        #                                                                         }
+        #                                                   })
         print(hadir, tidak_hadir_beralasan, tidak_hadir_tidak_beralasan, tidak_hadir_abai)
         
         hadir_report = ', '.join([m.mention for m in [x for x in member_data.values() if x.id in hadir]])
