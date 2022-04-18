@@ -114,7 +114,7 @@ class Ramadan(Cog):
                 await report.send(f'reason for {msg.author.mention} was **declined**.')
                 await msg.author.send('reason declined.')
     
-    @tasks.loop(seconds = 60, count = 90)
+    @tasks.loop(seconds = 60, count = 60)
     async def records_presence(self, ctx):
         print('recording presence')
         if ctx.author.id == 616950344747974656:
@@ -272,6 +272,116 @@ class Ramadan(Cog):
             for record in records:
                 final += f"\n{record['discord_id']}  {record['kehadiran']}  {record['ketidakhadiran']['beralasan']}  {record['ketidakhadiran']['tidak_beralasan']}  {record['ketidakhadiran']['streak']} (toleransi : {3 - record['ketidakhadiran']['streak']})"
             await ctx.send(embed=discord.Embed(title = 'rekap presensi', description = f'```{final}```'))
+            
+    @command(name='records.exec')
+    async def execute_records(self, ctx, data, izin):
+        data = eval(data)
+        perizinan = eval(izin)
+        member_data = dict(zip([x.id for x in ctx.guild.members if not x.bot], [x for x in ctx.guild.members if not x.bot]))
+        hadir = []
+        tidak_hadir_beralasan = []
+        tidak_hadir_tidak_beralasan = []
+        tidak_hadir_abai = []
+        for key, value in data.items():
+            if list(db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})) == []:
+                db.servers_con['ramadan']['jumlah_kehadiran'].insert_one({'discord_id' : key,
+                                                                           'kehadiran' : 0,
+                                                                           'ketidakhadiran' : { 'beralasan' : 0,
+                                                                                                'tidak_beralasan' : 0,
+                                                                                                'streak' : 0}
+                                                                           })
+            try:
+                member = member_data[key]
+                print(key, value, perizinan[key])
+            except:
+                pass
+            try:
+                if value >= 7:
+                    # kehadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['kehadiran']
+                    # db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'kehadiran': kehadiran + 1}})
+                    hadir.append(key)
+                elif perizinan[key] == 1:
+                    # ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['beralasan']
+                    # db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.beralasan': ketidakhadiran + 1}})
+                    tidak_hadir_beralasan.append(key)
+                elif perizinan[key] == 2:
+                    print(perizinan[key])
+                    # ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
+                    # streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
+                    # if streak + 1 >= 3:
+                    #     report = self.bot.get_channel(961632363996127364)
+                    #     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
+                    #     await report.send(f'{member.mention} has been **kicked** from the server.')
+                    #     await member.send('Maaf, Anda dikeluarkan dari server karena 3 kali ketidakhadiran dan atau tanpa alasan yang diterima')
+                    #     await member.kick(reason='not attending meet for 3 times or declined reason for 3 times')
+                    # db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
+                    # db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
+                    tidak_hadir_abai.append(key)
+                elif member.raw_status != 'offline' and perizinan[key] == 0:
+                    # print(member.raw_status, perizinan[key])
+                    # ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
+                    # streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
+                    # if streak + 1 >= 3:
+                    #     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
+                    #     await report.send(f'{member.mention} has been **kicked** from the server.')
+                    #     await member.send('Maaf, Anda dikeluarkan dari server karena 3 kali ketidakhadiran dan atau tanpa alasan yang diterima')
+                    #     await member.kick(reason='not attending meet for 3 times or declined reason for 3 times')
+                    # db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
+                    # db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
+                    tidak_hadir_abai.append(key)
+                else:
+                    # ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
+                    # db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
+                    tidak_hadir_tidak_beralasan.append(key)
+            except:
+                if value >= 7:
+                    # kehadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['kehadiran']
+                    # db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'kehadiran': kehadiran + 1}})
+                    hadir.append(key)
+                elif perizinan[key] == 1:
+                    # ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['beralasan']
+                    # db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.beralasan': ketidakhadiran + 1}})
+                    tidak_hadir_beralasan.append(key)
+                elif perizinan[key] == 2:
+                    # print(perizinan[key])
+                    # ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
+                    # streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
+                    # if streak + 1 >= 3:
+                    #     db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
+                    #     await report.send(f'{member.mention} has been **kicked** from the server.')
+                    #     await member.send('Maaf, Anda dikeluarkan dari server karena 3 kali ketidakhadiran dan atau tanpa alasan yang diterima')
+                    #     await member.kick(reason='not attending meet for 3 times or declined reason for 3 times')
+                    # db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
+                    # db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
+                    tidak_hadir_abai.append(key)
+                else:
+                    # ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
+                    # db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.tidak_beralasan': ketidakhadiran + 1}})
+                    tidak_hadir_tidak_beralasan.append(key)
+                
+        timestamp = str(datetime.datetime.now())
+        db.servers_con['ramadan']['presensi'].insert_one({'date' : timestamp,
+                                                          'peserta' : hadir if len(hadir) >= 1 else 'None',
+                                                          'ketidakhadiran' : {
+                                                                                'beralasan' : tidak_hadir_beralasan if len(tidak_hadir_beralasan) >= 1 else 'None',
+                                                                                'tidak_beralasan' : tidak_hadir_tidak_beralasan if len(tidak_hadir_tidak_beralasan) >= 1 else 'None',
+                                                                                'abai' : tidak_hadir_abai if len(tidak_hadir_abai) >= 1 else 'None'
+                                                                                }
+                                                          })
+        print(hadir, tidak_hadir_beralasan, tidak_hadir_tidak_beralasan, tidak_hadir_abai)
+        
+        hadir_report = ', '.join([m.mention for m in [x for x in member_data.values() if x.id in hadir]])
+        tidak_hadir_beralasan_report = ', '.join([m.mention for m in [x for x in member_data.values() if x.id in tidak_hadir_beralasan]])
+        tidak_hadir_tidak_beralasan_report = ', '.join([m.mention for m in [x for x in member_data.values() if x.id in tidak_hadir_tidak_beralasan]])
+        tidak_hadir_abai_report = ', '.join([m.mention for m in [x for x in member_data.values() if x.id in tidak_hadir_abai]])
+        
+        report = self.bot.get_channel(961632363996127364)
+        embed = discord.Embed(title=f'[{timestamp}] GENERATED REPORT', timestamp=datetime.datetime.now())
+        embed.add_field(name='Hadir', value=hadir_report if hadir_report != '' else 'none', inline=False)
+        embed.add_field(name='Tidak Hadir w/ accepted reason', value=tidak_hadir_beralasan_report if tidak_hadir_beralasan_report != '' else 'none', inline=False)
+        embed.add_field(name='Tidak Hadir w/o reason but offline state', value=tidak_hadir_tidak_beralasan_report if tidak_hadir_tidak_beralasan_report != '' else 'none', inline=False)
+        embed.add_field(name='Tidak Hadir w/o reason while discord status == online or declined reason', value=tidak_hadir_abai_report if tidak_hadir_abai_report != '' else 'none', inline=False)
+        await report.send(embed = embed)
         
     # @command(name='record.manual')
     # async def manual_records_presence(self, ctx):
