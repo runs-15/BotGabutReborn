@@ -275,6 +275,7 @@ class Ramadan(Cog):
             
     @command(name='records.execute')
     async def execute_records(self, ctx, data, izin):
+        await ctx.send('executing...')
         data = eval(data)
         perizinan = eval(izin)
         member_data = dict(zip([x.id for x in ctx.guild.members if not x.bot], [x for x in ctx.guild.members if not x.bot]))
