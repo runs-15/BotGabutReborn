@@ -45,7 +45,7 @@ class Ramadan(Cog):
         str_orang = '\n'.join([f'{index + 1}. {member.mention}' for index, member in enumerate(data_end)])
         str_not_joined = ', '.join([f'{member.mention}' for member in not_join])
         self.data = dict(zip([x.id for x in ctx.guild.members if not x.bot], [0 for i in range(len(ctx.guild.members) - len([x for x in ctx.guild.members if not x.bot]))]))
-        self.perizinan = dict(zip([x.id for x in ctx.guild.members if not x.bot], [0 for i in range(len(ctx.guild.members) - len([x for x in ctx.guild.members if not x.bot]))]))
+        self.perizinan = dict(zip([x.id for x in ctx.guild.members if not x.bot], [[0, 0] for i in range(len(ctx.guild.members) - len([x for x in ctx.guild.members if not x.bot]))]))
         msg = self.bot.get_channel(961632363996127364)
         self.live_report = await msg.send('live report')
         
