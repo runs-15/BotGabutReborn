@@ -196,6 +196,7 @@ class Ramadan(Cog):
                     ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
                     streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
                     if streak + 1 >= 3:
+                        report = self.bot.get_channel(961632363996127364)
                         db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
                         await report.send(f'{member.mention} has been **kicked** from the server.')
                         await member.send('Maaf, Anda dikeluarkan dari server karena 3 kali ketidakhadiran dan atau tanpa alasan yang diterima')
@@ -221,6 +222,7 @@ class Ramadan(Cog):
                     ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
                     streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
                     if streak + 1 >= 3:
+                        report = self.bot.get_channel(961632363996127364)
                         db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
                         await report.send(f'{member.mention} has been **kicked** from the server.')
                         await member.send('Maaf, Anda dikeluarkan dari server karena 3 kali ketidakhadiran dan atau tanpa alasan yang diterima')
@@ -326,6 +328,7 @@ class Ramadan(Cog):
                     ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
                     streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
                     if streak + 1 >= 3:
+                        report = self.bot.get_channel(961632363996127364)
                         db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
                         await report.send(f'{member.mention} has been **kicked** from the server.')
                         await member.send('Maaf, Anda dikeluarkan dari server karena 3 kali ketidakhadiran dan atau tanpa alasan yang diterima')
@@ -351,6 +354,7 @@ class Ramadan(Cog):
                     ketidakhadiran = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['tidak_beralasan']
                     streak = db.servers_con['ramadan']['jumlah_kehadiran'].find({'discord_id' : key})[0]['ketidakhadiran']['streak']
                     if streak + 1 >= 3:
+                        report = self.bot.get_channel(961632363996127364)
                         db.servers_con['ramadan']['jumlah_kehadiran'].update_one({'discord_id' : key}, {"$set": {'ketidakhadiran.streak': streak + 1}})
                         await report.send(f'{member.mention} has been **kicked** from the server.')
                         await member.send('Maaf, Anda dikeluarkan dari server karena 3 kali ketidakhadiran dan atau tanpa alasan yang diterima')
