@@ -117,7 +117,7 @@ class Ramadan(Cog):
     @tasks.loop(seconds = 60, count = 60)
     async def records_presence(self, ctx):
         print('recording presence')
-        if ctx.author.id == 616950344747974656:
+        if ctx.author.id in [616950344747974656, 462825721916686337, 405311684903698443]:
             self.member_data = dict(zip([x.id for x in ctx.guild.members if not x.bot], [x for x in ctx.guild.members if not x.bot]))
             for member in ctx.guild.members:
                 if member.id not in self.perizinan.keys():
