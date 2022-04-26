@@ -139,7 +139,7 @@ class Ramadan(Cog):
                               # 915388147100176xxx  12 min  0     1       runs
                     for x, y in self.data.items():
                         try:
-                            live_rep += f'\n{x}  {y:<2} min  {self.perizinan[x][0]:<4}     {self.perizinan[x][1]:<4}       {self.member_data[x].name}'
+                            live_rep += f'\n{x}  {y:<2} min  {self.perizinan[x][0]}     {self.perizinan[x][1]}       {self.member_data[x].name}'
                         except Exception as e:
                             print(e)
                     
